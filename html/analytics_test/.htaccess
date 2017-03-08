@@ -1,0 +1,6 @@
+# Use PHP 5.2 as default
+#AddHandler application/x-httpd-php52 .php
+
+Options FollowSymLinks
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/analytics* [OR]

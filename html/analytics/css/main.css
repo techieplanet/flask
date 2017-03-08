@@ -1,0 +1,171 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 9, 2016, 7:02:59 PM
+    Author     : TP
+*/
+
+ html {
+           
+        }
+        
+        body {
+            font-family: Arial;
+            position: relative;
+            height: 100%;
+        }
+        #sidebar_tree li a {
+            color: #616161;
+            display: block;
+        }
+        
+        #sidebar_tree li a:hover  {
+            
+            background-color: #ccc;
+            
+        }
+        
+        #sidebar_tree li {
+            list-style-type: none;
+        }
+        
+        #sidebar_tree li .tree li  {
+           margin-left: -40px;
+          
+        }
+        #sidebar_tree li .tree li a {
+           
+           padding-left: 40px;
+        }
+        
+        ul.tree li.nav-item {
+            margin-top: 1px !important;
+        }
+        
+        .active_sidebar_link {
+            background-color: #ccc !important;
+        }
+        
+        .tp_widget_left_c {
+            
+            color:#fff;
+            width: 40%;
+            height:100px;
+            float:left;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        
+        .tp_widget_left_c i {
+            display: block !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            width: 50px;
+            
+        }
+        .tp_widget_right_c {
+            
+            width: 60%;
+            height:100px;
+            float: right;
+            padding-top: 5px;
+            background-color: #fff;
+            position: relative;
+            text-align: center;
+        }
+        
+        .tp_widget_placeholder {
+            
+            position: absolute;
+            margin-bottom: 0;
+            bottom: 0;
+            left:48%;
+            text-align: center;
+        }
+        
+        .tp_widget_right_c .yesterday {
+            
+            
+        }
+       
+        #dashboard-display {
+            margin-top: 20px;
+        }
+        
+        .active2 {
+            background-color: #fff;
+            color:#000;
+        }
+        
+        .btn-group label.active {
+            background-color: #fff !important;
+            color: #000;
+        }
+        
+        .btn-group label.active:hover {
+            
+            color: #000;
+        }
+        
+         .ui-tooltip-content {
+           font-size:10pt;
+           font-family:Arial, Calibri;
+        }
+        
+        .card-header {
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+        .ui-dialog-titlebar {
+            display: none;
+        }
+        .no-close .ui-dialog-titlebar-close  {
+          display: none;
+        }
+        
+        .form-group label, .form-group button {
+            vertical-align: top;
+        }
+        
+        .table td {
+          line-height: none !important;    
+        }
+        
+        table td {
+            text-align: center;
+        }
+        table td:nth-child(1)
+        {
+            text-align: left;
+        }
+        
+        #recentDcEvent td {
+            text-align: left;
+        }
+        
+        #accordion table th {
+            text-align: center;
+        }
+        #accordion table th:nth-child(1) {
+            text-align: left;
+        }
+        #accordion table th:nth-child(2)
+        {
+            text-align: left;
+            padding-left: 10px;
+        }
+        #accordion table td:nth-child(2) {
+            text-align: left;
+        }
+        
+        #detailsByUserTable td:nth-child(2) {
+            text-align: left;
+        }
+        
+        .make-bold {
+            font-size: 14px;
+            font-weight: bolder !important;
+        }

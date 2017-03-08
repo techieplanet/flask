@@ -1,0 +1,137 @@
+<div class="col-xs-12" >
+                  
+                 <div id="dashboard-chart1" class="col-xs-12" >
+                     <div class="card">
+                             
+                             <div class="card-header" style="background-color:#008C00; color:#fff">  
+                             </div>
+                             
+                             <div class="card-block">
+                                 <div style="background-color:#f7f7f7; border:1px solid #eee; padding:15px 0 0 15px; margin-bottom:15px">
+                                     <form id="dashboard_form" class="form-group" onsubmit="return false">
+                                         <label>Zone</label>
+                                              <select id="province_id" name="province_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                                                   <option>--Select Zone--</option>
+                                               </select>
+                                         <label>State</label>
+                                              <select id="district_id" name="district_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                                                   <option>--Select State--</option>
+                                               </select>
+                                         <label>LGA</label>
+                                              <select id="region_c_id" name="region_c_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                                                   <option>--Select LGA--</option>
+                                               </select>
+                                         <button class="btn btn-success btn-sm" onclick="getDailyUserLoginsByLocatioin()">Filter</button>
+                                     </form>
+                                     <div><span>Maximum of six (6) locations allowed per filter</span></div>
+                                 </div>
+                                  <div id="logins_barchart">
+                                      <!--daily user logins bar chart-->
+                                  </div>
+                                  <div id="dashboard-linechart">
+                                     
+                                 </div>
+                             </div>
+                             
+                      </div>
+                  </div>
+                  
+                  
+                  <!--
+                  <div class="col-xs-12" style="margin-top:20px">
+                      
+                      <div class="card">
+                          <div class="card-header" style="background-color:#008C00; color:#fff">
+                              <span>Details BY User</span>  <a href="#" class="pull-xs-right" onclick="return false;" style="color:#fff" title="This table depicts Top 10 users activity "><i class=" fa fa-info-circle fa"></i></a>
+                          </div>
+                          <div class="card-block">
+                              
+                              <table class="table table-striped">
+                                  <thead>
+                                        <th>User Name</th>
+                                        <th>Role</th>
+                                        <th>Sessions</th>
+                                        <th>Last Login Date</th>
+                                        <th>Current Login Status</th>
+                                  </thead>
+                                  <tbody>
+                                      <tr>
+                                          <td>Awe Ayobami</td>
+                                          <td>FMOH</td>
+                                          <td>43</td>
+                                          <td>6/28/2016</td>
+                                          <td>Yes</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Awe Ayobami</td>
+                                          <td>FMOH</td>
+                                          <td>43</td>
+                                          <td>6/28/2016</td>
+                                          <td>No</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Awe Ayobami</td>
+                                          <td>FMOH</td>
+                                          <td>43</td>
+                                          <td>6/28/2016</td>
+                                          <td>Yes</td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                              
+                          </div>
+                          
+                      </div>
+                      
+                  </div>-->
+                  
+                  
+                  <!-- DETAILS BY LOCATION TABLE -->
+                  <div class="col-xs-12" style="margin-top:20px">
+                       
+                       
+                       
+                      <div class="card">
+                          <div class="card-header" style="background-color:#008C00; color:#fff">
+                              <span>Details by location</span>  <a href="#" style="color:#fff" onclick="return false;" class="pull-xs-right" title="This table displays each of the four indicators in the top line (registered users, user logins, active users, sessions) geographical data"><i class="fa fa-info-circle fa"></i></a>
+                          </div>
+                          <div class="card-block">
+                              
+                              <div style="background-color:#f7f7f7; border:1px solid #eee; padding:15px 0 0 15px; margin-bottom:15px">
+                                     <form id="dashboard_form2" class="form-group">
+                                         <label>Zone</label>
+                                              <select id="province_id" name="province_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                                                   <option>--Select Zone--</option>
+                                               </select>
+                                         <label>State</label>
+                                              <select id="district_id" name="district_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                                                   <option>--Select State--</option>
+                                               </select>
+                                         <label>LGA</label>
+                                              <select id="region_c_id" name="region_c_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                                                   <option>--Select LGA--</option>
+                                               </select>
+                                         <button class="btn btn-success btn-sm" onclick="getUsersByLocation()">Filter</button>
+                                     </form>
+                                     <div><span>Maximum of six (6) locations allowed per filter</span></div>
+                                 </div>
+                              
+                              
+                               <table class="table table-striped" id="usersByLocationTable">
+                                  <thead>
+                                        <th style="text-align:center">Location</th>
+                                        <th style="text-align:center">Total registered users</th>
+                                        <th style="text-align:center">Total daily users logins for <span class="overview-table"></span></th>
+                                        <th style="text-align:center">Current active users</th>
+                                        <th style="text-align:center">Total daily sessions for <span class="overview-table"></span></th>
+                                  </thead>
+                                  <tbody id="usersByLocationTableBody">
+                                      
+                                  </tbody>
+                              </table>
+                              
+                          </div>
+                          
+                      </div>
+                      
+                  </div>
