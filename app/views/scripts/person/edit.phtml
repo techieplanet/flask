@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title><?php echo $this->translation['Application Name'];?> | <?php tp('Edit Person');?></title>
+  <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' rel='stylesheet' />
+<?php
+require_once('views/helpers/Location.php');
+require_once('views/helpers/ScriptContainer.php');
+print ScriptContainer::$instance->renderCSSHead();
+print ScriptContainer::$instance->renderJSHead();
+?>
+       
+       
+ <style>
+    .no-close .ui-dialog-titlebar-close, .no-close .ui-dialog-titlebar 
+    {
+        display: none;
+    }
+    #loaderImg {
+        vertical-align: middle;
+        display: none;
+    }
+    .infowrap {
+        cursor: pointer;
+    }
+    .infobutton {
+        font-size: 20px;
+        color: #3e963e;
+        text-align: left;
+        position: relative;
+        margin-top: -5px;
+        margin-left: -20px;
+        z-index: 5000;
+    }
+    .infodiv {
+        margin-left: 100px;
+    }
+</style>
+  <script>
+      var facilityInput = 0;
+      
+      $(document).ready(function(){
+            //alert('docready');
+            var url = '<?php echo $this->base_url; ?>' + "/facility/getFacilityByLocationId";
+            
+            var fac_name = '<?php echo $this->facility_name; ?>';
+            var fac_id = '<?php echo $this->facility_id; ?>';
+            
+            setSelectedFacility(fac_name, fac_id)
+            
+            console.log('Facility name : ' + fac_name + ", ID : " + fac_id);
+            
+            $('#person_facility_region_c_id').on("click", function(){
+                var selectedValue = $(this).val();
+                console.log(selectedValue);
+                
+                if(selectedValue != "")
+                    genericAjax(url, {value:selectedValue}, processFacilities);
+            });
+            
+            $('#facilityInput').on("click",function(){
+                var selectedValue = $('#person_facility_region_c_id').val();
+                
+                if(selectedValue != "" && facilityInput == 0)
+                {
+                    facilityInput++;
+                    genericAjax(url, {value:selectedValue}, processFacilities);
+                }
+            })
+      });
+      
+      function processFacilities(facs){
+          console.log("Getting into process Facilities");
+          //alert(facs); 
+          console.log(facs);
+          facsObject = JSON.parse(facs);
+          console.log(facsObject);
+          
+            $('#facilityInput').empty();     
+            var option = new Option("--Choose--", "");
+            document.getElementById('facilityInput').appendChild(option);
+            
+            $.each(facsObject, function(key, item){
+                var option = new Option(item, key);
+                document.getElementById('facilityInput').appendChild(option);
+            });
+
+      }
+      
+      function genericAjax(url, formData, callback){
+          //URL FORM: '../analyticsQuery/getUserprofile'
+          //console.log('FORM: ' + formData);
+          //startLoading();
+          $.ajax({
+              url : url, 
+              data: formData,
+              type : 'post',
+              success : function(res){
+                  callback(res);
+                  //stopLoading();
+              }
+          })
+      }
+      
+      function setSelectedFacility(name, id)
+      {
+          $('#facilityInput').empty(); 
+          var option = '<option value = "' + id + '">' + name + '</option>';
+          $('#facilityInput').append(option);
+      }
+  </script>
+
+  
+</head>
+<body class="yui-skin-sam">
+<?php require_once('edit-body.phtml'); ?>
+   <script>
+       $('.infowrap').click(function(){
+        $(this).siblings(".infodiv").animate({
+            opacity: 1,
+            height: "toggle",
+            width: "toggle"
+          }, 200, function() {
+            // Animation complete.
+          });
+          //console.log('click function');
+        return false;
+    }); 
+  </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<script>
+    function checkSingleSelection(){
+        var LGASelections = $('#region_c_id').val();
+        var stateSelections = $('#district_id').val();
+        var zoneSelections = $('#province_id').val();
+        var selectionMade = false;
+        console.log('zoneSelections: ' + stateSelections, stateSelections.length);
+        //return false;
+        
+        if(LGASelections == null && stateSelections == null && zoneSelections == null){
+            alert("Please select one or more locations to filter");
+            return false;
+        }
+        else if(LGASelections != null){
+               if(LGASelections.length <= 6) 
+                   return true; 
+               else {
+                    alert("Maximum of six (6) locations allowed per filter");
+                    return false;
+               }
+        }
+        else if(stateSelections != null){
+               if(stateSelections.length <= 6) 
+                   return true; 
+               else {
+                    alert("Maximum of six (6) locations allowed per filter");
+                    return false;
+               }
+        }
+        else if(zoneSelections != null){
+           if(zoneSelections.length <= 6) 
+                   return true; 
+           else {
+                alert("Maximum of six (6) locations allowed per filter");
+                return false;
+           }
+        }
+//        else{
+//            alert("Maximum of six (6) locations allowed per filter");
+//            return false;
+//        }
+        
+        return true;
+    }
+    
+    function getSelectedValues(multipleSelectBox){
+        var selected = new Array();
+        for (var i = 0; i < multipleSelectBox.options.length; i++) {
+             if(multipleSelectBox.options[i].selected){
+                //alert(multipleSelectBox.options[i].value);
+                selected.push(multipleSelectBox.options[i].value);
+            }
+        }
+        return selected;
+    }
+</script>
+
+<form name="dashboardForm" id="dashboardForm" method="post"> 
+
+<?php 
+require_once('views/helpers/Location.php');
+require_once('views/helpers/ScriptContainer.php');
+
+$current_view = '/'.$path[1].'/'. $path[2]; 
+?>
+
+<?php  //file_put_contents('c:\wamp\logs\php_debug.log', 'top_buttons 1 >'.PHP_EOL, FILE_APPEND | LOCK_EX);	ob_start();   
+	   //var_dump("current_view=", $current_view, "END");
+	   //$result = ob_get_clean(); file_put_contents('c:\wamp\logs\php_debug.log', $result .PHP_EOL, FILE_APPEND | LOCK_EX); 
+?>
+
+<p3>
+
+    <div>
+        <?php region_filters_dropdown_db($this, $this->locations, $this->criteria, true, true); ?>
+        <p><strong>Maximum of six (6) locations allowed per filter</strong></p>
+    </div>
+    <br/>
+    
+    <div>
+            <input type="submit" value="Preview" class="dbbutton dbbutton_leftmenu" onclick="return checkSingleSelection()">
+    </div>
+
+</p3>
+
+
+ </form>

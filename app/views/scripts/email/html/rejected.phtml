@@ -1,0 +1,24 @@
+<?php
+echo '
+<html>
+<head>
+</head>
+<body>
+
+<p>Dear '; ?> <?php echo $this->first_name; ?>
+<?php echo ',</p>
+<p>
+Your request to register as a user for the Family Planning Dashboard has been processed and denied. 
+<p><b>Reason : '.
+$this->reason . '</b> .
+ </p>
+ <p>For further assistance with the Family Planning Dashboard <a href="'. Settings::$COUNTRY_BASE_URL .'">FP Dashboard</a>, please contact: <a href="support@fpdashboard.ng">support@fpdashboard.ng</a>.</p>
+<p>
+Sincerely, <br>
+Director of Family Health Division, FMOH
+</p>
+</p>
+</body>
+</html>';
+
+?>

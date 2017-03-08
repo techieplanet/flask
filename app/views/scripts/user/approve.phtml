@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title><?php echo $this->translation['Application Name'];?> | <?php tp('Add User');?></title>
+<?php
+require_once('views/helpers/Location.php');
+require_once('views/helpers/ScriptContainer.php');
+print ScriptContainer::$instance->renderCSSHead();
+print ScriptContainer::$instance->renderJSHead();
+?>
+  <style type="text/css">
+      div#dialog-message {
+    min-height: 50px !important;
+}
+#dialog-message{
+    display:none;
+   }
+      </style>
+      <script>
+  $(function() {
+    dialogs = $( "#dialog-message" ).dialog({
+                                  autoOpen: false,
+                                  modal: true,
+                                  draggable: false,
+                                  resizable: false,
+                                      });
+  });
+  </script>
+</head>
+<body class="yui-skin-sam">
+
+<div id="pageHolder">
+
+  <div id="header"><?php //require_once('views/scripts/header.phtml');?></div>
+  <div id="content">
+     <h1><?php tp('User Set Up');?></h1>
+    <div class="clear"></div>
+    <div id="statusMessage">
+    
+                            </div>
+                            <div id="dialog-message" title="" >
+ 
+                                <p style="text-align:center;v-align:middle;padding:10px !important" id="data"><img src="<?php echo $this->base_url;?>/images/ajax_load.gif"/></p>
+          </div>
+    <?php require_once('_approve_request_form.phtml');?>
+ <div class="clear"></div>
+
+
+  </div>
+  <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
+
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title><?php echo $this->translation['Application Name'];?> | <?php tp('Edit Person');?></title>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+<?php
+require_once('views/helpers/Location.php');
+require_once('views/helpers/ScriptContainer.php');
+print ScriptContainer::$instance->renderCSSHead();
+print ScriptContainer::$instance->renderJSHead();
+?>
+  
+ <style>
+    .no-close .ui-dialog-titlebar-close, .no-close .ui-dialog-titlebar 
+    {
+        display: none;
+    }
+    #loaderImg {
+        vertical-align: middle;
+        display: none;
+    }
+    .infowrap {
+        cursor: pointer;
+    }
+    .infobutton {
+        font-size: 20px;
+        color: #3e963e;
+        text-align: left;
+        position: relative;
+        margin-top: -5px;
+        margin-left: -20px;
+        z-index: 5000;
+    }
+    .infodiv {
+        margin-left: 100px;
+    }
+  </style>
+   <script>
+       $('.infowrap').click(function(){
+        $(this).siblings(".infodiv").animate({
+            opacity: 1,
+            height: "toggle",
+            width: "toggle"
+          }, 200, function() {
+            // Animation complete.
+          });
+          //console.log('click function');
+        return false;
+    }); 
+  </script>
+</head>
+<body class="yui-skin-sam">
+<?php require_once('edit-body.phtml'); ?>
+</body>
+</html>

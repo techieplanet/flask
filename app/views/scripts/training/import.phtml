@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title><?php echo $this->translation['Application Name'];?> | <?php echo $this->pageTitle; ?></title>
+<?php
+require_once('views/helpers/ScriptContainer.php');
+print ScriptContainer::$instance->renderCSSHead();
+print ScriptContainer::$instance->renderJSHead();
+?>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+  <style>
+      
+/*      #content h2 {
+          color: #00529B !important;
+          background-color: #BDE5F8 !important;
+          font-size: 14px !important;
+          padding: 10px 10px 10px 10px !important;
+          border-radius: 5px 5px 0 0;
+          display: block !important;
+          font-family:  Arial, Helvetica, sans-serif;
+      }
+      */
+      #content h2 .fa {
+          color: #ffd51d;  
+      }
+      
+      #statusBox {
+/*          border: 1px solid #FEEFB3 !important
+          border-radius: 5px 5px 0 0 !important;
+          color: #9F6000 !important;
+          background-color: #FEEFB3 !important;
+          padding: 10px 5px 10px 5px !important;*/
+          display: none !important;
+      }
+      
+      #status {
+          color: #4F8A10 !important;
+          background-color: #DFF2BF !important;
+      }
+      
+      @media (max-width:499px)
+      {
+          
+          #download-section 
+          {
+              border: solid 1px #ccc;
+              padding: 10px 23px 38px 20px;
+              width: 100%;
+              margin-bottom: 10px;
+              
+          }
+        
+          #upload-section 
+          {
+              width:100%;
+              padding: 10px 20px 10px 20px;
+              background-color: #F2F2F2;
+            
+          }
+      }
+      
+      @media (min-width:499px) {
+          
+      #download-section {
+          border: solid 1px #ccc;
+          width: 40%;
+          padding: 10px 23px 38px 20px;
+          float: left;
+      }
+      
+      #upload-section {
+          float: right;
+          width: 50%;
+          padding: 10px 20px 10px 20px;
+          background-color: #F2F2F2;
+      }
+      
+      }
+      
+      .btnContinue {
+          
+          background-color: #89c46b;
+          padding: 8px 15px 8px 15px;
+          color: #fff;
+          border: none;
+          cursor: pointer;
+      }
+      
+      #tpSuccessBox .success-msg {
+          background-color: greenyellow;
+          text-align:center;
+          color: #fff;
+          margin-bottom: 5px;
+          padding: 5px 10px 5px 10px
+      }
+      
+      #tpErrorBox .warning {
+          background-color: red;
+          text-align:center;
+          color: #fff;
+          margin-bottom: 5px;
+          padding: 5px 10px 5px 10px
+      }
+      
+      #tpErrorBox .error {
+          background-color: red;
+          text-align:center;
+          color: #fff;
+          margin-bottom: 5px;
+          padding: 5px 10px 5px 10px;
+          font-family: Arial;    
+      }
+      
+      #tpErrorBox .error p{
+          text-align: left;
+      }      
+      #tpErrorBox .error h4{
+          
+          font-size: 16px !important;
+          font-weight: bold;
+      }
+      
+      #tpErrorBox h3 {
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          margin-bottom: 5px;
+      }
+      
+      #tpErrorBox p {
+          text-align:left;
+          margin-bottom: 3px;
+      }
+      
+      
+      .ui-dialog-titlebar-close{
+          display : none;
+      }
+  </style>
+</head>
+<body class="yui-skin-sam">
+  <div id="pageHolder">
+    <div id="header"><?php require_once('views/scripts/header.phtml');?></div>
+   
+    <div id="content">
+        <div id="tpErrorBox" title="Error Notice" style="display:none"></div>
+        <div id="tpSuccessBox"  style="display:none"></div>
+        <div id="confirmActionBox" title="Notice" style="display:none">
+            <p>You have chosen to fix your excel file, Please fix noted errors and re-upload</p>
+        </div>
+      <h1><?php echo $this->pageTitle; ?></h1>
+      
+      <div id="download-section">
+      
+      
+<!--      <p>&nbsp;</p>
+      <p><a href="<?php echo $this->base_url; ?>/training/import/download/template/outputType/ImportTrainingTemplate.xlsx"><?php tp('Download sample template for training data upload'); ?></a></p>
+     
+      <p>&nbsp;</p>-->
+      
+      <h3>Select your state to download template for training data upload</h3>
+      <p>&nbsp;</p>
+      <select id="excelUploadList">
+      <option value="">--Select State File--</option>
+      <?php
+         $excelFileArr =  $this->getUploadFile;
+         foreach($excelFileArr as $key=>$val)
+         {
+             echo "<option value='" .$key ."'>$key</option>";
+         }
+      ?>
+      </select> &nbsp; <button class="btn btn-success" onclick="downloadTrainingFile()">Download File</button>
+      
+      <script>
+          
+          function downloadTrainingFile()
+          {
+              var file = $("#excelUploadList").val();
+              
+              if(file === "" || file === null)
+              {
+                  alert("Please Select a file to download");
+              }
+              else
+              {
+                  //alert("<?php echo $this->base_url; ?>/training/import/download/template/outputType/"+file);
+                  location.href = "<?php echo $this->base_url; ?>/training/import/download/template/outputType/excelUpload/filename/"+file;
+//                  location.href = "<?php echo $this->base_url; ?>/training/import/download/template/outputType/excelUpload/filename/"+file;
+              }
+          }
+          
+      </script>
+      
+      <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
+<!--       <p><a href="<?php echo $this->base_url; ?>/training/import/download/template/outputType/FacilityList.xlsx"><?php tp('Download Facility List'); ?></a> |
+   
+       <a href="<?php echo $this->base_url; ?>/training/import/download/template/outputType/TrainingOrganizer.xlsx"><?php tp('Download Training Organizer List'); ?></a></p>-->
+       
+      </div> <!-- End of download section -->
+      
+      <div id="upload-section">
+      <p><?php tp('Upload MS Excel file format (*.xlsx) containing training information data you want to import.'); ?></p>
+      <p>&nbsp;</p>
+      
+      <form id="uploadFileForm" enctype="multipart/form-data" method="post">
+          <input type="hidden" name="mode" value="check" />
+      <div class="fieldIndent">
+        <div class="fieldLabel" style="text-align: left;margin-left:0;padding-left:0;width:auto"><?php tp('File to upload');?></div><input type="file" name="upload" /><br>
+            <div class="fieldLabel"  style="text-align: left;margin-left:0;padding-left:0;"><?php tp('Max file upload size'); print ' '; print ini_get('upload_max_filesize')?></div>
+          <div class="fieldLabel" style="text-align: left;margin-left:0;padding-left:0;" ><button type="submit"  class="btnContinue" name="go">Continue <i class="fa fa-paper-plane" style="color:#fff"></i></button></div>&nbsp;
+        <br/><br/><br/>
+        </div>
+      </form>
+          
+      </div><!-- End of upload section -->
+      <span style="display:block; clear: both;"></span>
+      
+      <?php
+            if(isset($this->saved))
+            {
+                $statusHeader = $this->statusHeader;
+                $statusFooter = $this->statusFooter;
+                
+                $successMsg = $statusHeader . $statusFooter;
+                
+                $js = "<script> var saved = 1; var successMsg = '"  .$successMsg. "' ;</script>";
+                echo $js;
+            }
+            elseif(isset($this->status))
+            {
+                if($this->status->status != null)
+                {
+                    $err2 = $this->err2;
+                    $message = $this->status->messages;
+                    $messageCount = count($message);
+                    
+                    $facilityErrCount = $this->facilityErrCount;
+                    $fnameErrCount = $this->fnameErrCount;
+                    $lnameErrCount = $this->lnameErrCount;
+                    $cadreErrCount = $this->cadreErrCount;
+                    $lgaErrCount = $this->lgaErrCount;
+                    
+                    $status =  $this->status->status;
+                    
+                    $statusHeader = $this->statusHeader;
+                    $statusFooter = $this->statusFooter;
+                 
+//                    var_dump($err2,TRUE);
+                    
+                     if($messageCount <= 0)
+                     {
+                       $errContent = $statusHeader;
+                       foreach($err2 as $k=>$personError)
+                       {
+                           if(isset($personError['name']))
+                           {
+                              $errContent .= "<h3>$k : " . $personError['name']. "</h3>";
+                           }
+                           else {
+                           $errContent .= "<h3>$k</h3>";
+                           }
+                           
+                           foreach($personError as $k2=>$err)
+                           {
+                               if(is_numeric($k2)) 
+                               {
+                                   $errContent .= "<p>$err</p>";
+                               }
+                              
+                           }
+                          
+                           $errContent .= "<br/><br/>";
+                       }
+                       $errContent .= $statusFooter;
+                       
+                       
+                       $js =  "<script>  var status = '" . $errContent ."';"
+                               . " var filename = '". $filename . "'; var saved = 0; var training_error = 0;"
+                               . " var facilityErrCount = '" . $facilityErrCount . "' ; "
+                               . " var lnameErrCount = '" . $lnameErrCount ."'  ;"
+                               . " var fnameErrCount = '" . $fnameErrCount ."' ;"
+                               . " var cadreErrCount = '" . $cadreErrCount ."' ; "
+                               . " var lgaErrCount = '" . $lgaErrCount . "' ; "
+                               . "</script>";
+                       
+                       echo $js;
+                     }
+                     else 
+                     {
+                         
+                        $errContent =  $status;
+                        
+                        foreach($message as $err)
+                        {
+                            $err = explode(":",$err);
+                            $errContent .= "<p>$err[1]</p><br>";
+                        }
+                        
+                        $js =  "<script>  var status = '" . $errContent ."';"
+                               . " var filename = '". $filename . "'; var training_error = 1; var saved = 0 </script>";
+                       echo $js;
+                     }
+                   
+                }
+            }
+      
+      ?>
+      <script>
+          
+          if(saved == 1 || saved == "1")
+          {
+              $("#tpSuccessBox").html(successMsg);
+              $("#tpSuccessBox").dialog({
+                  modal : true,
+                  draggable: false,
+                  title: 'Success Message',
+                  width : 500,
+                  show: { effect: "blind", duration: 800 },
+                  buttons : {
+                      OK : function()
+                      {
+                          $(this).dialog('close');
+                      }
+                  }
+              }).prev(".ui-dialog-titlebar").css({"background":"#008c00","color":"#fff"});
+          }
+          else if(training_error == 1 || training_error == "1")
+          {
+              $("#tpErrorBox").html(status);
+              $("#tpErrorBox").dialog({
+                  modal : true,
+                  draggable: false,
+                  width : 500,
+                  show: { effect: "blind", duration: 800 },
+                  buttons : {
+                      OK : function()
+                      {
+                          $(this).dialog('close');
+                      }
+                  }
+              }).prev(".ui-dialog-titlebar").css({"background":"#008c00","color":"#fff"});
+          }
+          else
+          {
+          $("#tpErrorBox").html(status);
+          if(parseInt(fnameErrCount) > 0)
+          {
+              $("#tpErrorBox .error").append("<p> You have " + fnameErrCount + " empty First Name(s) </p>" );
+          }
+          if(parseInt(lnameErrCount) > 0)
+          {
+              $("#tpErrorBox .error").append("<p> You have " + lnameErrCount + " empty Last Name(s) </p>" );
+          }
+          if(parseInt(cadreErrCount) > 0)
+          {
+              $("#tpErrorBox .error").append("<p> You have " + cadreErrCount + " empty Cadre(s) </p>" );
+          }
+          if(parseInt(lgaErrCount) > 0)
+          {
+              $("#tpErrorBox .error").append("<p> You have " + lgaErrCount + " empty LGA(s) </p>" );
+          }
+          if(parseInt(facilityErrCount) > 0)
+          {
+              $("#tpErrorBox .error").append("<p> You have " + facilityErrCount + " incorrect facility name(s) </p>" );
+          }
+          $("#tpErrorBox").append("<hr/><p>If you want to fix on the dashboard click <b>YES</b> or click <b>NO</b> to fix on excel file and upload again</p><br>");
+          $("#tpErrorBox").append('<span style="color:red">NB: Records without Last Name and First Name will not be Saved if you proceed to Dashboard</span>');
+          $("#tpErrorBox").dialog({
+              modal : true,
+              draggable: false,
+              width : 600,
+              maxHeight : 800,
+              show: { effect: "blind", duration: 800 },
+              buttons : {
+                  YES : function()
+                  {
+                      location.href = "<?php echo $this->base_url; ?>/training/import/mode/save";
+                       $(this).dialog('close');
+                  },
+                  NO : function()
+                  {
+                      $(this).dialog('close');
+                      confirmActionBox();
+                  }
+              }
+          }).prev(".ui-dialog-titlebar").css({"background":"#008c00","color":"#fff"});
+         }
+         
+         function confirmActionBox()
+         {
+                 $("#confirmActionBox").dialog({
+                  modal : true,
+                  draggable: false,
+                  width : 400,
+                  show: { effect: "blind", duration: 200 },
+                  buttons : {
+                      OK : function()
+                      {
+                          $(this).dialog('close');
+                          
+                      }
+                  }
+              }).prev(".ui-dialog-titlebar").css({"background":"#008c00","color":"#fff"});
+         }
+      </script>
+    </div>
+    <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
+  </div>
+  <script>
+     
+//         if(facilityCount > 0)
+//         {
+//             var parent = document.getElementById("content");
+//             var stat = document.getElementById("statusBox");
+//             
+//             var statusElem = document.createElement("h2");
+//             statusElem.innerHTML = "<i class='fa fa-warning fa-2x'></i>  &nbsp; You have " + facilityCount + " Incorrect Facility name, you can fix on your dashboard";
+//            
+//             //statusElem.style.backgroundColor = "#FFBABA";
+//             //statusElem.style.color = "#fff";
+//             
+//             parent.insertBefore(statusElem,stat);
+//             //parent.style.padding = "0 0 5px 0";
+//             //parent.style.border-radius = "10px 10px 0 0";
+//             
+//             
+//             
+//         }
+//         console.log("Prepended - " + facilityCount);
+  </script>
+</body>
+</html>
