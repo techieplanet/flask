@@ -1,0 +1,176 @@
+<div id="user-overview">
+<div class="col-xs-12" style="margin-top:20px;">
+    
+    <div style="background-color:#fff; border:1px solid #eee; padding:15px 0 0 15px; margin-bottom:15px">
+         <form id="dashboard_form" class="form-group" onsubmit="return false" >
+
+                   <select id="province_id" name="province_id[]"  class="form-control-sm select-max-6" size="7" multiple>
+                       <option>--Select Zone--</option>
+                   </select>
+
+                   <select id="district_id" name="district_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                       <option>--Select State--</option>
+                   </select>
+
+                  <select id="region_c_id" name="region_c_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                       <option>--Select LGA--</option>
+                   </select>
+             <button class="btn btn-success btn-sm" onclick="userOverviewFilterClick()">Filter</button>
+         </form>
+        <div><span>Maximum of six (6) locations allowed per filter</span></div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header" style="background-color:#008C00; color:#fff">
+        </div>
+        <div class="card-block">
+            <div id="sumTotUser_barchart">
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header" style="background-color:#008C00; color:#fff">
+        </div>
+        <div class="card-block">
+            <div id="sumTotUsers-linechart">
+            </div>
+        </div>
+    </div>
+
+</div>
+    
+
+<div class="col-xs-12" style="margin-top:20px">
+                      
+                      <div class="card">
+                          <div class="card-header" style="background-color:#008C00; color:#fff">
+                              <span>Details by user</span>  
+                          </div>
+                          <div class="card-block" >
+                              
+                              <table class="table table-striped " id="detailsByUserTable">
+                                  <thead>
+                                        <th>Full name</th>
+                                        <th>Location</th>
+                                        <th>Role</th>
+                                        <th>Cumulative sessions</th>
+                                        <th>Last login</th>
+                                        <th>Login status</th>
+                                        
+                                  </thead>
+                                  <tbody id="detailsByUserTableBody">
+                                    
+                                  </tbody>
+                              </table>
+                              
+                          </div>
+                          
+                      </div>
+                      
+                  </div>
+    
+    
+</div> 
+
+
+<!-- User's list sub module starts here -->
+<div id="user-list" class="col-xs-12">
+    
+    <div class="row">
+        
+        <div class="col-sm-3" >
+            <div class="card card-primary-outline" style="background-color: #fff;">
+                <div class="card-header text-xs-center" style="background-color: #0275D8; color: #fff; ">
+                    Filter
+                </div>
+                <div class="card-block">
+                    <div>
+                        
+                        <form id="dashboard_form" class="form-group" onsubmit="return false;">
+                       <select id="province_id" name="province_id[]" class="form-control select-max-6" size="7" style="margin-bottom:3px;" multiple>
+                           <option>--Select Zone--</option>
+                       </select>
+                       
+                      <select id="district_id" name="district_id[]" class="form-control select-max-6" size="7" style="margin-bottom:3px;" multiple>
+                           <option>--Select State--</option>
+                       </select>
+
+                       <select id="region_c_id" name="region_c_id[]" class="form-control select-max-6" size="7" style="margin-bottom:3px;" multiple>
+                           <option>--Select LGA--</option>
+                       </select>
+                        
+                       <button class="btn btn-success btn-sm" style="width:100%" onclick="fetchUsersList()">Filter</button>
+                        
+                        </form>
+                        <div><span>Maximum of six (6) locations allowed per filter</span></div>
+                    </div>
+                    
+                    <hr/>
+                    
+                    <div class="input-group">
+                        <input type="text" id="userSearchBox" placeholder="Filter By Name" class="form-control" aria-label="">
+                      <span class="input-group-addon" ><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="list-group" id="user_list_group" style="max-height: 600px; overflow-y: auto">
+              
+            </div>
+        </div>
+        
+        <div class="col-sm-9" style="background-color: #fff; padding-top: 10px;">
+            <input type="hidden" id="userid" value="" />
+            <div>
+                <span><b>Full name</b> : </span> <span id="fullname"></span> <br />
+                <span><b>Email</b> : </span> <span id="email"></span> <br />
+                <span><b>Location</b> : </span> <span id="location"></span> <br />
+                <span><b>Login status</b> : </span><span id="loggedIn"></span> <br />
+                <span><b>No of sessions</b> : </span><span id="sessions"></span> <br />
+            </div>
+            <hr />
+            <div>
+                <div style="width:25%;" class="pull-sm-left">
+                    <h5>Login history</h5>
+                </div>
+                <div style="width:75%;" class="pull-sm-right" >
+                            
+                            <div style="width:20%;height:100%;float: right; padding-left: 3px;">
+                               <button class="btn btn-success btn-sm"  onclick="filterUserSessionByDate()">Filter</button>
+                            </div>
+                            <div style="width:40%;float: right;">
+
+                                <div class="input-group">
+                                    <input type="text"  id="toDate" placeholder="To" class="calendar form-control" />
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                            <div style="width:40%;float: right;">
+                                <div class="input-group">
+                                    <input type="text"  id="fromDate" placeholder="From" class="calendar form-control"  />
+                                   <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
+                                </div>    
+                            </div>
+                    
+                    <i style="display:block; clear: both"></i>
+                </div>
+            </div>
+            
+            <i style="display:block; clear: both"></i>
+            
+            <hr />
+            
+            <div id="accordion">
+              
+            </div>
+            
+        </div>
+            
+            
+            
+            
+    </div>
+        
+</div>
+    

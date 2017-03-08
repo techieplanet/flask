@@ -1,0 +1,240 @@
+<!--<div class="col-xs-12" id="modules-overview" >
+                    <div id="tabs" style="background-color:#fff;">  
+                        <ul >
+                          <li style="height:30px"><a href="#bar_chart">Bar Chart</a></li>
+                          <li style="height:30px"><a href="#pie_chart">Pie Chart</a></li>
+                        </ul>
+                        <div style="margin-top:15px;">
+                            <div style="width:50%;" class="pull-sm-left">
+                                <div class="btn-group"  data-toggle="buttons">
+                                    <label class="btn btn-primary active">
+                                        <input type="radio" name="options" autocomplete="off" checked />User
+                                    </label>
+                                    <label class="btn btn-primary">
+                                        <input type="radio" name="options" autocomplete="off" />Session
+                                    </label>
+                                    
+                                </div>
+                            </div>
+                            <div style="width:33%;" class="pull-sm-right" >
+                                <div style="width:50%;float: right;">
+                                   
+                                    <div class="input-group">
+                                        <input type="text"  id="toDate" placeholder="To" class="calendar form-control" />
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                                <div style="width:50%;float: right;">
+                                    <div class="input-group">
+                                        <input type="text"  id="fromDate" placeholder="From" class="calendar form-control"  />
+                                       <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <i style="clear:both;display:block"></i>
+                      <div id="bar_chart">
+                           Bar Charts
+                      </div>
+                      
+                      <div id="pie_chart">
+                          Pie Charts
+                      </div>
+                    </div>
+</div>-->
+
+
+<!-----------------------------------------    Queries Module --------------------------------------------------------------->
+
+<div class="col-xs-12" id="modules-query">
+     
+    <div style="background-color:#fff; border:1px solid #eee; padding:15px 0 0 15px; margin-bottom:15px">
+                 <form id="dashboard_form" class="form-group" onsubmit="return false" >
+
+                           <select id="province_id" name="province_id[]"  class="form-control-sm select-max-6" size="7" multiple>
+                               <option>--Select Zone--</option>
+                           </select>
+
+                           <select id="district_id" name="district_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                               <option>--Select State--</option>
+                           </select>
+
+                          <select id="region_c_id" name="region_c_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                               <option>--Select LGA--</option>
+                           </select>
+                     <button class="btn btn-success btn-sm" onclick="getDailySessionsByQueries()">Filter</button>
+                 </form>
+                 <div><span>Maximum of six (6) locations allowed per filter</span></div>
+    </div>
+    
+    <div class="card">
+        
+        <div class="card-header" style="background-color:#008C00; color:#fff">
+        </div>
+        
+        <div class="card-block">
+                
+            
+            <div id="dailySessionsQueries_barchart">
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="card">
+        
+        <div class="card-header" style="background-color:#008C00; color:#fff">
+        </div>
+        
+        <div class="card-block">
+            
+            <div id="modulesquery-linechart">
+                
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+    
+
+<!-------------------------------------------------- Modules Chart ------------------------------------------------------------>
+<div class="col-xs-12" id="modules-chart">
+    
+    
+        <div style="background-color:#fff; border:1px solid #eee; padding:15px 0 0 15px; margin-bottom:15px">
+         <form id="dashboard_form" class="form-group" onsubmit="return false" >
+
+                   <select id="province_id" name="province_id[]"  class="form-control-sm select-max-6" size="7" multiple>
+                       <option>--Select Zone--</option>
+                   </select>
+
+                   <select id="district_id" name="district_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                       <option>--Select State--</option>
+                   </select>
+
+                  <select id="region_c_id" name="region_c_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                       <option>--Select LGA--</option>
+                   </select>
+             <button class="btn btn-success btn-sm" onclick="getDailySessionsByChart()">Filter</button>
+         </form>
+            <div><span>Maximum of six (6) locations allowed per filter</span></div>
+        </div>
+   
+    
+    <div class="card">
+        
+        <div class="card-header" style="background-color:#008C00; color:#fff">
+        </div>
+        
+        <div class="card-block">
+            <div id="dailySessions_barchart">
+                
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="card">
+        
+        <div class="card-header" style="background-color:#008C00; color:#fff">
+        </div>
+        
+        <div class="card-block">
+            <div id="moduleschart-linechart">
+                
+            </div>
+        </div>
+        
+    </div>
+    
+</div>
+
+
+
+<!-------------------------------------------------- Modules Data Collection ------------------------------------------------------------>
+<div class="col-xs-12" id="modules-datacollection">
+    
+    
+        <div style="background-color:#fff; border:1px solid #eee; padding:15px 0 0 15px; margin-bottom:15px">
+         <form id="dashboard_form" class="form-group" onsubmit="return false" >
+
+                   <select id="province_id" name="province_id[]"  class="form-control-sm select-max-6" size="7" multiple>
+                       <option>--Select Zone--</option>
+                   </select>
+
+                   <select id="district_id" name="district_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                       <option>--Select State--</option>
+                   </select>
+
+                  <select id="region_c_id" name="region_c_id[]" class="form-control-sm select-max-6" size="7" multiple>
+                       <option>--Select LGA--</option>
+                   </select>
+             <button class="btn btn-success btn-sm" onclick="getDailySessionsByDataCollection()">Filter</button>
+         </form>
+            <div><span>Maximum of six (6) locations allowed per filter</span></div>
+        </div>
+    
+    
+    <div class="card">
+        
+        <div class="card-header" style="background-color:#008C00; color:#fff">
+        </div>
+        
+        <div class="card-block">
+            
+            <div id="dailySessionsDC_barchart">
+                
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    <div class="card">
+        
+        <div class="card-header" style="background-color:#008C00; color:#fff">
+        </div>
+        
+        <div class="card-block">
+            
+            <div id="modulesDC-linechart">
+                
+            </div>
+        </div>
+        
+    </div>
+    
+    
+<div class="card">
+          <div class="card-header" style="background-color:#008C00; color:#fff">
+               <a href="#" style="color:#fff" onclick="return false;" class="pull-xs-right" title="This table displays the most recent data-collection events in reverse chronological order"><i class="fa fa-info-circle fa"></i></a>
+          </div>
+          <div class="card-block">
+              <div style="text-align: center"><p>Data collection events</p></div>
+              <table class="table table-striped" id="recentDcEvent">
+                  <thead>
+                        <th>User name</th>
+                        <th>User's location</th>
+                        <th>Activity</th>
+                        <th>Details</th>
+                        <th>Time</th>
+                        
+                  </thead>
+                  <tbody id="recentDcEventBody">
+                      
+                  </tbody>
+              </table>
+
+          </div>
+                          
+</div>
+    
+</div>
+
+
+
+
+

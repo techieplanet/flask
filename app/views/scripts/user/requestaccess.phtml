@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title><?php echo $this->translation['Application Name'];?> | <?php tp('PDF Archival');?></title>
+		<link href="../js/datepicker/jquery.datepick.css" rel="stylesheet"/>
+                <?php
+		require_once('views/helpers/Location.php');
+		require_once('views/helpers/ScriptContainer.php');
+		print ScriptContainer::$instance->renderCSSHead();
+		print ScriptContainer::$instance->renderJSHead();
+
+		?>
+                <script src="../js/datepicker/jquery.plugin.js"></script>
+<script src="../js/datepicker/jquery.datepick.js"></script>
+
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css" />
+
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready(function() {
+				/* Init the table */
+				oTable = $('.tablegrid').dataTable({
+					"bJQueryUI": true,
+                                        deferRender: true,
+                                        "deferRender": true,
+					"sPaginationType": "full_numbers",
+                                        "order": [[ 0, "desc" ]],
+                                         "aaSorting": [[0, 'desc']]
+				});
+			} );
+		</script>
+	</head>
+<style type="text/css">
+
+    select
+    {
+    }
+    tr
+    {
+        cursor:default !important;
+    }
+    h2,h3
+    {
+        font-size: 16px !important;
+    }
+    select, input[type="text"] 
+    {
+        color: black !important;
+    }
+    #decline_reason_box{
+        display:none;
+    }
+</style>
+      
+	<body class="yui-skin-sam" >
+		<div id="pageHolder">
+			<div id="header"><?php require_once('views/scripts/header.phtml');?></div>
+			<div id="content">
+                            
+                         <!-- Decline reason Dialog Goes here -->
+                         <div><input type="hidden" id="decline-link" /></div>
+                         <div id="decline_reason_box" title="Request Decline Reason">
+                             <div><label for="reasonText">Enter Reason</label></div>
+                             <div><textarea rows="5" id="reasonText" ></textarea></div>
+                         </div>
+                         <!-- Decline reason dialog box ends here -->
+                         
+                             <div clas="row">
+				<div id="subcontent">
+                                    <div class="row">
+					<div id="contentheader">
+						<h2><?php tp('Request User Access ');?></h2><br>
+                                                   
+                                        </div>
+					</div>
+                                    <div class="row">
+                                     <div id="statusMessage">
+                                <?php echo (!empty($this->statusMessage))?  '<div id="statusBox">'.$this->statusMessage.'</div>':""; ?>
+                            </div>
+                                    </div>
+					<div class="pad20 clear"></div>
+					
+                                    
+                                    
+                                   
+                                   
+                                        <div class="col-md-11" style="margin:0 auto;">
+                                        <?php
+ //print_r($this->tocktack);
+
+if (isset($this->outputs)) {
+	if (count ($this->outputs) == 0){
+            echo 
+            '<br/>
+            <h2><b>Archived PDF Reports</b></h2>';
+		echo "				<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"display tablegrid\" id=\"\" style=\"width:100%\">\n";
+		echo "					<thead>\n";
+		echo "						<tr>\n";
+		echo "							<th>".t('Output')."</th>\n";
+		echo "						</tr>\n";
+		echo "					</thead>\n";
+		echo "					<tbody>\n";
+		echo "						<tr>\n";
+		echo "							<td>".t("Your search criteria returned no results")."</td>\n";
+		echo "						</tr>\n";
+		echo "					</tbody>\n";
+		echo "				</table>\n";
+	} else {
+		if(!empty($this->outputs)){
+?>
+
+				
+                                   
+                                    <table cellpadding="0" cellspacing="0" border="0" class="display tablegrid" id="" style="width:100%">
+					<thead>
+						<tr>
+<?php if(!empty($this->headers)){
+		foreach ($this->headers as $key=>$value){
+			echo "							<th> $value </th>\n";
+		}
+	}
+?>
+						</tr>
+					</thead>
+					<tbody>
+<?php
+ 	$url="";
+        $declineUrl="";
+        global $url,$declineUrl;
+		foreach ($this->outputs as $row){
+			echo "<tr style=\"cursor : pointer;\" class=\"GradeA\">\n";
+			foreach ($row as $key=>$value){
+                            if($key=="req_id"){
+                                $url = $this->baseUrl."user/approve/req_id/$value";
+                                $declineUrl = $this->baseUrl."user/requestaccess/decline/$value";
+                                $link = "<a href='$url'>$value</a>";
+                                echo "<td>" . $link . "</td>\n";
+                            }
+                            else if($key=="status"){
+                                if($value==0){
+                                $link = "<a href='$url' onclick=\"return approveConfirm()\">Approve</a> &nbsp;&nbsp;&nbsp;&nbsp;<a href='$declineUrl' onclick=\"return declineConfirm(this)\">Decline</a>";
+                                }else if($value==1){
+                                    $link = "Approved";
+                                }
+                                else if($value==-1){
+                                    $link = "Declined";
+                                }
+                                echo "<td>" . $link . "</td>\n";
+                            }
+                            else{
+				echo "<td>" . $value . "</td>\n";
+                            }
+			}
+			echo "</tr>\n";
+		}
+	
+?>
+					</tbody>
+				</table>
+				
+<?php
+	}
+}
+}
+?>
+                                    </div>
+                                    </div>
+         
+					<div class="clear" style=""></div>
+				</div>
+				<div class="clear" style=""></div>
+			</div> 
+                        
+        <div style="width: 550px; margin-left: 80px; border:2px solid grey; border-radius: 3px;  vertical-align: middle;padding:30px">
+             <p>
+                 <span style="color:red;font-weight: bold; text-decoration: underline;">ATTESTATION  </span>: I <b><?php echo $this->fullname; ?></b> hereby confirm that I have checked the data provided before approving or declining any access request
+             </p>
+         </div>
+                        </div>
+			<div class="clear" style="height : 100px;"></div>
+			<div class="clear" style=""></div>
+			
+        
+                        
+			<div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
+			</div>
+		</div>
+                
+        <script>
+            
+            function approveConfirm()
+            {
+                var ans = confirm("Do you want to Proceed to approving user?");
+                
+                    if(ans)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+            }
+            
+            function declineConfirm(obj)
+            {
+                var ans = confirm("Are you sure you want to decline this user?");
+                console.log("User selected - " + ans);
+                    if(ans)
+                    {
+                        
+                        console.log("Entered false");
+                        console.log("Intended link : " + obj.href);
+                        
+                        $("#decline-link").val(obj.href);
+                        $("#decline_reason_box").dialog({
+                            modal: true,
+                            width:300,
+                            height:300,
+                            buttons: {
+                                "Submit Reason" : getDeclineReason,
+                                Cancel : function(){
+                                    $("#decline_reason_box").dialog("close");
+                                    
+                                }
+                            }
+                            
+                        });
+                        
+                        return false;
+                        
+                    }
+                    else
+                    {
+                        
+                        return false;
+                    }
+            }
+            
+            function getDeclineReason()
+            {
+               var declineLink = $("#decline-link").val();
+               console.log(declineLink);
+               
+               var reason = $("#reasonText").val();
+               
+                if(reason.trim().length == 0)
+                {
+                    $("#decline_reason_box").dialog("close");
+                    alert("Cannot decline a user without providing reason, Please provide reason");
+                    
+                }
+                else
+                {
+                    console.log(reason);
+                    $("#reasonText").val("");
+                    $("#decline_reason_box").dialog("close");
+                    console.log(declineLink + "/reason/" + reason);
+                    
+                    location.href = declineLink + "/reason/" + reason;
+                }
+            }
+        </script>
+	</body>
+</html>
+
+
+
+
+
+

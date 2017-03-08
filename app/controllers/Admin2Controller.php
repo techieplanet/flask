@@ -1,0 +1,1 @@
+<?phprequire_once('ITechController.php');class Admin2Controller extends ITechController{    	public function indexAction()	{			}    }

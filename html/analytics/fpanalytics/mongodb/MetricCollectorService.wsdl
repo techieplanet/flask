@@ -1,0 +1,140 @@
+<definitions name="MetricCollectorService"
+   targetNamespace="http://63.139.189.115:82/fpanalytics/mongodb/MetricCollectorService.wsdl"
+   xmlns="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:tns="http://63.139.189.115:82/fpanalytics/mongodb/MetricCollectorService.wsdl"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ 
+    
+    <!-- ******************** MESSAGES **************************** -->
+    <!--messages for pushing metric data collection-->
+   <message name="SetMetricDataRequest">
+      <part name="metricData" type="xsd:string"/>
+   </message>
+	
+   <message name="SetMetricDataResponse">
+      <part name="status" type="xsd:int"/>
+   </message>
+   <!--messages for pushing metric data collection-->
+    
+   
+   <!--messages for retrieving data-->
+   <message name="GetMetricDataRequest">
+      <part name="queryArray" type="xsd:string"/>
+      <part name="optionsArray" type="xsd:string"/>
+      <part name="operationKeyword" type="xsd:string"/>
+      <part name="tableName" type="xsd:string"/>
+   </message>
+	
+   <message name="GetMetricDataResponse">
+      <part name="resultSet" type="xsd:string"/>
+   </message>
+   <!--messages for retrieving data-->
+   
+   
+   <!--messages for location,user details dump-->
+   <message name="SetDataDumpRequest">
+      <part name="dataToDump" type="xsd:string"/>
+      <part name="tablename" type="xsd:string"/>
+   </message>
+	
+   <message name="SetDataDumpResponse">
+      <part name="dumpstatus" type="xsd:int"/>
+   </message>
+   <!--messages for location details dump-->
+     
+   <!-- ******************** MESSAGES **************************** -->
+   
+   
+   <!-- ******************** OPERATIONS **************************** -->
+    <!--set metric operation-->
+   <portType name="Metric_PortType">
+      <operation name="setMetric">
+         <input message="tns:SetMetricDataRequest"/>
+         <output message="tns:SetMetricDataResponse"/>
+      </operation>
+      
+      <!--get metric operation-->
+      <operation name="getMetric">
+         <input message="tns:GetMetricDataRequest"/>
+         <output message="tns:GetMetricDataResponse"/>
+      </operation>
+      
+      <!--dump data operation-->
+      <operation name="dumpData">
+         <input message="tns:SetDataDumpRequest"/>
+         <output message="tns:SetDataDumpResponse"/>
+      </operation>
+   </portType>
+  <!-- ******************** OPERATIONS **************************** -->
+  
+  
+   <binding name="Metric_Binding" type="tns:Metric_PortType">
+      <soap:binding style="rpc"
+         transport="http://schemas.xmlsoap.org/soap/http"/>
+      
+      <!-- SET metric operation-->
+      <operation name="setMetric">
+         <soap:operation soapAction="setMetric"/>
+         <input>
+            <soap:body
+               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+               namespace="urn:examples:metricservice"
+               use="encoded"/>
+         </input>
+		
+         <output>
+            <soap:body
+               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+               namespace="urn:examples:metricservice"
+               use="encoded"/>
+         </output>
+      </operation>
+      
+      
+      <!-- GET metric operation-->
+      <operation name="getMetric">
+         <soap:operation soapAction="getMetric"/>
+         <input>
+            <soap:body
+               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+               namespace="urn:examples:metricservice"
+               use="encoded"/>
+         </input>
+		
+         <output>
+            <soap:body
+               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+               namespace="urn:examples:metricservice"
+               use="encoded"/>
+         </output>
+      </operation>
+      
+      
+      <!--dump data operation-->
+      <operation name="dumpData">
+         <soap:operation soapAction="dumpData"/>
+         <input>
+            <soap:body
+               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+               namespace="urn:examples:metricservice"
+               use="encoded"/>
+         </input>
+		
+         <output>
+            <soap:body
+               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+               namespace="urn:examples:metricservice"
+               use="encoded"/>
+         </output>
+      </operation>
+   </binding>
+
+   <service name="Metric_Service">
+      <!--<documentation>WSDL File for MetricCollectorService</documentation>-->
+      <port binding="tns:Metric_Binding" name="Metric_Port">
+         <soap:address
+            location="http://63.139.189.115:82/fpanalytics/mongodb/MetricDataCollector.php" />
+      </port>
+   </service>
+</definitions>

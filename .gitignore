@@ -1,0 +1,15 @@
+#Ignore the following files and folders
+.DS_Store
+.buildpath
+.ftpquota
+*.log
+log*.txt
+nbproject/
+.idea
+.vagrant
+html/.ftpquota
+html/*.log
+html/*.txt
+html/ws/json_frr/
+html/ws/json_comm/
+INIT

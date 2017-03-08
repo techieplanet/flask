@@ -1,0 +1,20 @@
+<?php
+
+$fullname = $this->title . ' '. $this->first_name . ' ' . $this->last_name;
+
+echo 
+'<p>Dear '. trim($fullname)  .',</p>
+<p>Your request to register as a user for the Family Planning Dashboard has been received and is currently in 
+process. You will receive further notification by email when processing is completed. </p>
+
+<p>For further assistance with the Family Planning Dashboard <a href="'. Settings::$COUNTRY_BASE_URL .'">FP DashBoard</a>, 
+please contact: support@fpdashboard.ng.</p>
+
+<p>
+Sincerely,<br> 
+Director of Family Health Division, FMOH
+</p>
+';
+
+
+?>

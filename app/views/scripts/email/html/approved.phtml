@@ -1,0 +1,92 @@
+<?php
+
+$fullname = $this->first_name . ' ' . $this->last_name;
+$fullname = trim($fullname);
+
+$role = $this->designation;
+$level = '';
+switch ($role){
+    case 2: 
+        $level = 'FMOH';
+        break;
+    case 3:
+        $level = "Partner";
+        break;
+    case 4:
+        $level = "State";
+        break;
+    case 5:
+        $level = "LGA";
+        break;
+    default:
+        $level = "Administrator";
+}
+echo
+'<p>Dear '. $fullname .',</p>
+<p>Your request to register as a user for the Family Planning Dashboard has been processed and accepted. </p>
+';
+
+if($this->designation == "2" || $this->designation == 2){
+echo 
+'
+You have been granted federal-level user access. With this you can: <br>
+<ul>
+<li>Access Dashboard charts for all geographies</li>
+<li>Receive the national-level PDF Reports by email each month and access all archived PDF reports</li>
+<li>Query and download commodity and health worker information for all geographies</li>
+<li>View training, commodity and health worker information for all geographies</li>
+<li>Upload or add new training or health worker information for all geographies</li>
+</ul>
+<br>';}
+else if($this->designation == "4" || $this->designation == 4){
+echo
+'
+You have been granted state-level user access for '. $this->state .'. With this you can: <br>
+<ul>
+<li>Access Dashboard charts for all geographies </li>
+<li>Receive your state\'s PDF Reports by email each month and access all archived PDF reports</li>
+<li>Query and download commodity data for all geographies; query and download health worker information for your state</li>
+<li>View training and commodity information for all geographies; view health worker information for your state </li>
+<li>Upload or add new training or health worker information for your state </li>
+</ul>
+';}
+else if($this->designation == "5" || $this->designation == 5){
+echo
+'
+You have been granted LGA-level user access for '. $this->lga . ' in ' . $this->state .'. With this you can: <br>
+<ul>
+<li>Access Dashboard charts for all geographies</li>
+<li>Receive your LGA\'s PDF Reports by email each month and access all archived PDF reports</li>
+<li>Query and download commodity data for all geographies; query and download health worker information for your LGA</li>
+<li>View training and commodity information for all geographies; view health worker information for your LGA</li>
+</ul>';}
+else if($this->designation == "3" || $this->designation == 3){
+echo
+'
+You have been granted partner-level user access for '. $this->partnerGeo .'. With this you can: <br>
+<ul>
+<li>Access Dashboard charts for all geographies</li>
+<li>Receive PDF Reports for each of your geographies by email each month and access all archived PDF reports</li>
+<li>Query and download commodity data for all geographies; query and download health worker information for your geographies</li>
+<li>View training and commodity information for all geographies; view health worker information for your geographies </li>
+<li>Upload or add new training or health worker information for your geographies</li>
+</ul>
+</p>';}
+
+echo
+'
+<br><br><b>User name</b>: ' . $this->username . 
+'<br><b>Password</b>: ' . $this->password . 
+'<br><br>If you forget your password at any time, you can retrieve it by navigating to the <a href="'.Settings::$COUNTRY_BASE_URL.'/user/login">log-in page</a> of the Dashboard, clicking the <a href="'.Settings::$COUNTRY_BASE_URL.'/user/forgortPassword">Forgot Password?</a> Link; and follow the instructions. For further assistance with the FP Dashboard, please contact: <a href"support@fpdashboard.ng">support@fpdashboard.ng</a>.
+
+<p>
+Sincerely, <br>
+Director of Family Health Division, FMOH
+</p>
+
+
+
+
+<p>
+';
+?>

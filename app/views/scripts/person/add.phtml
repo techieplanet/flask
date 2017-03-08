@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title><?php echo $this->translation['Application Name'];?> | <?php tp('Add Person');?></title>
+<?php
+require_once('views/helpers/Location.php');
+require_once('views/helpers/ScriptContainer.php');
+print ScriptContainer::$instance->renderCSSHead();
+print ScriptContainer::$instance->renderJSHead();
+?>
+  
+  <script type="text/javascript" src="../js/tp/functions.js"></script>
+  
+  <script>
+      
+      $(document).ready(function(){
+            //alert('docready');
+            $('#person_facility_region_c_id').on("click", function(){
+                var selectedValue = $(this).val();
+                
+                
+                if(selectedValue != "")
+                    genericAjax('../facility/getFacilityByLocationId', {value:selectedValue}, processFacilities);
+            });
+      });
+      
+      function processFacilities(facs){
+          //alert(facs); 
+          console.log(facs);
+          facsObject = JSON.parse(facs);
+          console.log(facsObject);
+          
+            $('#facilityInput').empty();     
+            var option = new Option("--Choose--", "");
+            document.getElementById('facilityInput').appendChild(option);
+            
+            $.each(facsObject, function(key, item){
+                var option = new Option(item, key);
+                document.getElementById('facilityInput').appendChild(option);
+            });
+
+      }
+  </script>
+</head>
+<body  class="yui-skin-sam">
+<?php require_once('edit-body.phtml'); ?>
+</body>
+</html>
