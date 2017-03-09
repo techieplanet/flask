@@ -216,11 +216,13 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                     worker that reported in the most recent month and consumed at least one FP/LARC 
                                                                                     commodity in the most recent month. <br/><br/>
                                                                                     
-                                                                                    The blue bars show the  percentage of facilities with a trained health 
-                                                                                    worker that reported in the most recent month and are stocked out of any FP commodity or implants. 
+                                                                                    The yellow bars show the  percentage of facilities with a trained health 
+                                                                                    worker that reported in the most recent month and are stocked out of any FP commodity or implants. <br/><br/>
+                                                                                    
                                                                                     FP training includes Contraceptive Technology Update, FP Technology, Injectable Contraceptives for CHEWs, 
-                                                                                    LARC, and Post Partum IUCD in-service trainings. LARC training includes LARC and Post Partum IUCD in-service 
-                                                                                    trainings. 
+                                                                                    LARC, and Post Partum IUCD in-service trainings. <br/><br/>
+                                                                                    
+                                                                                    LARC training includes LARC and Post Partum IUCD in-service trainings. 
                                                                                     <br/><br/>
                                                                                     
                                                                                     Together, these charts can provide a snapshot of barriers to service delivery 
@@ -366,6 +368,11 @@ print ScriptContainer::$instance->renderJSHead();
                 title: {
                     text: ''
                 },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.x + '</b>:' + thousandSeparator(this.y);
+                    }
+                },
                 legend: {
                     enabled: false
                 },
@@ -481,15 +488,15 @@ print ScriptContainer::$instance->renderJSHead();
         //var categories = "'FP', 'LARC'";
         var dataArray = [ 
                             {
-                                name: 'Facilities with FP or LARC-trained HW',
+                                //name: 'Facilities with FP-trained HW',
                                 data: [<?php echo $cs_fp_trained_facility_count . "," . $cs_larc_trained_facility_count; ?>]
                             },
                             {
-                                name: 'FP or LARC-trained facilities providing FP or LARC',
+                                //name: 'FP-trained facilities providing FP',
                                 data: [<?php echo $cs_fp_consumption_facility_count . "," . $cs_larc_consumption_facility_count; ?>]
                             },
                             {
-                                name: 'FP or LARC-trained facilities stocked out of FP or implants',
+                                //name: 'FP-trained facilities stocked out of FP or implants',
                                 data: [<?php echo $cs_fp_stock_out_facility_count . "," . $cs_larc_stock_out_facility_count; ?>]
                             }                                                       
                         ];
@@ -526,8 +533,20 @@ print ScriptContainer::$instance->renderJSHead();
             },
             tooltip: {
                 formatter: function () {
+                    var seriesName='';
+                    if(this.x == 'FP'){
+                        if(this.series.index == 0) seriesName = 'Facilities with FP-trained HW';
+                        if(this.series.index == 1) seriesName = 'FP-trained facilities providing FP';
+                        if(this.series.index == 2) seriesName = 'FP-trained facilities stocked out of FP or implants';
+                    } else if(this.x == 'LARC'){
+                        if(this.series.index == 0) seriesName = 'Facilities with LARC-trained HW';
+                        if(this.series.index == 1) seriesName = 'LARC-trained facilities providing LARC';
+                        if(this.series.index == 2) seriesName = 'LARC-trained facilities stocked out of LARC or implants';
+                    }
+                    
                     return '<b>' + this.x + '</b><br/>' +
-                        this.series.name + ': ' + thousandSeparator(this.y) + '<br/>';
+                                seriesName + ': ' + thousandSeparator(this.y) + '<br/>';
+                        //this.series.name + ': ' + thousandSeparator(this.y) + '<br/>';
                 }
             },
             plotOptions: {

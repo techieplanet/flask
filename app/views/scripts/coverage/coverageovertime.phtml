@@ -274,7 +274,9 @@ print ScriptContainer::$instance->renderJSHead();
         ?>                                        
 
       <?php 
-            $title = ($this->freshvisit) ? "FP HR coverage, " : "FP HR coverage in selected geographies, ";
+            $title = ($this->freshvisit) 
+                        ? "Percent of facilities with a trained HW providing FP, " 
+                        : "Percent of facilities with a trained HW providing FP in selected geographies, ";
             $title .= "$this->start_date to $this->end_date";    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
       ?>;
           
@@ -374,7 +376,9 @@ print ScriptContainer::$instance->renderJSHead();
         ?>                                        
       
       <?php 
-            $title = ($this->freshvisit) ? "LARC HR coverage, " : "LARC HR coverage for selected geographies, ";
+            $title = ($this->freshvisit) 
+                        ? "Percent of facilities with a trained HW providing LARC, " 
+                        : "Percent of facilities with a trained HW providing LARC in selected geographies, ";
             $title .= "$this->start_date to $this->end_date";    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
       ?>;
           
