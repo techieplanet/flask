@@ -1550,8 +1550,12 @@ echo $sql . "<br>";
 			
 			
 
-			if (!empty($criteria ['showLocation'])) {
-				$sql .= ', pt.training_location_name ';
+//			
+			if (!empty($criteria ['showDistrict'])) {
+				$sql .= ',district_name ';
+			}
+			if (!empty($criteria ['showProvince'])) {
+				$sql .= ', province_name ';
 			}
 
 			if (!empty($criteria ['showOrganizer'])) {
@@ -1660,20 +1664,21 @@ echo $sql . "<br>";
                        if(isset($geoLocationWhere) && $geoLocationWhere!=""){
                             $sql .=", pt.location_id";
                         }
-
+                        
+                        
 			// prepare the location sub query
 			$num_locs = $this->setting('num_location_tiers');
 			list($field_name,$location_sub_query) = Location::subquery($num_locs, $location_tier, $location_id, true);
 
 			//if we're doing a participant count, then LEFT JOIN with the participants
 			//otherwise just select the core training info
-
+                           // SELECT * FROM training_location LEFT JOIN  (SELECT location.id,location.location_name as dstrict_name,loc.location_name as province_name FROM `location` LEFT JOIN location as loc on location.parent_id = loc.id WHERE location.tier =2 or location.tier= 1) as location ON training_location.location_id = location.id
 			if (!empty($criteria ['doCount'] )|| !empty($criteria ['doName']) ) {
-				$sql .= ' FROM (SELECT training.*, pers.person_id as "person_id", tto.training_title_phrase AS training_title, training_location.training_location_name,training_location.location_id, primary_qualification_option_id, pers.location_phrase as location_phrase'.
+				$sql .= ' FROM (SELECT training.*, pers.person_id as "person_id",location_temp.*, tto.training_title_phrase AS training_title, training_location.training_location_name,training_location.location_id, primary_qualification_option_id, pers.location_phrase as location_phrase'.
 				'         FROM training ' .
 				'         LEFT JOIN training_title_option tto ON (`training`.training_title_option_id = tto.id)' .
 				'         LEFT JOIN training_location ON training.training_location_id = training_location.location_id ' .
-				
+				'         LEFT JOIN  (SELECT location.id as geog_location_id,location.location_name as district_name,loc.location_name as province_name FROM `location` LEFT JOIN location as loc on location.parent_id = loc.id WHERE location.tier =2 or location.tier= 1) location_temp ON training_location.location_id = location_temp.geog_location_id ' .
 				'         LEFT JOIN (SELECT person_id,training_id, person_to_training_viewing_loc_option.location_phrase,primary_qualification_option_id,
 											person.custom_3 as person_custom_3, person.custom_4 as person_custom_4, person.custom_5 as person_custom_5
 										FROM person
@@ -1681,11 +1686,11 @@ echo $sql . "<br>";
 										LEFT JOIN person_to_training_viewing_loc_option ON person_to_training.viewing_location_option_id = person_to_training_viewing_loc_option.id
 									) as pers ON training.id = pers.training_id WHERE training.is_deleted=0) as pt ';
 			} else {
-				$sql .= ' FROM (SELECT training.*, tto.training_title_phrase AS training_title,training_location.training_location_name,training_location.location_id'.
+				$sql .= ' FROM (SELECT training.*,location_temp.*, tto.training_title_phrase AS training_title,training_location.training_location_name,training_location.location_id'.
 				'       FROM training  ' .
 				'         LEFT JOIN training_title_option tto ON (`training`.training_title_option_id = tto.id) ' .
 				'         LEFT JOIN training_location ON training.training_location_id = training_location.id ' .
-				
+				'         LEFT JOIN  (SELECT location.id as geog_location_id,location.location_name as district_name,loc.location_name as province_name FROM `location` LEFT JOIN location as loc on location.parent_id = loc.id WHERE location.tier =2 or location.tier= 1) location_temp ON training_location.location_id = location_temp.geog_location_id ' .
 				'  WHERE training.is_deleted=0) as pt ';
 				$sql .= " LEFT JOIN (SELECT COUNT(id) as `pcnt`,training_id FROM person_to_training GROUP BY training_id) as ptc ON ptc.training_id = pt.id ";
 			}
@@ -1849,18 +1854,18 @@ echo $sql . "<br>";
 				$where [] = ' pt.training_secondary_language_option_id = \'' . $criteria ['training_secondary_language_option_id'] . '\'';
 			}
 
-			/*if ($criteria ['province_id'] && ! empty ( $criteria ['province_id'] )) {
-				$where [] = ' pt.province_id IN (' . implode ( ',', $criteria ['province_id'] ) . ')';
-			}
-
-			if ($criteria ['district_id'] && ! empty ( $criteria ['district_id'] )) {
-				$where [] = ' pt.district_id IN (' . implode ( ',', $criteria ['district_id'] ) . ')';
-			}
-
-			if ($criteria ['region_c_id'] && ! empty ( $criteria ['region_c_id'] )) {
-				$where [] = ' pt.region_c_id IN (' . implode ( ',', $criteria ['region_c_id'] ) . ')';
-			}
-
+//			if ($criteria ['province_id'] && ! empty ( $criteria ['province_id'] )) {
+//				$where [] = ' pt.province_id IN (' . implode ( ',', $criteria ['province_id'] ) . ')';
+//			}
+//
+//			if ($criteria ['district_id'] && ! empty ( $criteria ['district_id'] )) {
+//				$where [] = ' pt.district_id IN (' . implode ( ',', $criteria ['district_id'] ) . ')';
+//			}
+//
+//			if ($criteria ['region_c_id'] && ! empty ( $criteria ['region_c_id'] )) {
+//				$where [] = ' pt.region_c_id IN (' . implode ( ',', $criteria ['region_c_id'] ) . ')';
+//			}
+                              /*
 			if ($criteria ['region_d_id'] && ! empty ( $criteria ['region_d_id'] )) {
 				$where [] = ' pt.region_d_id IN (' . implode ( ',', $criteria ['region_d_id'] ) . ')';
 			}
@@ -2029,10 +2034,11 @@ echo $sql . "<br>";
 			if ($this->view->mode == 'search') {
 				$sql .= ' ORDER BY training_start_date DESC';
 			}
-                     
-                       // print_r($sql);exit;                                        
+                                                                
+                       // print_r($sql);exit; 
+                        Helper2::jLog($sql);
 			$rowArray = $db->fetchAll ( $sql );
-
+                        Helper2::jLog(print_r($rowArray,true));
 			if ($criteria ['doCount']) {
 				$count = 0;
 				foreach ( $rowArray as $row ) {
