@@ -1013,7 +1013,11 @@ echo "<br clear='top'/><br clear='left'/><br clear='top'/>";
 
   <?php }?>
 
-  <div class="fieldLabel" id="training_level_option_id_lbl"><span class="required">*</span><?php echo t('Training').' '.t('Level');?></div>
+  
+  
+  <!-- TA:17: 09/03/2014 -->
+  <?php if($this->setting['display_training_level']){?>
+  <div class="fieldLabel" id="training_level_option_id_lbl"><span class="required">*</span><?php echo $this->translation['Training Level']; ?></div>
   <div class="fieldInput"><select name="training_level_option_id" id="training_level_option_id"  <?php echo $this->viewonly; ?>>
           <option value="">--choose--</option>
     <?php
@@ -1029,27 +1033,16 @@ echo "<br clear='top'/><br clear='left'/><br clear='top'/>";
     ?>
       </select>
   </div><br/>
-
-
-  
-  <?php?>
-  
-  <?php ?>
-
-  
-  
-  <!-- TA:17: 09/03/2014 -->
-  <?php if($this->setting['display_training_level']){?>
-  <div class="fieldLabel" id="training_level_option_id_lbl"><?php echo $this->translation['Training Level']; ?></div>
+<!--  <div class="fieldLabel" id="training_level_option_id_lbl"><?php //echo $this->translation['Training Level']; ?></div>
   <div class="fieldInput">
-    <?php echo $this->dropDownLevel; ?>
+    <?php //echo $this->dropDownLevel; ?>
     <?php
 
       #if(!@$this->setting['desktop_disable_insert_level']) {    // desktop_disable_ prefix is only in tanzania databases, but anyone can add this option to their _system
-        echo hasACLEdit('acl_editor_training_level', 'admin/training-level', $this);
+        //echo hasACLEdit('acl_editor_training_level', 'admin/training-level', $this);
      # }
     ?>
-  </div><br/>
+  </div><br/>-->
   <?php }?>
 
     <?php if($this->mode == 'add' && $this->setting['module_unknown_participants_enabled']) :  ?>
