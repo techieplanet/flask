@@ -1635,8 +1635,8 @@ return $clear;
 		if (! $this->hasACL ( 'view_people' ) and ! $this->hasACL ( 'edit_people' )) {
 			$this->doNoAccessError ();
 		}
-$reports = new Report();
-$locationWhereQuery = "";
+                $reports = new Report();
+                $locationWhereQuery = "";
                 $user = new User();
                 $new_locations = array();
                 $newLocation = "";
@@ -1743,7 +1743,8 @@ $locationWhereQuery = "";
 ) as f on f.facility_id = p.facility_id   ';
                                         //echo $sql;
                                         
-				} else {
+				} 
+                                else {
 				$sql = '
 					SELECT DISTINCT p.id, p.last_name, p.middle_name, p.first_name, p.gender, q.qualification_phrase,p.primary_qualification_option_id,p.phone_mobile,p.email,f.facility_name, province_name,province_id,district_name,district_id,region_c_name,region_c_id,p.active
 
@@ -1785,7 +1786,7 @@ $locationWhereQuery = "";
 				//$sql .= ', person_to_training as ptt ';
 			}
 			if ($criteria ['person_type'] == 'is_trainer') {
-				$sql.="";
+				//$sql.="";
                                 
                         }
 
@@ -1847,8 +1848,9 @@ $locationWhereQuery = "";
 				$sql .= ', training as tr  ';
 				if ($criteria ['person_type'] == 'is_participant')
 					$where []= ' p.id = ptt.person_id AND ptt.training_id = tr.id AND tr.training_title_option_id = ' . ($criteria ['training_title_option_id']) . ' ';
-				if ($criteria ['person_type'] == 'is_trainer')
-					$where []= ' p.id = trn.person_id AND trn.person_id = ttt.trainer_id AND ttt.training_id = tr.id AND tr.training_title_option_id = ' . ($criteria ['training_title_option_id']) . ' ';
+//				if ($criteria ['person_type'] == 'is_trainer')
+//                                    $where []= ' p.id = ptt.person_id AND ptt.training_id = tr.id AND tr.training_title_option_id = ' . ($criteria ['training_title_option_id']) . ' ';
+//					//$where []= ' p.id = ptt.person_id AND trn.person_id = ttt.trainer_id AND ttt.training_id = tr.id AND tr.training_title_option_id = ' . ($criteria ['training_title_option_id']) . ' ';
 			}
 
 			
@@ -1871,7 +1873,7 @@ $locationWhereQuery = "";
                           //echo $sql;exit;
 			//print($sql);
                         
-                      Helper2::jLog("This is the new person query ".PHP_EOL.$sql.PHP_EOL);
+                       Helper2::jLog("This is the new person query ".PHP_EOL.$sql.PHP_EOL);
 			$rowArray = $db->fetchAll ( $sql );
                        
                         $resultData = array();

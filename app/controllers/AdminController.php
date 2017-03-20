@@ -1150,10 +1150,10 @@ class AdminController extends UserController
 	public function trainingLevelAction()
 	{
 		$editTable = new EditTableController($this);
-		$editTable->table   = 'training_level_option';
-		$editTable->fields  = array('training_level_phrase' => 'Training Level');
+		$editTable->table   = 'training_level';
+		$editTable->fields  = array('level_title' => 'Training Level');
 		$editTable->label   = 'Training Level';
-		$editTable->dependencies = array('training');
+//		$editTable->dependencies = array('training');
 		$editTable->allowDefault = true;
 		$editTable->execute();
 	}

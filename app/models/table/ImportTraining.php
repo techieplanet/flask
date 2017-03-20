@@ -109,6 +109,23 @@ class ImportTraining  {
 //                                return $values;
 //                                
 //    }
+    public function getFacilityID($rows,$i){
+        //if facility id not found then allow to add person with empty facility id
+	$facility_name = strtolower(trim($rows[$i][9]));
+	$lga_name = trim($rows[$i][8]);
+        $lga_name = str_replace("_"," ",$lga_name);
+        $lga_name = strtolower($lga_name);
+	$state_name = strtolower(trim($rows[$i][7])); 
+        $state_name = str_replace("_"," ",$state_name);
+            if($state_name=="fct"){
+            $state_name = strtolower("Federal Capital Territory");
+            }
+	$values_person['facility_id'] = '0';
+	        
+        //Get Facility_ID with lga, state_name, facility_name
+        $facilityId = $this->tryFindFaciityId($state_name,$lga_name,$facility_name);
+        return $facilityId;
+    }
     public function parsePersonDataToArray($values_person,$rows,$status,$i){
         
         $err2 = array();

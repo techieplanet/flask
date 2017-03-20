@@ -50,6 +50,7 @@ class EditTable extends ITechTable
     		$select->limit($limit,0);
     	
      	try {
+            Helper2::jLog($select->__toString());
         $rows = $topicTable->fetchAll($select);
       } catch(Zend_Exception $e) {        
         error_log($e);
