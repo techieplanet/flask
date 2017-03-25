@@ -128,9 +128,22 @@ class UserController extends ReportFilterHelpers {
                 $output['last_name'] = $user['last_name'];
                 $output['username'] = $user['username'];
                 $output['email'] = $user['email'];
+                //Helper2::jlog(print_r($user,true));
+                if($user['designation']=="partner_user" && !empty($user['multiple_locations_id'])){
+                    $multipleLocation = json_decode($user['multiple_locations_id'],true);
+                    $multipleLocation =  $report->formatSelection($multipleLocation);
+                    $zoneLocations = $report->explodeGeogArray($multipleLocation, "1");
+                    $stateLocations = $report->explodeGeogArray($multipleLocation, "2");
+                    $zoneLocationNames = $report->getMultipleLocationName($zoneLocations);
+                    $stateLocationNames = $report->getMultipleLocationName($stateLocations);
+                    $output['province_id'] = implode(",",$zoneLocationNames);
+                    $output['district_id'] = implode(",",$stateLocationNames);
+                    $output['region_c_id'] = "";
+                }else{
                 $output['province_id'] = $report->get_location_name($user['province_id']);
                 $output['district_id'] = $report->get_location_name($user['district_id']);
                 $output['region_c_id'] = $report->get_location_name($user['region_c_id']);
+                }
                 $output['status'] = $user['status'];
                 
                 $outputs[] = $output;
@@ -176,6 +189,7 @@ class UserController extends ReportFilterHelpers {
                 $report = new Report();
 		$request = $this->getRequest ();
 		$validateOnly = $request->isXmlHttpRequest ();
+                try {
 		if ($validateOnly)
 		$this->setNoRenderer ();
 
@@ -198,11 +212,11 @@ class UserController extends ReportFilterHelpers {
                     
                     $province_id = $this->getSanParam('province_id');
                     $province_id = $report->formatSelection($province_id);
-                    $zone = $report->explodeGeogArray($province_id,"1");
+                    $zone = $report->explodeGeogArray($province_id[0],"1");
                     
                     $district_id = $this->getSanParam('district_id');
                     $district_id = $report->formatSelection($district_id);
-                    $state = $report->explodeGeogArray($district_id, "2");
+                    $state = $report->explodeGeogArray($district_id[0], "2");
                     
 //                    echo "district: " . var_dump($district_id);
 //                    echo "<br><br>state: " . var_dump($state);
@@ -210,7 +224,7 @@ class UserController extends ReportFilterHelpers {
                     
                     $region_c_id = $this->getSanParam('region_c_id');
                     $region_c_id = $report->formatSelection($region_c_id);
-                    $localgovernment = $report->explodeGeogArray($region_c_id, "3");
+                    $localgovernment = $report->explodeGeogArray($region_c_id[0], "3");
                                    
                     $role = $this->getSanParam('role');
                     
@@ -426,7 +440,8 @@ class UserController extends ReportFilterHelpers {
                           
                         echo $jsonData;
                         
-		} else {
+		} 
+                else {
                     
                     if(!empty($this->getSanParam("req_id"))){
                          require_once("models/table/requestUser.php");
@@ -436,7 +451,11 @@ class UserController extends ReportFilterHelpers {
             $reqId = $this->getSanParam("req_id");
             $where = "req_id = $reqId";
             $usersRequestDetails = $reqUser->selectRequestUser("request_access",$where);
+            $multipleLocations =  $usersRequestDetails[0]['multiple_locations_id'];
+            $multipleLocation = json_decode($multipleLocations,true);
+            $this->viewAssignEscaped('multipleLocation',$multipleLocation);
             $this->viewAssignEscaped('userAccount',$usersRequestDetails[0]);
+            
             
                     }
 			$training_organizer_array = MultiOptionList::choicesList ( 'user_to_organizer_access', 'user_id', 0, 'training_organizer_option', 'training_organizer_phrase', false, false );
@@ -463,6 +482,22 @@ class UserController extends ReportFilterHelpers {
           		$this->view->assign('showprograms', false);
 			}
 		}
+          } 
+          catch(Exception $e){
+            if ($validateOnly) {
+			//$this->sendData ( $status );
+                        $data = array();
+			$data['status'] = $e->getMessage();
+                        $jsonData = json_encode($data);
+                          
+                        echo $jsonData;
+                        
+		} 
+                else {
+                    $status = $e->getMessage();
+                    $this->view->assign ( 'status', $status );
+                }
+        } 
         }
         
         public function getStateName($state)

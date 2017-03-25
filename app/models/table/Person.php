@@ -48,7 +48,7 @@ class Person extends ITechTable
 
 	public function getPersonName($person_id) {
 		$select = $this->select()
-		->from($this->_name, array('first_name', 'middle_name','last_name','facility_id','is_deleted','active','inactive_reason','inactive_description'))
+		->from($this->_name, array('first_name', 'middle_name','last_name','facility_id','is_deleted','active','inactive_reason','inactive_description','timestamp_created','timestamp_updated','created_by','modified_by'))
 		->where("id = $person_id");
 		return $this->fetchRow($select);
 	}

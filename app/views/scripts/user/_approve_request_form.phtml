@@ -1,6 +1,6 @@
 <script language="javascript">
 $( document ).ready(function() {
-       lgaAccessLevel();
+       //lgaAccessLevel();
        changeSelectionNameToMultiple();
        checkLevelPicked();
     });
@@ -352,32 +352,85 @@ YAHOO.util.Event.onDOMReady(setOrgAccessStatus);
         <div class="fieldLabel"  id="role_lbl"><span class="required">*</span>Role</div>
 	<div class="fieldInput"><select name="role" required  id="roleSelect" class="role" onchange="checkLevelPicked()">
                 <option value="">--choose--</option>
+                <option value="1">Administrator</option>
+                <?php 
+                 if(isset($this->userAccount['designation'])) { 
+                     
+                     ?>
+           
+            <option value="2" <?php echo $this->userAccount['designation'] == 'fed_user'?'selected':'' ;?>>FMOH</option>
+             <option value="3" <?php echo $this->userAccount['designation'] == 'partner_user'?'selected':'' ;?>>Partner</option>
+            <option value="4" <?php echo $this->userAccount['designation'] == 'state_user'?'selected':'' ;?>>State</option>
+            <option value="5" <?php echo $this->userAccount['designation'] == 'lga_user'?'selected':'' ;?>>LGA</option>
+           
+                 <?php 
+                 
+                 }else {
+                ?>
                  <option value="1">Administrator</option>
                 <option value="2">FMOH</option>
                  <option value="3">Partner</option>
                 <option value="4">State</option>
                 <option value="5">LGA</option>
-               
+               <?php 
+                 }
+                 ?>
                
             </select></div>
         
 <div class="fieldLabel" id="province_id_lbl">Zone</div><br/>
 							
-							<div class="fieldselect"><?php renderFilter($this->locations, 1, 'province_id', (isset($this->userAccount['province_id']))?$this->userAccount['province_id']:"", 'district_id', false,false); ?></div>
+<?php 
+
+                if($this->userAccount['designation']=="partner_user" && !empty($this->userAccount['multiple_locations_id'])){
+                   
+                    
+                   
+                    ?>
+
+                                                                        <script src="text/javascript">
+                                                                        partnerAccessLevel();
+                                                                        </script>
+                                                                        <div class="fieldselect"><?php renderFilter($this->locations, 1, 'province_id', (isset($this->multipleLocation))?$this->multipleLocation:"", 'district_id', true,false); ?></div>
+
+                                                                        <div class="clear pad20">&nbsp;</div>
+
+                                                                        <div class="fieldLabel" id="district_id_lbl">State</div><br/>
+
+                                                                        <div class="fieldselect"><?php renderFilter($this->locations, 2, 'district_id', (isset($this->multipleLocation))?$this->multipleLocation:"", 'region_c_id', true,false); ?></div>
+
+                                                                        <div class="clear pad20">&nbsp;</div>
+
+                                                                        <div class="fieldLabel" id="region_c_id_lbl">LGA </div><br/>
+
+                                                                        <div class="fieldselect"><?php renderFilter($this->locations, 3, 'region_c_id', (isset($this->multipleLocation))?$this->multipleLocation:"",'', true, false); ?></div>
+
+                                                                        <div class="clear pad20">&nbsp;</div>
+                                                                        <script src="text/javascript">
+                                                                        partnerAccessLevel();
+                                                                        </script>
+                <?php
+                }else{
+                 ?>
+                                                                    <div class="fieldselect"><?php renderFilter($this->locations, 1, 'province_id', (isset($this->userAccount['province_id']))?$this->userAccount['province_id']:"", 'district_id', false,false); ?></div>
+
+                                                                        <div class="clear pad20">&nbsp;</div>
+
+                                                                        <div class="fieldLabel" id="district_id_lbl">State</div><br/>
+
+                                                                        <div class="fieldselect"><?php renderFilter($this->locations, 2, 'district_id', (isset($this->userAccount['district_id']))?$this->userAccount['district_id']:"", 'region_c_id', false,false); ?></div>
+
+                                                                        <div class="clear pad20">&nbsp;</div>
+
+                                                                        <div class="fieldLabel" id="region_c_id_lbl">LGA </div><br/>
+
+                                                                        <div class="fieldselect"><?php renderFilter($this->locations, 3, 'region_c_id', (isset($this->userAccount['region_c_id']))?$this->userAccount['region_c_id']:"",'', false, false); ?></div>
+
+                                                                        <div class="clear pad20">&nbsp;</div>
+                <?php
+                }
+                ?>
 							
-							<div class="clear pad20">&nbsp;</div>
-	
-							<div class="fieldLabel" id="district_id_lbl">State</div><br/>
-							
-							<div class="fieldselect"><?php renderFilter($this->locations, 2, 'district_id', (isset($this->userAccount['district_id']))?$this->userAccount['district_id']:"", 'region_c_id', false,false); ?></div>
-							
-							<div class="clear pad20">&nbsp;</div>
-	
-							<div class="fieldLabel" id="region_c_id_lbl">LGA </div><br/>
-							
-							<div class="fieldselect"><?php renderFilter($this->locations, 3, 'region_c_id', (isset($this->userAccount['region_c_id']))?$this->userAccount['region_c_id']:"",'', false, false); ?></div>
-							
-							<div class="clear pad20">&nbsp;</div>
 
         <div class="clear"></div>
 

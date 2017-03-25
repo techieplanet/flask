@@ -148,6 +148,57 @@ class User extends ITechTable
             return $result;
             
         }
+        
+    
+        
+        
+        public function getUserRole(){
+            $auth = Zend_Auth::getInstance();
+              $return  = 0;
+                if ($auth->hasIdentity()) {
+                    // Identity exists; get it
+                    $identity = $auth->getIdentity();
+                  // $identify = $identity;
+
+                    foreach($identity as $identify){
+                       $details_user[] = $identify;
+                    }
+                    //print_r($identity); exit;
+                    $user = $details_user[0];
+                    //$province_id = $details_user[5];
+                    //$district_id = $details_user[6];
+                    //$region_c_id = $details_user[7];
+                    //$role = $details_user[4];
+                    $return = $this->get_user_role($user);
+                   
+                } 
+                return $return;
+        }
+        
+        public function getUserID(){
+            $auth = Zend_Auth::getInstance();
+              $return  = 0;
+                if ($auth->hasIdentity()) {
+                    // Identity exists; get it
+                    $identity = $auth->getIdentity();
+                  // $identify = $identity;
+
+                    foreach($identity as $identify){
+                       $details_user[] = $identify;
+                    }
+                    //print_r($identity); exit;
+                    $user = $details_user[0];
+                    //$province_id = $details_user[5];
+                    //$district_id = $details_user[6];
+                    //$region_c_id = $details_user[7];
+                    //$role = $details_user[4];
+                    $return = $user;
+                   
+                } 
+                return $return;
+        }
+        
+        //I would have deleted this method, I renamed the function. The naming convention used for it earlier is not good
         public function get_userid(){
               $auth = Zend_Auth::getInstance();
               $return  = 0;
@@ -190,7 +241,7 @@ class User extends ITechTable
                 return $role;
         }
         public function is_user_an_admin(){
-           $role = $this->get_userid();
+           $role = $this->getUserRole();
            //echo 'Role: ' . $role . ' admin ID: ' . user::ADMIN_USER;
            if($role==User::ADMIN_USER){
                //echo 'true side';
@@ -203,7 +254,7 @@ class User extends ITechTable
             
         }
           public function isUserAnFMOH(){
-           $role = $this->get_userid();
+           $role = $this->getUserRole();
            //echo user::ADMIN_USER;
            if($role==User::FMOH_USER){
                return true;
@@ -215,7 +266,7 @@ class User extends ITechTable
             
         }
         public function isUserAnLga(){
-           $role = $this->get_userid();
+           $role = $this->getUserRole();
            //echo user::ADMIN_USER;
            if($role==User::LGA_USER){
                return true;
@@ -227,7 +278,7 @@ class User extends ITechTable
               
         }
          public function isUserAState(){
-           $role = $this->get_userid();
+           $role = $this->getUserRole();
            //echo user::ADMIN_USER;
            if($role==User::STATE_USER){
                return true;
@@ -240,7 +291,7 @@ class User extends ITechTable
         }
         
          public function isUserAPartner(){
-           $role = $this->get_userid();
+           $role = $this->getUserRole();
            //echo user::ADMIN_USER;
            if($role==User::PARTNER_USER){
                return true;

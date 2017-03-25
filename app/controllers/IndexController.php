@@ -492,7 +492,7 @@ class IndexController extends ReportFilterHelpers  {
                     
                     //validate
                     $status->checkRequired ( $this, 'designation', 'Designation' );
-                    $status->checkRequired($this, 'title', 'Title');
+                    $status->checkRequired ($this, 'title', 'Title');
                     $status->checkRequired ( $this, 'first_name', 'First name' );
                     $status->checkRequired ( $this, 'last_name', 'Surname' );
                     $status->checkRequired ( $this, 'username', 'Login' );
@@ -556,20 +556,28 @@ class IndexController extends ReportFilterHelpers  {
 			if ($status->hasError ()) {
 				$status->setStatusMessage ( 'The user could not be saved.' );
 			} else {
+                            
+                            $designation = $this->getSanParam('designation');
                             $province_id = array();
-                            $province_id[] = $this->getSanParam('province_id');
+                            $province_id = $this->getSanParam('province_id');
                             $province_id = $report->formatSelection($province_id);
                             $zone = $report->explodeGeogArray($province_id,"1");
                             $geo_zone = $zone[0];
-
+                            
+                            
                             $district_id = array();
-                            $district_id[] = $this->getSanParam('district_id');
+                            $district_id = $this->getSanParam('district_id');
                             $district_id = $report->formatSelection($district_id);
                             $state = $report->explodeGeogArray($district_id, "2");
                             $geo_state = $state[0];
+                            $multipleLocation = "";
+                            if($designation=="partner_user"){
+                                $multipleLocation = json_encode($district_id);
+                            }
+                            
 
                             $region_c_id = array();
-                            $region_c_id[] = $this->getSanParam('region_c_id');
+                            $region_c_id = $this->getSanParam('region_c_id');
                             $region_c_id = $report->formatSelection($region_c_id);
                             $localgovernment = $report->explodeGeogArray($region_c_id, "3");
                             $geo_lga = $localgovernment[0];
@@ -586,7 +594,8 @@ class IndexController extends ReportFilterHelpers  {
                             $data['province_id'] = $geo_zone;
                             $data['district_id'] = $geo_state;
                             $data['region_c_id'] = $geo_lga;
-                            $data['designation'] = $this->getSanParam('designation');
+                            $data['multiple_locations_id'] = $multipleLocation;
+                            $data['designation'] = $designation;
                             $data['status'] = 0;
                             
                             if($this->getSanParam('designation') == "partner_user")

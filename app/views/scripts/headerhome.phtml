@@ -232,6 +232,9 @@ $navMain['reports']['archivedreports']				= t('Archived PDF Reports');
 		$navMain['user']['add'] = t('Add New User');
 		$navMain['user']['search'] = t('Edit User');
 	}
+        if($user->is_user_an_admin()){
+            $navMain['user']['requestaccess'] = t('View Request User Registration');
+          }
 
 	 $user = new User(); 
 	if ( ($this->hasACL('edit_country_options') || $this->hasACL('use_offline_app')) && $user->is_user_an_admin()){
