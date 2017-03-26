@@ -1567,7 +1567,7 @@ echo $sql . "<br>";
 			}
 
 			if (!empty($criteria ['showLevel'])) {
-				$sql .= ', tlev.training_level_phrase ';
+				$sql .= ', tlev.level_title as training_level_phrase ';
 			}
 
 			if (!empty($criteria ['showCategory'])) {
@@ -1711,7 +1711,7 @@ echo $sql . "<br>";
 			}
 
 			if (!empty($criteria ['showLevel'] ) || !empty($criteria ['training_level_id'])) {
-				$sql .= '	JOIN training_level_option as tlev ON tlev.id = pt.training_level_option_id ';
+				$sql .= '	JOIN training_level as tlev ON tlev.id = pt.training_level_option_id ';
 			}
 
 			if (!empty($criteria ['showMethod']) || !empty($criteria ['training_method_id'])) {
@@ -2095,8 +2095,9 @@ echo $sql . "<br>";
 		$topicsArray = OptionList::suggestionList ( 'training_topic_option', 'training_topic_phrase', false, 1000, false );
 		$this->viewAssignEscaped ( 'topics', $topicsArray );
 		//levels
-		$levelArray = OptionList::suggestionList ( 'training_level_option', 'training_level_phrase', false, 1000 );
+		$levelArray = OptionList::suggestionList ( 'training_level', 'level_title', false, 1000 );
 		$this->viewAssignEscaped ( 'levels', $levelArray );
+                
 		//pepfar
 		$organizersArray = OptionList::suggestionList ( 'training_pepfar_categories_option', 'pepfar_category_phrase', false, 1000, false );
 		$this->viewAssignEscaped ( 'pepfars', $organizersArray );
@@ -2343,7 +2344,7 @@ echo $sql . "<br>";
 			}
 
 			if (!empty($criteria ['showLevel'])) {
-				$sql .= ', tlev.training_level_phrase ';
+				$sql .= ', tlev.level_title as training_level_phrase ';
 			}
 
 			if (!empty($criteria ['showCategory'])) {

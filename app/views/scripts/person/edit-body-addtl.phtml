@@ -7,12 +7,50 @@
 
 <?php region_filters_dropdown ($this, $this->locations, $this->person, false, false, 'person_facility'); ?>
 
+<input type="hidden"  name="fac_id" value="<?php echo $this->person['facilityInput']; ?>" id="fac_id"/>
   <!-- filter the facility drop down by region -->
 <script type="text/javascript">
+    function processFacilitiesAddPerson(facs){
+          //alert(facs); 
+          console.log(facs);
+          facsObject = JSON.parse(facs);
+          console.log(facsObject);
+          var selectedFacility = $("#fac_id").val();
+            $('#facilityInput').empty();     
+            var option = new Option("--Choose--", "");
+            document.getElementById('facilityInput').appendChild(option);
+            
+            $.each(facsObject, function(key, item){
+                var option = new Option(item, key);
+                if(key==selectedFacility){
+                    option.selected = true;
+                }
+                document.getElementById('facilityInput').appendChild(option);
+            });
+
+      }
+      
 	$(document).ready(function () {
 		var sels = $('#facwrapper select').not('#facilityInput'); // all selects
 
+ <?php if(!empty($this->person['facility'])){
+        ?>
+                continueClick();
+                var selectedValue = $('#person_facility_region_c_id').val();
+                
+                
+                if(selectedValue != ""){
+                    genericAjax('../facility/getFacilityByLocationId', {value:selectedValue}, processFacilitiesAddPerson);
+                }
+            
+<?php }
+?>
+
+                
 <?php
+
+
+            
 if ( $this->setting['num_location_tiers'] > 2 ) {
     $selectFunction = 'filterByText';
 } else { 
@@ -365,6 +403,7 @@ if ($this->setting['display_mod_skillsmart']) {
 
     var traction = '<?php echo $this->base_url;?>/training/listByTrainer/id/<?php echo $this->person['id'];?>/outputType/json';
     makeJSONDataTable("trainerInfo", null, traction, trainerColumnDefs);
+  
   </script>
   <?php }?>
 

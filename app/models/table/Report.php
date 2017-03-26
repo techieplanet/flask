@@ -1270,6 +1270,17 @@ class Report {
         return isset($all_sql[0]['location_name'])?$all_sql[0]['location_name']:"";
 
     }
+    
+    public function getMultipleLocationName($locationData){
+        $locationNames = array();
+        foreach($locationData as $location_id){
+            if($location_id!=null && !empty($location_id)){
+            $locationNames[] = $this->get_location_name($location_id);
+            }
+        }
+        return array_unique($locationNames);
+        
+    }
 
     public function explodeGeogArray($geo,$tier){
         $locations = array();

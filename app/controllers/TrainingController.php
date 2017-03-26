@@ -4071,7 +4071,8 @@ $errs = array();
                                                                 
                                                                 //TP:check if persons already exists, by passing first_name,middle_name,surname to Person Model tryFind() method
 								//first, middle, last
-								$trainer_id = Person::tryFind(trim($rows[$i][1]), trim($rows[$i][2]), trim($rows[$i][3]));
+                                                                $facilityID = $importTrainingHelper->getFacilityID($rows,$i);
+								$trainer_id = Person::tryFind(trim($rows[$i][1]), trim($rows[$i][2]), trim($rows[$i][3]),$facilityID);
                                                                 
                                                                 //TP: created a Person object if we need to add a new Person to Person Table
                                                                 $p = new Person();

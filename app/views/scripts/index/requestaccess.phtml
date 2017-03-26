@@ -321,7 +321,11 @@ $('#Finished').click(function() {
         {
             
             $("#province_id, #district_id").removeProp("disabled");
-            $("#province_id, #district_id").prop("multiple","multiple");
+            $("#province_id, #district_id").prop("multiple",true);
+            
+            document.getElementById("province_id").name = "province_id[]";
+            document.getElementById("district_id").name = "district_id[]";
+            
             $("#region_c_id").prop("disabled",true);
         }
         else
@@ -365,7 +369,7 @@ $('#Finished').click(function() {
              uname += fname.charAt(0);
          }
          uname += lname;
-         
+         uname = uname.toLowerCase();
          $("#username").val(uname);
          console.log("Finished event processing");
      };

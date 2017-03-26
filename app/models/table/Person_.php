@@ -59,17 +59,18 @@ class Person extends ITechTable
         //TP:
         //improved this method such that the the name search is done on actual names using = operator
         //rather than the  like operator
-	public static function tryFind ($first, $middle, $last)
+	public static function tryFind ($first, $middle, $last,$facility_id="")
 	{
 		$first = trim($first);
 		$middle = trim($middle);
 		$last = trim ($last);
+                $facility_id = trim($facility_id);
 
 		if ($first == '' && $middle == '' && $last == '')
 			return null; 
 
 		$p = new Person();
-		$select = $p->select()->from($p->_name, array('id', 'first_name', 'middle_name','last_name','is_deleted'));
+		$select = $p->select()->from($p->_name, array('id', 'first_name', 'middle_name','last_name','is_deleted','facility_id'));
 
 //		$select->where("first_name like ?", $first);
 //		$select->where("middle_name like ?", $middle);
@@ -78,6 +79,9 @@ class Person extends ITechTable
                 $select->where("first_name = ?", $first);
 		$select->where("middle_name = ?", $middle);
 		$select->where("last_name = ?", $last);
+                if(!empty($facility_id)){
+                $select->where("facility_id = ?", $facility_id);
+                }
                 
                 
 

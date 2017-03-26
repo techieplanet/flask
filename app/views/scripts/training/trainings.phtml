@@ -146,8 +146,9 @@
 											}
 
 											//TA:17: 09/03/2014 
+                                                                                       
 											if($this->setting['display_training_level']){
-												echo DropDown::render_report_filter('training_level', 'showLevel', @$this->translation['Training Level'], $this->levels, 'training_level_phrase', @$this->criteria['training_level_id'], $this->criteria['showLevel']);
+												echo DropDown::render_report_filter('training_level', 'showLevel', @$this->translation['Training Level'], $this->levels, 'level_title', @$this->criteria['training_level_id'], $this->criteria['showLevel']);
 											}
 											//TA:17: 09/12/2014  
 											if($this->setting['display_training_pepfar']){

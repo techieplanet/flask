@@ -422,8 +422,10 @@ return $clear;
                 $facility = new Facility();
                 
                 if($person_id){ //edit mode
-                    $personDetails = $personObj->getPersonName($person_id);
+                    $this->view->assign ( 'mode', 'edit' );
+                  $personDetails = $personObj->getPersonName($person_id);
                   $personDetails =  $personDetails->toArray();
+                  
                   $personIsDeleted = $personDetails['is_deleted'];
                   if($personIsDeleted ==1 || $personIsDeleted=="1"){
                       $this->view->assign('is_deleted',true);
@@ -520,7 +522,8 @@ return $clear;
                     return;
                 }
                */
-                }else{
+                }
+                else{
                     $this->view->assign('userRange',true);
                 }
                 //echo 'hello user exiested bit';
@@ -775,6 +778,7 @@ return $clear;
                                         $personrow->timestamp_updated = $currDate;
                                         
                                         $personrow->timestamp_created = $currDate;
+                                        //$personrow->created_by = $user->get_userid();
                                         
 					$training_recieved_arr = array();
 					$training_recieved_data = '';
@@ -1377,6 +1381,24 @@ return $clear;
 
 
 			if ($status->hasError ()) {
+                            $pData = array();
+                            $pData = $this->_getAllParams();
+                            $pData['birthdate-day'] = $pData['birth-day'];
+                            $pData['birthdate-month'] = $pData['birth-month'];
+                            $pData['birthdate-year'] = $pData['birth-year'];
+                            $pData['province_id'] = (isset($pData['person_facility_province_id']))?$pData['person_facility_province_id']:"";
+                            $pData['district_id'] = (isset($pData['person_facility_district_id']))?$pData['person_facility_district_id']:"";
+                            $pData['region_c_id'] = (isset($pData['person_facility_region_c_id']))?$pData['person_facility_region_c_id']:"";
+                            $facility_id = $pData['facilityInput'];
+                            if(!empty($facility_id)){
+                            
+                            $pData['facility_id'] = $facility_id;
+                            $facilityObj = new Facility ( );
+		            $facilityrow = $facilityObj->findOrCreate (  $facility_id );
+		            $pData ['facility'] = $facilityrow->toArray ();
+                            }
+                            //Helper2::jLog(print_r($pData,true));
+                             $this->view->assign('person',$pData);
 				foreach ($status->messages as $k=>$v){
 					$errortext .= $v . "<br>";
 				}
@@ -1397,6 +1419,11 @@ return $clear;
                                 $personData['facility_id'] = $facility_id;
 				$personData['active'] = 'active';
                                 $personData['primary_qualification_option_id'] = $this->getSanParam ( 'primary_qualification_option_id' );
+                               
+                                $user = new User();
+                                $personData['created_by'] = $user->getUserID();
+                                $currDate = new Zend_Db_Expr('CURDATE()');
+                                $personData['timestamp_created'] = $currDate;
                         }
                 
                         $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
@@ -1635,8 +1662,8 @@ return $clear;
 		if (! $this->hasACL ( 'view_people' ) and ! $this->hasACL ( 'edit_people' )) {
 			$this->doNoAccessError ();
 		}
-$reports = new Report();
-$locationWhereQuery = "";
+                $reports = new Report();
+                $locationWhereQuery = "";
                 $user = new User();
                 $new_locations = array();
                 $newLocation = "";
@@ -1743,7 +1770,8 @@ $locationWhereQuery = "";
 ) as f on f.facility_id = p.facility_id   ';
                                         //echo $sql;
                                         
-				} else {
+				} 
+                                else {
 				$sql = '
 					SELECT DISTINCT p.id, p.last_name, p.middle_name, p.first_name, p.gender, q.qualification_phrase,p.primary_qualification_option_id,p.phone_mobile,p.email,f.facility_name, province_name,province_id,district_name,district_id,region_c_name,region_c_id,p.active
 
@@ -1785,7 +1813,7 @@ $locationWhereQuery = "";
 				//$sql .= ', person_to_training as ptt ';
 			}
 			if ($criteria ['person_type'] == 'is_trainer') {
-				$sql.="";
+				//$sql.="";
                                 
                         }
 
@@ -1847,8 +1875,9 @@ $locationWhereQuery = "";
 				$sql .= ', training as tr  ';
 				if ($criteria ['person_type'] == 'is_participant')
 					$where []= ' p.id = ptt.person_id AND ptt.training_id = tr.id AND tr.training_title_option_id = ' . ($criteria ['training_title_option_id']) . ' ';
-				if ($criteria ['person_type'] == 'is_trainer')
-					$where []= ' p.id = trn.person_id AND trn.person_id = ttt.trainer_id AND ttt.training_id = tr.id AND tr.training_title_option_id = ' . ($criteria ['training_title_option_id']) . ' ';
+//				if ($criteria ['person_type'] == 'is_trainer')
+//                                    $where []= ' p.id = ptt.person_id AND ptt.training_id = tr.id AND tr.training_title_option_id = ' . ($criteria ['training_title_option_id']) . ' ';
+//					//$where []= ' p.id = ptt.person_id AND trn.person_id = ttt.trainer_id AND ttt.training_id = tr.id AND tr.training_title_option_id = ' . ($criteria ['training_title_option_id']) . ' ';
 			}
 
 			
@@ -1871,7 +1900,7 @@ $locationWhereQuery = "";
                           //echo $sql;exit;
 			//print($sql);
                         
-                      Helper2::jLog("This is the new person query ".PHP_EOL.$sql.PHP_EOL);
+                       Helper2::jLog("This is the new person query ".PHP_EOL.$sql.PHP_EOL);
 			$rowArray = $db->fetchAll ( $sql );
                        
                         $resultData = array();
