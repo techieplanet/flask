@@ -25,8 +25,9 @@
                                         deferRender: true,
                                         "deferRender": true,
 					"sPaginationType": "full_numbers",
-                                        "order": [[ 0, "desc" ]],
-                                         "aaSorting": [[0, 'desc']]
+                                        
+                                        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0 ] }],
+                                         "aaSorting": []
 				});
 			} );
 		</script>

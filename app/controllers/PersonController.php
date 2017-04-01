@@ -425,7 +425,7 @@ return $clear;
                     $this->view->assign ( 'mode', 'edit' );
                   $personDetails = $personObj->getPersonName($person_id);
                   $personDetails =  $personDetails->toArray();
-                  
+                 // Helper2::jLog(print_r($personDetails,true));
                   $personIsDeleted = $personDetails['is_deleted'];
                   if($personIsDeleted ==1 || $personIsDeleted=="1"){
                       $this->view->assign('is_deleted',true);

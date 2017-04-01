@@ -12,6 +12,7 @@
  * @author John
  */
 require_once('Person.php');
+require_once ('User.php');
 //require_once ('controllers/ReportFilterHelpers.php');
 //require_once ('app/controllers/ITechController.php');
 class ImportTraining  {
@@ -136,6 +137,7 @@ class ImportTraining  {
         
         $status = ValidationContainer::instance();
         $p = new Person();
+        $user = new User();
         $errs = array();
         $currDate = new Zend_Db_Expr('CURDATE()');
         $to_fix = "";
@@ -193,8 +195,10 @@ class ImportTraining  {
         //Get Facility_ID with lga, state_name, facility_name
         $values_person['facility_id'] = $this->tryFindFaciityId($state_name,$lga_name,$facility_name);
         $facilityId = $values_person['facility_id'];
-        $values_person['timestamp_updated'] = $currDate;
+       // $values_person['timestamp_updated'] = $currDate;
         $values_person['timestamp_created'] = $currDate;
+        $values_person['created_by'] = $user->getUserID();
+        $values_person['modified_by'] = 0; //$user->getUserID();
 	//prinr_r($values_person);
         $mes_facility = '';
             if($facility_name) $mes_facility .=   $facility_name ;

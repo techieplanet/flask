@@ -33,9 +33,15 @@
 	$(document).ready(function () {
 		var sels = $('#facwrapper select').not('#facilityInput'); // all selects
 
- <?php if(!empty($this->person['facility'])){
+ <?php if(!empty($this->person)){
+     ?>
+              continueClick();
+             <?php
+ }
+ 
+ if(!empty($this->person['person_facility_region_c_id'])){
         ?>
-                continueClick();
+               
                 var selectedValue = $('#person_facility_region_c_id').val();
                 
                 

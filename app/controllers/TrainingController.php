@@ -3909,9 +3909,9 @@ $errs = array();
 			$personToTraining = new PersonToTraining();
                         $importTrainingHelper = new ImportTraining();
 			$db = Zend_Db_Table_Abstract::getDefaultAdapter ();
-			$rows = $this->_excel_parser($filename,"2");
+			$rows = $this->_excel_parser($filename,"1");
                         
-                        
+                        //Helper2::jLog(print_r($rows,true));
                         
 			$values = array();
 			$training_id = "";
@@ -3923,8 +3923,8 @@ $errs = array();
                         $excelValidator = new ExcelValidator($rows, $status, $values, $values_person);
                         list($status,$values,$values_person) = $excelValidator->validateTrainingDetails();
                         
-                        Helper2::jLog(print_r($values_person,true));
-                        Helper2::jLog(print_r($status,true));
+//                        Helper2::jLog(print_r($values_person,true));
+//                        Helper2::jLog(print_r($status,true));
                         
                         if($status->hasError() === 0){ //continue parse persons if required training info is validated
                             try{
@@ -3968,9 +3968,9 @@ $errs = array();
                                 
                                 $trainingLocationStateName = (trim($rows[12][2]));
                                 $trainingLocationStateName = str_replace("_"," ",$trainingLocationStateName);
-                                $trainingLocArr = explode(' ',$trainingLocationStateName);
-                                $trainingLocationStateName = $trainingLocArr[0];
-                                $LocationDefaultName = $trainingLocationStateName." default training location";
+//                                $trainingLocArr = explode(' ',$trainingLocationStateName);
+//                                $trainingLocationStateName = $trainingLocArr[0];
+//                                $LocationDefaultName = $trainingLocationStateName." default training location";
                                 $trainingLocationStateName = strtolower($trainingLocationStateName);
                                      if($trainingLocationStateName == 'akwa'){
                                          $trainingLocationStateName = 'akwa ibom';
@@ -4045,7 +4045,7 @@ $errs = array();
 					$personObj = new Person (); //in case if we will need to add new persons
 
                                         //TP: Person record is dealt with here
-					for($i=36; $i< sizeof($rows); $i++){
+					for($i=37; $i< sizeof($rows); $i++){
                                                $pErrs = array();
 //							if(!empty($rows[$i][1]) || !empty($rows[$i][2])  || !empty($rows[$i][3])  || 
 //									!empty($rows[$i][4]) || !empty($rows[$i][5]) || !empty($rows[$i][6]) || 
@@ -4128,7 +4128,7 @@ $errs = array();
                                                                         //print_r($errs);
 									//$personrow = $personObj->createRow();
 									//$personrow = ITechController::fillFromArray($personrow, $values_person);
-                                                                        
+                                                                        //$person = $db->insert('person',$values_person);
                                                                         
                                                                         
                                                                         if($mode == 'save')

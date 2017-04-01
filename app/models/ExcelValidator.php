@@ -72,7 +72,7 @@ class ExcelValidator {
         //Validate Training type
         $this->values['training_title_option_id'] = 0;
 
-        for($i=14; $i<30; $i++){
+        for($i=14; $i<31; $i++){
                 if(! empty($rows[$i][3])){
                         $this->values['training_title_option_id'] = $rows[$i][2];
                         break;
@@ -88,15 +88,15 @@ class ExcelValidator {
         //Validate training level
         $this->values['training_level_option_id'] = 0;
         
-        for($v=31; $v<34; $v++){
+        for($v=32; $v<35; $v++){
             
             if(!empty($rows[$v][3])){
                 
-                if($v==31){
+                if($v==32){
                     $id = '1';
-                }else if($v==32){
-                    $id ='2'; 
                 }else if($v==33){
+                    $id ='2'; 
+                }else if($v==34){
                     $id = '3';
                 }
 

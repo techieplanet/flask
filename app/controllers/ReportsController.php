@@ -12152,6 +12152,7 @@ if(!empty($locations)){
          if(!isset($locations) || empty($locations)){
          //$filter = "parent_id";
          $locations = $helper->getLocationTierIDs("1");
+         $location[] = 0;
          $filter = "geo_zone";
      }
      
