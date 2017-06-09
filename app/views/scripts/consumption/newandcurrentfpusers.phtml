@@ -60,6 +60,7 @@ print ScriptContainer::$instance->renderJSHead();
     
 </style>        
     
+    
 <!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/prettify-bundle.js"></script>-->
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
@@ -90,12 +91,13 @@ print ScriptContainer::$instance->renderJSHead();
 
 <script>
   $(function() {
-    $( "#accordion" ).accordion({active: 1});    
+    $( "#accordion" ).accordion({active: 1});
+    //set high charts global color scheme for all high charts instances on this page
+    Highcharts.setOptions({
+            colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#AAAA11', '#B77322']
+        });
   });
   </script>
-
-    
-    
 </head>
 <body class="yui-skin-sam">
     
@@ -203,16 +205,8 @@ print ScriptContainer::$instance->renderJSHead();
 
 		<!-------   /////////////////////////// main gnr ////////////////////// -->
 
-                
-                
 
 <script type="text/javascript">
-    
-    $(function () {
-        Highcharts.setOptions({
-            colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#AAAA11', '#B77322']
-        });
-    });
     
   var newFPCurrentMonth = "This chart shows number of clients who accepted a modern family planning method for the first time in their lives in the most recent month for the selected geography.";
   var newFPOvertime = "This chart shows the number of clients who accepted a modern family planning method for the first time in their lives over a period of 12 months for the selected geography.";
@@ -332,12 +326,17 @@ print ScriptContainer::$instance->renderJSHead();
                         },
                     },
                     xAxis: {
+                         title: {
+                      text: 'Geography',
+                      style:{ "fontWeight": "bold" }
+                      },
                         categories: <?php echo json_encode($locationNames); ?>
                     },
                     yAxis: {
                         title: {
-                            text: null
-                        }
+                      text: '#Users',
+                      style:{ "fontWeight": "bold" }
+                      }
                     },
                     tooltip: {
                         formatter: function () {
@@ -436,12 +435,17 @@ function drawLocationBarChart() {
                         },
                     },
                     xAxis: {
+                        title: {
+                      text: 'Geography',
+                      style:{ "fontWeight": "bold" }
+                      },
                         categories: <?php echo json_encode($locationNames); ?>
                     },
                     yAxis: {
                         title: {
-                            text: null
-                        }
+                      text: '#Users',
+                      style:{ "fontWeight": "bold" }
+                      }
                     },
                     tooltip: {
                         formatter: function () {
@@ -544,12 +548,17 @@ function drawDefaultLineChart() {
                         //x: -20 //center
                     },
                     xAxis: {
+                         title: {
+                      text: 'Month',
+                      style:{ "fontWeight": "bold" }
+                      },
                         categories: <?php echo json_encode($monthNames); ?>
                     },
                     yAxis: {
                         title: {
-                            text: null
-                        },
+                      text: '#Users',
+                      style:{ "fontWeight": "bold" }
+                      },
                         plotLines: [{
                             value: 0,
                             width: 1,
@@ -651,12 +660,18 @@ function drawDefaultLineChart() {
                         //x: -20 //center
                     },
                     xAxis: {
+                        : {
+                         title: {
+                      text: 'Month',
+                      style:{ "fontWeight": "bold" }
+                      },
                         categories: <?php echo json_encode($monthNames); ?>
                     },
                     yAxis: {
-                        title: {
-                            text: null
-                        },
+                         title: {
+                      text: '#Users',
+                      style:{ "fontWeight": "bold" }
+                      },
                         plotLines: [{
                             value: 0,
                             width: 1,
@@ -783,12 +798,17 @@ function drawDefaultLineChart() {
                         //x: -20 //center
                     },
                     xAxis: {
+                        title: {
+                      text: 'Month',
+                      style:{ "fontWeight": "bold" }
+                      },
                         categories: <?php echo json_encode($monthNames); ?>
                     },
                     yAxis: {
                         title: {
-                            text: null
-                        },
+                      text: '#Users',
+                      style:{ "fontWeight": "bold" }
+                      },
                         plotLines: [{
                             value: 0,
                             width: 1,
@@ -825,8 +845,11 @@ function drawDefaultLineChart() {
     
 </script>
 
-    <script src="../js/highcharts/highcharts.js"></script>
-    <script src="../js/highcharts/modules/exporting.js"></script>   
+
+
+                
+      <script src="../js/highcharts/highcharts.js"></script>
+        <script src="../js/highcharts/modules/exporting.js"></script>   
 
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
 

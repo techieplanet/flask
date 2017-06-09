@@ -127,10 +127,18 @@ class StockoutHelper {
        }
        
        
-       public function getStockoutFacsWithTrainedHWOverTime($longWhereClause){
+       public function getStockoutFacsWithTrainedHWOverTime($longWhereClause,$lastPullDatemultiple=array()){
                 $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
                 $helper = new Helper2();
+                
+                if(empty($lastPullDatemultiple)){
+                    
                 $dateWhere = '(date <= (SELECT MAX(date) FROM facility_report_rate) AND date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
+                }else{
+                   
+                $dateWhere = 'date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+                }
+                //$dateWhere = '(date <= (SELECT MAX(date) FROM facility_report_rate) AND date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
                 
                 //the facility_location_view is used for overtime by location calls
 //                $select = $db->select()

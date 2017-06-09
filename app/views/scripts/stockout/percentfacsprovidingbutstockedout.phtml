@@ -284,11 +284,16 @@ print ScriptContainer::$instance->renderJSHead();
                     enabled: false
                 },
                 xAxis: {
+                    title:{
+                     text:'Geography',
+                     style:{ "fontWeight": "bold" }
+                   },
                     categories: [<?php echo $locationsString; ?>]
                 },
                 yAxis: {
-                    title: {
-                        text: null
+                   title: {
+                        text: '%Facilities',
+                        style:{ "fontWeight": "bold" }
                     },
                     labels: {
                         format: '{value}%'
@@ -367,11 +372,16 @@ print ScriptContainer::$instance->renderJSHead();
                     enabled: false
                 },
                 xAxis: {
+                    title:{
+                     text:'Geography',
+                     style:{ "fontWeight": "bold" }
+                   },
                     categories: [<?php echo $locationsString; ?>]
                 },
                 yAxis: {
                     title: {
-                        text: null
+                        text: '%Facilities',
+                        style:{ "fontWeight": "bold" }
                     },
                     labels: {
                         format: '{value}%'

@@ -73,7 +73,8 @@ $current_view = '/'.$path[1].'/'. $path[2];
                 $selected = '';
             }
         ?>
-        <label><?php echo isset($this->chart_module)?"User Type: ":"Commodity: "; ?></label>
+        <label><?php echo ($this->chart_module == 'newfpacceptors')?'User Type: ':'Commodity: '; ?></label>
+      
         <select id="comm_id" name="comm_id[]" multiple="multiple">
                 <!--<option value="0">--Choose--</option>-->
                 <!--<option value="0">ALL</option>-->
@@ -86,12 +87,18 @@ $current_view = '/'.$path[1].'/'. $path[2];
         <?php region_filters_dropdown_db($this, $this->locations, $this->criteria, true, true); ?>
         <p>
             <strong>Maximum of six (6) locations allowed per filter</strong><br/>
-            <strong>Only one commodity allowed when filtering location(s)</strong>
+            <?php 
+            if($this->chart_module == "newfpacceptors"){
+                echo '<strong>Only one user type allowed when filtering location(s)</strong';
+            }else{
+            echo '<strong>Only one commodity allowed when filtering location(s)</strong>';
+            }
+            ?>
         </p>
     </div>
     
     <br/>
-    <input type="submit" value="Preview" class="dbbutton dbbutton_leftmenu" onclick="return checkSelection();">
+    <input type="submit" value="Filter" class="dbbutton dbbutton_leftmenu" onclick="return checkSelection();">
     
 </p3>
 

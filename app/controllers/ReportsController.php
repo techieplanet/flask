@@ -9985,7 +9985,11 @@ $data['error'] = "Please select a facility";
 $csql = "SELECT * FROM commodity_name_option WHERE commodity_type='fp' OR commodity_type='larc' ORDER BY commodity_name ASC";
                 $commodity_name = $db->fetchAll($csql);
                // $this->viewAssignEscaped ( 'commodity_name_option', $commodity_name );
-               
+
+$clientSql = "SELECT * FROM commodity_name_option WHERE commodity_alias='new_acceptors' OR commodity_alias='current_users' ORDER BY commodity_name ASC";
+$clientsDataArray = $db->fetchAll($clientSql);
+//$clientsDataArray[] = array('id'=>36,'commodity_name'=>'New family planning acceptors');
+//$clientsDataArray[] = array('id'=>37,'commodity_name'=>'Current FP Users');
 
 
    // print_r($title_value); echo '<br/><br/>';
@@ -9993,6 +9997,7 @@ $csql = "SELECT * FROM commodity_name_option WHERE commodity_type='fp' OR commod
     
     $month = strtotime($lastpulled_date);
 $headers[] = "FP Commodity"; 
+$clientHeaders[] = "Clients";
 $output = array();
 $details_facility = $details;
 $heading = array("Health Worker Name","Type of Training","Training Organizer");
@@ -10050,10 +10055,46 @@ for ($i = 1; $i <= 12; $i++) {
 $heading_date = array_reverse($heading_date);
 foreach($heading_date as $head_date){
   $headers[] = $head_date;
+  $clientHeaders[] = $head_date;
     
 }
 
+//this is for the client
 
+$clientData = array();
+foreach($clientsDataArray as $client){
+    $outputs = array();
+    $sum_first = array();
+    
+    $outputs[] = $client['commodity_name'];
+    $id = $client['id'];
+    
+    $month = strtotime($lastpulled_date);
+ //$month = strtotime('last month', $month);
+$month = strtotime('next month', $month);
+for ($i = 1; $i <= 12; $i++) {
+   $month = strtotime('last month', $month);
+    $dates = date("Y-m",$month);
+    $start = $dates."-01";
+    $end = $dates."-31";
+   // $outputs[] = $start;
+  $sum = $this->get_commodity_consumptionSum($start,$end,$facility_id,$id);
+  
+     //$outputs[]  = $sum;
+     $sum_first[] = $sum;
+}
+$sum_first = array_reverse($sum_first);
+
+foreach($sum_first as $sum_first_date){
+    
+    $outputs[] = $sum_first_date;
+}
+array_push($clientData,$outputs);
+
+
+}
+
+//this is for the consumption
 foreach($commodity_name as $row){
     $outputs = array();
     $sum_first = array();
@@ -10081,6 +10122,7 @@ foreach($sum_first as $sum_first_date){
 }
 array_push($output,$outputs);
 }
+
 
 $outputs = array();
 //$name_ids_array = array("32","38","","31");
@@ -10143,6 +10185,8 @@ $criteria['details_facility'] = json_encode($details_facility);
  $data['criteria'] = json_encode($criteria);
  $data['outdetails'] = json_encode($outdetails);
  $data['heading'] = $heading;
+ $data['clientHeaders'] = $clientHeaders;
+ $data['clientData'] = json_encode($clientData);
  $data['summary'] = json_encode($title_array);
  $data['summary_details'] = json_encode($title_value);
  $data['error'] = $error;
@@ -10243,6 +10287,7 @@ if($this->getSanParam('go')){
                 $facility[] = $facility_location[3];
                 }
                 * */
+               
                 $facility = array();
                 $details = array();
                 $details_facility = array();
@@ -10263,6 +10308,8 @@ if($this->getSanParam('go')){
     $headers = array();
     $heading = array();
     $outdetails = array();
+    $clientData = array();
+    $clientHeaders = array();
     //$summary_details = array();
     $title_array = array();
 $title_value = array();
@@ -10277,11 +10324,16 @@ $error [] = "Please select a facility";
                 //$summary_details = array($larc_trained,$fp_trained);
 $csql = "SELECT * FROM commodity_name_option WHERE commodity_type='fp' OR commodity_type='larc' ORDER BY commodity_name ASC";
                 $commodity_name = $db->fetchAll($csql);
+
+                
+$clientSql = "SELECT * FROM commodity_name_option WHERE commodity_alias='new_acceptors' OR commodity_alias='current_users' ORDER BY commodity_name ASC";
+$clientsDataArray = $db->fetchAll($clientSql);
                // $this->viewAssignEscaped ( 'commodity_name_option', $commodity_name );
                
 
 $month = strtotime($lastpulled_date);
 $headers[] = "FP Commodity"; 
+$clientHeaders[] = "Clients";
 $output = array();
 $details_facility = $details;
 $heading = array("Health Worker Name","Type of Training","Training Organizer");
@@ -10333,10 +10385,45 @@ for ($i = 1; $i <= 12; $i++) {
 $heading_date = array_reverse($heading_date);
 foreach($heading_date as $head_date){
   $headers[] = $head_date;
+  $clientHeaders[] = $head_date;
     
 }
 
+//this is for the client
+$clientData = array();
+foreach($clientsDataArray as $client){
+    $outputs = array();
+    $sum_first = array();
+    
+    $outputs[] = $client['commodity_name'];
+    $id = $client['id'];
+    
+    $month = strtotime($lastpulled_date);
+ //$month = strtotime('last month', $month);
+$month = strtotime('next month', $month);
+for ($i = 1; $i <= 12; $i++) {
+   $month = strtotime('last month', $month);
+    $dates = date("Y-m",$month);
+    $start = $dates."-01";
+    $end = $dates."-31";
+   // $outputs[] = $start;
+  $sum = $this->get_commodity_consumptionSum($start,$end,$facility_id,$id);
+  
+     //$outputs[]  = $sum;
+     $sum_first[] = $sum;
+}
+$sum_first = array_reverse($sum_first);
 
+foreach($sum_first as $sum_first_date){
+    
+    $outputs[] = $sum_first_date;
+}
+array_push($clientData,$outputs);
+
+
+}
+
+//this is for the consumption
 foreach($commodity_name as $row){
     $outputs = array();
     $sum_first = array();
@@ -10430,6 +10517,8 @@ $criteria['details_facility'] = $details_facility;
  $this->viewAssignEscaped ('heading',$heading);
  $this->viewAssignEscaped ('summary',$title_array);
  $this->viewAssignEscaped ('summary_details',$title_value);
+ $this->viewAssignEscaped ('clientHeaders',$clientHeaders);
+ $this->viewAssignEscaped ('clientData',$clientData);
  $this->view->assign('base_url', $this->baseUrl);
 }
 public function facilitysummardemoyAction(){
@@ -10849,6 +10938,11 @@ public function allqueriesresultAction(){
         $stockOut = array();
         $stockOut = $this->getSanParam('stock_out');
         
+        $client = array();
+        $client = $this->getSanParam('client');
+       
+       
+        
         //time period display data catch
         $period = $this->getSanParam('period');
         
@@ -10881,7 +10975,18 @@ public function allqueriesresultAction(){
         $consumption = $reports->formatSelection($consumption);
         $providing = $reports->formatSelection($providing);
         $stockOut = $reports->formatSelection($stockOut);
-        
+        $client = $reports->formatSelection($client);
+        if(!empty($client) && !empty($consumption)){
+        $consumption = array_merge($consumption,$client);
+        }else if(empty($consumption) && !empty($client)){
+            $consumption = $client;
+        }
+       
+        //$consumption = $reports->formatSelection($consumption);
+        Helper2::jLog("This is the consumptin value");
+        Helper2::jLog(print_r($consumption,true));
+        Helper2::jLog("This is the client");
+        Helper2::jLog(print_r($client,true));
         
         
         if(!empty($startMonth)){
@@ -11336,6 +11441,7 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                 $criteria['region_c_id'] = "";
                 $criteria['facility_id'] = "";
                 $criteria['consumption'] = array();
+                $criteria['client'] = array();
                 $quickLocation = new Location();
                 $lastPullDate = $helper->getLatestPullDate();
                // echo $lastPullDate;exit;
@@ -11400,6 +11506,10 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                 $commodity_name = $db->fetchAll($csql);
                 $this->viewAssignEscaped ( 'commodity_name_option', $commodity_name );
                 
+                $clientSql = "SELECT * FROM commodity_name_option WHERE commodity_alias='new_acceptors' OR commodity_alias='current_users' ORDER BY commodity_name ASC";
+                $clientsDataArray = $db->fetchAll($clientSql);
+                $this->viewAssignEscaped('clientDataArray', $clientsDataArray);
+
                 $imploded = "31,32,38,39";
                 $commodityStockOut = $this->selectStockOutsCommodity($imploded);
                 $this->viewAssignEscaped('stock_out_commodity_name_option',$commodityStockOut);
@@ -11470,6 +11580,14 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
         $stockOut = array();
         $stockOut = $this->getSanParam('stock_out');
         
+        $client = array();
+        $client = $this->getSanParam('client');
+        
+        if(!empty($client)){
+        $criteria['client'] = $client;
+        }
+        
+        
         //time period display data catch
         $period = $this->getSanParam('period');
         
@@ -11501,8 +11619,13 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
         $consumption = $reports->formatSelection($consumption);
         $providing = $reports->formatSelection($providing);
         $stockOut = $reports->formatSelection($stockOut);
-        
-        
+        $client = $reports->formatSelection($client);
+       
+       if(!empty($client) && !empty($consumption)){
+        $consumption = array_merge($consumption,$client);
+        }else if(empty($consumption) && !empty($client)){
+            $consumption = $client;
+        }
         
         if(!empty($startMonth)){
         $startMonthName = $this->return_the_month_name($startMonth);

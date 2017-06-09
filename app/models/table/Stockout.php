@@ -18,14 +18,19 @@ require_once 'CacheManager.php';
 class Stockout {
     //put your code here
     
-    public function fetchPercentStockOutFacsWithTrainedHW($training_type, $geoList, $tierValue, $freshVisit, $updateMode = false){
+    public function fetchPercentStockOutFacsWithTrainedHW($training_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
 		$db = Zend_Db_Table_Abstract::getDefaultAdapter();
 		
                 $output = array(array('location'=>'National', 'percent'=>0)); 
                 $helper = new Helper2();
                 $cacheManager = new CacheManager();
             
+                if(empty($lastPullDate) || $lastPullDate==""){
                 $latestDate = $helper->getLatestPullDate();
+                }else{
+                $latestDate = $lastPullDate;
+                 }
+                 
                 if($training_type == 'fp')
                     $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_HW_STOCKED_OUT_FP, $latestDate);
                 else if($training_type == 'larc')
@@ -42,7 +47,11 @@ class Stockout {
                     //needed variables
                     $tierText = $helper->getLocationTierText($tierValue);
                     $tierFieldName = $helper->getTierFieldName($tierText);
-                    $latestDate = $helper->getLatestPullDate();
+                    if(empty($lastPullDate) || $lastPullDate==""){
+                $latestDate = $helper->getLatestPullDate();
+                }else{
+                $latestDate = $lastPullDate;
+                 }
 
                     //where clauses
                     if($training_type == 'fp'){
@@ -236,12 +245,16 @@ class Stockout {
     }
     
     
-    public function fetchPercentFacsProvidingButStockedOut($commodity_type, $geoList, $tierValue, $freshVisit, $sortResults){
+    public function fetchPercentFacsProvidingButStockedOut($commodity_type, $geoList, $tierValue, $freshVisit, $sortResults,$lastPullDate=""){
 		$db = Zend_Db_Table_Abstract::getDefaultAdapter();
 		
                 $output = array(array('location'=>'National', 'percent'=>0)); 
                 $helper = new Helper2();
+                 if(empty($lastPullDate) || $lastPullDate==""){
                 $latestDate = $helper->getLatestPullDate();
+                }else{
+                $latestDate = $lastPullDate;
+                 }
                 
                 $cacheManager = new CacheManager();
             

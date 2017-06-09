@@ -274,10 +274,15 @@ print ScriptContainer::$instance->renderJSHead();
         ?>                                        
 
       <?php 
+      if(empty($this->selectedDatemultiple)){
+           $titleText = $this->end_date." to ".$this->start_date;
+       }else{
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+       }
             $title = ($this->freshvisit) 
                         ? "Percent of facilities with a trained HW providing FP, " 
                         : "Percent of facilities with a trained HW providing FP in selected geographies, ";
-            $title .= "$this->start_date to $this->end_date";    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
+            $title .= $titleText;    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
       ?>;
           
           
@@ -303,11 +308,16 @@ print ScriptContainer::$instance->renderJSHead();
                     x: -20 //center
                 },
                 xAxis: {
+                     title:{
+                        text:'Month',
+                        style:{ "fontWeight": "bold" }
+                    },
                     categories: <?php echo json_encode($monthNames); ?>
                 },
                 yAxis: {
                     title: {
-                        text: null
+                        text: '%Facilities',
+                        style:{ "fontWeight": "bold" }
                     },
                     labels: {
                         format: '{value}%'
@@ -376,10 +386,15 @@ print ScriptContainer::$instance->renderJSHead();
         ?>                                        
       
       <?php 
+        if(empty($this->selectedDatemultiple)){
+           $titleText = $this->end_date." to ".$this->start_date;
+       }else{
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+       }
             $title = ($this->freshvisit) 
                         ? "Percent of facilities with a trained HW providing LARC, " 
                         : "Percent of facilities with a trained HW providing LARC in selected geographies, ";
-            $title .= "$this->start_date to $this->end_date";    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
+            $title .= $titleText;    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
       ?>;
           
           
@@ -405,11 +420,16 @@ print ScriptContainer::$instance->renderJSHead();
                     x: -20 //center
                 },
                 xAxis: {
+                     title:{
+                        text:'Month',
+                        style:{ "fontWeight": "bold" }
+                    },
                     categories: <?php echo json_encode($monthNames); ?>
                 },
                 yAxis: {
                     title: {
-                        text: null
+                       text: '%Facilities',
+                       style:{ "fontWeight": "bold" }
                     },
                     labels: {
                         format: '{value}%'

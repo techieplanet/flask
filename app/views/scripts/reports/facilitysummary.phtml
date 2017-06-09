@@ -10,7 +10,7 @@
                 $data[] = array("Local Government","".$this->criteria['details_facility']['lga']."");
                 $data[] = array("");
                 $data[]  = array("","HR Summary: Total number of health workers trained","");
-                $data[] = "";
+                $data[] = array("");
                   foreach ($this->heading as $key=>$value){
 			$_row[] = $value;
 		}
@@ -34,9 +34,9 @@
                                     //array_push($data,$hw_summary);
                                     }
                 
-                $data[] = "";
+                $data[] = array("");
                 $data[] = array("","Commodity Summary: Monthly consumption by method for last 12 months","");
-                $data[] = "";
+                $data[] = array("");
                 $_row = array();
               foreach ($this->headers as $key=>$value){
 			$_row[] = $value;
@@ -51,9 +51,27 @@
 			$data[] = $_row;
 		}
                 
-                $data[] = "";
+                $data[] = array("");
+                $data[] = array("","Clients","");
+                $data[] = array("");
+                $_row = array();
+              foreach ($this->clientHeaders as $key=>$value){
+			$_row[] = $value;
+		}
+		$data[] = $_row;
+		
+		foreach ($this->clientData as $row){
+			$_row = array();
+			foreach ($row as $key=>$value){
+				$_row[] = $value;
+			}
+			$data[] = $_row;
+		}
+                
+                
+                $data[] = array("");
                 $data[] = array("","Stock Out Summary: Stock outs over last 12 months","");
-                $data[] = "";
+                $data[] = array("");
                 $_row = array();
                 foreach ($this->headers as $key=>$value){
 			$_row[] = $value;
@@ -263,7 +281,7 @@ startLoading();
              //alert("successful");
              var responseData =   jQuery.parseJSON(data);
             
-            
+           //alert(responseData);
              var error = responseData.error;
             // alert(responseData.error);
              if(error!=""){
@@ -293,6 +311,9 @@ startLoading();
              var outputsdetailsArray = jQuery.parseJSON(responseData.outputs);
              // alert("Hello this is the work 8");
              var detailsFacilityArray = jQuery.parseJSON(responseData.details_facility);
+             
+             var clientHeaders = $.map(responseData.clientHeaders, function(el) { return el });
+             var clientData =  jQuery.parseJSON(responseData.clientData);
              // alert("Hello this is the work 9");
              heading = heading.toString();
              headers = headers.toString();
@@ -335,9 +356,11 @@ startLoading();
                                     <thead>\n<tr>\n';
 
     jQuery.each( headersArray, function( key, value ) {
+        if(key>0){
         var startString = value.substring(0,3);
           var endString = value.substring(3);
           value = startString+', '+endString;
+      }
        responseTable2 += '<th>'+value+'</th>';
 });
     responseTable2 += '\n</tr>\n</thead>\n<tbody>\n';
@@ -352,37 +375,69 @@ startLoading();
       responseTable2  += '</tr>';
 });
     responseTable2 += '</tbody>\n</table>\n';
-     
-     
-     //--------------------------------------------------------------thirdtable-------------------------------
-       var responseTable3  = '<br><h2><b>Stock Out Summary: Stock outs over last 12 months</b></h2>';
+    
+     //Sencond table-----------------------------------------------------------------------------------------
+                var responseTable3  = '<br><h2><b>Clients</b></h2>';
                  responseTable3 += '<table cellpadding="0" cellspacing="0" border="0" class="display tablegrid3" id="" style="width:100%">\n\n\
                                     <thead>\n<tr>\n';
 
-    jQuery.each( headersArray, function( key, value ) {
+    jQuery.each( clientHeaders, function( key, value ) {
+        if(key>0){
         var startString = value.substring(0,3);
           var endString = value.substring(3);
           value = startString+', '+endString;
+      }
        responseTable3 += '<th>'+value+'</th>';
 });
     responseTable3 += '\n</tr>\n</thead>\n<tbody>\n';
-     jQuery.each( outputsdetailsArray, function( key, value ) {
+     jQuery.each( clientData, function( key, value ) {
       
       var individualResponseTable3Data = value.toString();
       var individualResponseTable3DataArray = individualResponseTable3Data.split(",");
       responseTable3  += '<tr>\n';
       jQuery.each( individualResponseTable3DataArray, function( key, result ) {
-                 responseTable3  += '<td>'+result+'</td>\n';
+                   responseTable3  += '<td>'+result+'</td>\n';
       })
       responseTable3  += '</tr>';
 });
     responseTable3 += '</tbody>\n</table>\n';
+    
+    
+     
+     
+     //--------------------------------------------------------------thirdtable-------------------------------
+       var responseTable4  = '<br><h2><b>Stock Out Summary: Stock outs over last 12 months</b></h2>';
+                 responseTable4 += '<table cellpadding="0" cellspacing="0" border="0" class="display tablegrid4" id="" style="width:100%">\n\n\
+                                    <thead>\n<tr>\n';
+
+    jQuery.each( headersArray, function( key, value ) {
+         if(key>0){
+        var startString = value.substring(0,3);
+          var endString = value.substring(3);
+          value = startString+', '+endString;
+      }
+       responseTable4 += '<th>'+value+'</th>';
+});
+    responseTable4 += '\n</tr>\n</thead>\n<tbody>\n';
+     jQuery.each( outputsdetailsArray, function( key, value ) {
+      
+      var individualResponseTable4Data = value.toString();
+      var individualResponseTable4DataArray = individualResponseTable4Data.split(",");
+      responseTable4  += '<tr>\n';
+      jQuery.each( individualResponseTable4DataArray, function( key, result ) {
+                 responseTable4  += '<td>'+result+'</td>\n';
+      })
+      responseTable4  += '</tr>';
+});
+    responseTable4 += '</tbody>\n</table>\n';
          document.getElementById("resultTable1").innerHTML = "";
          document.getElementById("resultTable1").innerHTML =responseTable1;
          document.getElementById("resultTable2").innerHTML = "";
          document.getElementById("resultTable2").innerHTML =responseTable2;
          document.getElementById("resultTable3").innerHTML = "";
          document.getElementById("resultTable3").innerHTML =responseTable3;
+         document.getElementById("resultTable4").innerHTML = "";
+         document.getElementById("resultTable4").innerHTML =responseTable4;
          document.getElementById("downloadLink").innerHTML = '<input type="hidden" name="csv" value="1" /><span style="float:right !important;"><button type="submit" class="btn-link"  id="submitfinally" name="download" onClick="return submitForm();">Download</button></span><br/>';      
          document.getElementById("csvdownload").innerHTML = '<input type="hidden" name="csv" value="1" />'; 
          document.getElementById("facilityDetails").innerHTML = "Facility Summary of "+detailsFacilityArray['facility_name'];      
@@ -395,6 +450,11 @@ startLoading();
 					"sPaginationType": "full_numbers"
 				});
         oTable = $('.tablegrid3').dataTable({
+					"bJQueryUI": true,
+					"sPaginationType": "full_numbers"
+				});
+                                
+        oTable = $('.tablegrid4').dataTable({
 					"bJQueryUI": true,
 					"sPaginationType": "full_numbers"
 				});
@@ -668,8 +728,63 @@ if (isset($this->output)) {
                                     
                                     
                                     </div>
+    
+      <div class="col-md-11" id="resultTable3">                       
+<?php
+ //print_r($this->tocktack);
+
+if (isset($this->clientData)) {
+	if (count ($this->clientData) == 0){
+           echo '  <br/><h2><b>Clients</b></h2>';
+		echo "				<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"display tablegrid\" id=\"\" style=\"width:100%\">\n";
+		echo "					<thead>\n";
+		echo "						<tr>\n";
+		echo "							<th>".t('Output')."</th>\n";
+		echo "						</tr>\n";
+		echo "					</thead>\n";
+		echo "					<tbody>\n";
+		echo "						<tr>\n";
+		echo "							<td>".t("Your search criteria returned no results")."</td>\n";
+		echo "						</tr>\n";
+		echo "					</tbody>\n";
+		echo "				</table>\n";
+	} else {
+?>
+
+				<br>
+                                    <h2><b>Clients</b></h2>
+                                    <table cellpadding="0" cellspacing="0" border="0" class="display tablegrid" id="" style="width:100%">
+					<thead>
+						<tr>
+<?php
+		foreach ($this->clientHeaders as $key=>$value){
+			echo "							<th>" . $value . "</th>\n";
+		}
+?>
+						</tr>
+					</thead>
+					<tbody>
+<?php
+		foreach ($this->clientData as $row){
+			echo "						<tr style=\"cursor : pointer;\" class=\"GradeA\">\n";
+			foreach ($row as $key=>$value){
+				echo "				   			<td>" . $value . "</td>\n";
+			}
+			echo "						</tr>\n";
+		}
+?>
+					</tbody>
+				</table>
+				
+<?php
+	}
+}
+?>
+                                    
+                                    
+                                    </div>
                                    
-                                    <div class="col-md-11" id="resultTable3">
+                                    <div class="col-md-11" id="resultTable4">
                                         
                                         <?php
  //print_r($this->tocktack);

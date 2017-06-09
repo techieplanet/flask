@@ -377,11 +377,16 @@ print ScriptContainer::$instance->renderJSHead();
                     enabled: false
                 },
                 xAxis: {
+                    title: {
+                        text: 'FP Commodity',
+                        style:{ "fontWeight": "bold" }
+                    },
                     categories: [<?php echo $methodString; ?>]
                 },
                 yAxis: {
                     title: {
-                        text: null
+                        text: '#Commodities Consumed',
+                        style:{ "fontWeight": "bold" }
                     }
                 },
                 plotOptions: {
@@ -519,11 +524,16 @@ print ScriptContainer::$instance->renderJSHead();
             },
 
             xAxis: {
+                title: {
+                    text: 'Category of Training',
+                    style:{ "fontWeight": "bold" }
+                },
                 categories: ['FP','LARC']
             },
             yAxis: {
                 title: {
-                    text: ''
+                    text: '#Facilities',
+                    style:{ "fontWeight": "bold" }
                 },
                 labels: {
                     formatter: function () {
@@ -630,11 +640,16 @@ print ScriptContainer::$instance->renderJSHead();
                         //x: -20 //center
                     },
                     xAxis: {
+                        title: {
+                            text: 'Month',
+                            style:{ "fontWeight": "bold" }
+                        },
                         categories: [<?php echo $month; ?>]
                     },
                     yAxis: {
                         title: {
-                            text: null
+                            text: '%Facilities',
+                            style:{ "fontWeight": "bold" }
                         },
                         labels: {
                             format: '{value}%'
@@ -714,11 +729,16 @@ print ScriptContainer::$instance->renderJSHead();
                         //x: -20 //center
                     },
                     xAxis: {
+                        title: {
+                            text: 'Month',
+                            style:{ "fontWeight": "bold" }
+                        },
                         categories: [<?php echo $month; ?>]
                     },
                     yAxis: {
                         title: {
-                            text: null
+                            text: '%Facilities',
+                            style:{ "fontWeight": "bold" }
                         },
                         labels: {
                             format: '{value}%'

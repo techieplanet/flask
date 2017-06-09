@@ -236,7 +236,7 @@ class Dashboard {
         
         
         //this method replaces the above method
-        public function fetchFacsProvidingStockedoutOvertime($commodity_type, $geoList, $tierValue, $freshVisit) {
+        public function fetchFacsProvidingStockedoutOvertime($commodity_type, $geoList, $tierValue, $freshVisit,$lastPullDatemultiple=array()) {
             $db = Zend_Db_Table_Abstract::getDefaultAdapter();
 		
                 $output = array(); 
@@ -291,11 +291,11 @@ class Dashboard {
                                       $locationWhere;;
 
                     $dashboardHelper = new DashboardHelper();                
-                    $numerators = $dashboardHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause);
+                    $numerators = $dashboardHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause,$lastPullDatemultiple);
 
                     //change main where
                     $mainWhereClause = $reportingWhere . ' AND ' . $locationWhere;
-                    $denominators = $dashboardHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause);
+                    $denominators = $dashboardHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause,$lastPullDatemultiple);
 
                     foreach ($numerators as $date=>$numer){
                         $output[] = array(

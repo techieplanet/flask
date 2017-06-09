@@ -422,6 +422,10 @@ label {
      return true;
  }    
  
+ String.prototype.replaceAll = function(target, replacement) {
+  return this.split(target).join(replacement);
+};
+ 
    function errorAlert(error){
      document.getElementById("data").innerHTML = "<div id='statusBox' style='color:red;'><p align='center'>"+error+"</p></div>";
                   dialogCert = $( "#dialog-certification-message" ).dialog({
@@ -534,7 +538,7 @@ else{
       var individualResponseTableDataArray = individualResponseTableData.split(","); 
       responseTable  += '<tr>\n';
       jQuery.each( individualResponseTableDataArray, function( key, result ) {
-          result = result.replace("@", ",");
+          result = result.replaceAll("@", ",");
           responseTable  += '<td>'+result+'</td>\n';
       })
       responseTable  += '</tr>';

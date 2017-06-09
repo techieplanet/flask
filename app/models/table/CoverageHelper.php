@@ -138,19 +138,25 @@ class CoverageHelper {
         * This function gets the count of facilities with trained HW
         * in previous months running
         */
-        public function getCummulativeTrainedFacsMonthly($month_numbers, $systemTrainingTypeWhere, $geoList, $tierText, $tierFieldName ) {
+        public function getCummulativeTrainedFacsMonthly($month_numbers, $systemTrainingTypeWhere, $geoList, $tierText, $tierFieldName,$lastPullDatemultiple=array() ) {
                 $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
                 $output = array ();
                 $helper = new Helper2();
 
                 //get the last DHIS2 pull date from commodity table and use the year for year here
+                if(empty($lastPullDatemultiple)){
                 $pullDates = $helper->getPreviousMonthDates($month_numbers); 
                 $pullDates = array_reverse($pullDates); //put in ascending order
+                }else{
+                   $pullDates = array_reverse($lastPullDatemultiple);
+                }
                 
-                for($i = 0; $i<$month_numbers; $i++) {
+             //  print_r($pullDates);
+                for($i = 0; $i<sizeof($pullDates); $i++) {
                     $data = array ();
                     $loopDate = $pullDates[$i];
                     $highestDate = date('Y-m-t', strtotime($loopDate));
+                    //echo $highestDate;exit;
                     $endDateWhere = "t.training_end_date <= '" . $highestDate . "'";
                     $month_name = date('F',strtotime($loopDate)); 
                     //$endDateWhere = "t.training_end_date <= '" . $loopDate . "'";
@@ -360,7 +366,7 @@ class CoverageHelper {
       }
        
 
-      function getReportingFacsWithTrainedHWOvertime($longWhereClause){
+      function getReportingFacsWithTrainedHWOvertime($longWhereClause,$lastPullDatemultiple=array()){
           $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
           
 //          $select = $db->select()
@@ -371,7 +377,18 @@ class CoverageHelper {
 //                       ->where($longWhereClause)
 //                       ->group('date')
 //                       ->order(array('date'));
-            $dateWhere = '(date <= (SELECT MAX(date) FROM facility_report_rate) AND date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
+          
+          if(empty($lastPullDatemultiple)){
+                    
+                $dateWhere = '(date <= (SELECT MAX(date) FROM facility_report_rate) AND date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
+                }else{
+                   
+                $dateWhere = 'date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+                }
+            //$dateWhere = '(date <= (SELECT MAX(date) FROM facility_report_rate) AND date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
+            
+            
+            
             $sql = 'SELECT DISTINCT(date),MONTHNAME(date) as month_name, COALESCE(fid_count,0)  as fid_count, month_name_thw, year ' .
                    'FROM facility_report_rate frr ' .
                    'LEFT JOIN (' .
@@ -398,9 +415,17 @@ class CoverageHelper {
       }
       
       
-      public function getFacWithHWProvidingOverTime($longWhereClause){
-                $db = Zend_Db_Table_Abstract::getDefaultAdapter();               
+      public function getFacWithHWProvidingOverTime($longWhereClause,$lastPullDatemultiple=array()){
+                $db = Zend_Db_Table_Abstract::getDefaultAdapter();  
+                
+                if(empty($lastPullDatemultiple)){
+                    
                 $dateWhere = '(date <= (SELECT MAX(date) FROM facility_report_rate) AND date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
+                }else{
+                   
+                $dateWhere = 'date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+                }
+                //$dateWhere = '(date <= (SELECT MAX(date) FROM facility_report_rate) AND date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
                 
                 $sql = 'SELECT DISTINCT(date),MONTHNAME(date), COALESCE(fid_count,0) as fid_count, month_name, year, provdate ' .
                        'FROM facility_report_rate frr ' .
@@ -442,7 +467,7 @@ class CoverageHelper {
                             ->group(array($tierFieldName, 'date'))
                             ->order(array($tierText, 'date'));   
                 
-              //echo 'Providing: ' . $select->__toString() . '<br/>'; exit;
+             // echo 'Providing: ' . $select->__toString() . '<br/>'; 
                 
               $result = $db->fetchAll($select);
               

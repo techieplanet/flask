@@ -344,11 +344,16 @@ function drawChart11() {
                     enabled: false
                 },
                 xAxis: {
+                    title:{
+                        text:'FP Commodity',
+                        style:{ "fontWeight": "bold" }
+                    },
                     categories: [<?php echo $methodString; ?>]
                 },
                 yAxis: {
                     title: {
-                        text: null
+                        text: '#Commodities Consumed',
+                        style:{ "fontWeight": "bold" }
                     }
                 },
                 tooltip: {
@@ -478,11 +483,16 @@ function drawChart13() {
                                 borderWidth: 1
                             },
                             xAxis: {
+                                title:{
+                                    text:'Month',
+                                    style:{ "fontWeight": "bold" }
+                                },
                                 categories: <?php echo json_encode($monthNames); ?>
                             },
                             yAxis: {
                                 title: {
-                                    text: null
+                                     text: '#Commodities Consumed',
+                                     style:{ "fontWeight": "bold" }
                                 },
                                 plotLines: [{
                                     value: 0,
@@ -612,11 +622,16 @@ function drawChart13() {
                     borderWidth: 1
                 },
                 xAxis: {
+                    title:{
+                      text:'Month',
+                      style:{ "fontWeight": "bold" }
+                       },
                     categories: <?php echo json_encode($monthNames); ?>
                 },
                 yAxis: {
                     title: {
-                        text: null
+                       text: '#Commodities Consumed',
+                       style:{ "fontWeight": "bold" }
                     },
                     plotLines: [{
                         value: 0,
@@ -823,7 +838,7 @@ function drawChart13() {
                   }
                 },
                 title: { 
-                    text: 'Consumption by method <br/>for selected commodities and geographies, <?php echo isset($this->latestPullDate)?$this->latestPullDate:""; ?>' ,  
+                    text: 'Consumption by method <br/>for selected commodities and geographies' ,  
                     style: {
                         fontWeight: 'bold',
                         fontFamily: 'Arial',
@@ -843,14 +858,16 @@ function drawChart13() {
 //                    }
                 },
                 xAxis: { categories: selectedCommoditites,  //array of x-axis categories
-                    title: {
-                        text: null
-                    }
+                    title:{
+                        text:'FP Commodity',
+                        style:{ "fontWeight": "bold" }
+                    },
                 },
                 yAxis: {
                     min: 0,
                     title: {
-                        text: '',
+                        text: '#Commodities Consumed',
+                        style:{ "fontWeight": "bold" },
                         align: 'high'
                     },
                     labels: {
@@ -978,12 +995,17 @@ function drawChart13() {
                                     x: -20 //center
                                 },
                                 xAxis: {
+                                    title:{
+                                    text:'Month',
+                                    style:{ "fontWeight": "bold" }
+                                },
                                     categories: <?php echo json_encode($monthNames); ?>
                                 },
                                 yAxis: {
-                                    title: {
-                                        text: null
-                                    },
+                                     title: {
+                                     text: '#Commodities Consumed',
+                                     style:{ "fontWeight": "bold" }
+                                      },
 //                                    labels: {
 //                                        format: '{value}%'
 //                                    },
@@ -1120,12 +1142,17 @@ function drawChart13() {
                     borderWidth: 1
                 },
                 xAxis: {
+                    title:{
+                     text:'Month',
+                     style:{ "fontWeight": "bold" }
+                                },
                     categories: <?php echo json_encode($monthNames); ?>
                 },
                 yAxis: {
                     title: {
-                        text: null
-                    },
+                      text: '#Commodities Consumed',
+                      style:{ "fontWeight": "bold" }
+                                },
                     plotLines: [{
                         value: 0,
                         width: 1,

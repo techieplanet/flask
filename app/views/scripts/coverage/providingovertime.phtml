@@ -121,6 +121,7 @@ print ScriptContainer::$instance->renderJSHead();
                                     $fileInfo = pathinfo(__FILE__);
                                     $fileID = $fileInfo['filename'];
                                     require_once('views/scripts/dashboard/left_buttons.phtml');
+                                   
                                 ?>
 			</div>
 			
@@ -253,11 +254,20 @@ $(function() {
                         dataArray.push(obj);
                         
             <?php   }//end location ?>
-        
+         <?php
+       if(empty($this->selectedDatemultiple)){
+           $titleText = $this->end_date." to ".$this->start_date;
+       }else{
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+       }
+      
+       
+       
+       ?>
         
         //console.log(JSON.stringify(dataArray));
-        var titleText = '<?php echo  "Percent of facilities providing FP, $this->end_date to $this->start_date"; ?>';
-        var subtitleText = '(<?php echo  "($this->end_date to $this->start_date)"; ?>)';
+        var titleText = '<?php echo  "Percent of facilities providing FP, $titleText"; ?>';
+        var subtitleText = '(<?php echo  "($titleText)"; ?>)';
                 
         $('#chart11_div').highcharts({
             chart: {
@@ -281,11 +291,16 @@ $(function() {
                 x: -20 //center
             },
             xAxis: {
+                title:{
+                        text:'Month',
+                        style:{ "fontWeight": "bold" }
+                    },
                 categories: <?php echo json_encode($monthNames); ?>
             },
             yAxis: {
                 title: {
-                    text: null
+                    text: '%Facilities',
+                    style:{ "fontWeight": "bold" }
                 },
                 labels: {
                     format: '{value}%'
@@ -334,12 +349,15 @@ $(function() {
                 $firstElement = current($this->larc_overtime);
                 
                 if(!empty($firstElement)){
+                  
                     $monthNames = array_keys($this->fp_overtime);
+                   
                         foreach($firstElement as $location => $consumption){                    
                                 //$locationNames .= "'$location',{ role: 'tooltip', type: 'string', 'p': {'html': true} },";
                                 $locationArray[] = $location;
                         }            
-                }                
+                }          
+           // print_r($monthNames);
          ?>        
          
          //declare the array in which to store data
@@ -372,8 +390,17 @@ $(function() {
         
         
         //console.log(JSON.stringify(dataArray));
-        var titleText = '<?php echo  "Percent of facilities providing LARC, $this->end_date to $this->start_date"; ?>';
-        var subtitleText = '(<?php echo  "($this->end_date to $this->start_date)"; ?>)';
+       <?php
+       if(empty($this->selectedDatemultiple)){
+           $titleText = $this->end_date." to ".$this->start_date;
+       }else{
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+       }
+       
+       
+       ?>
+        var titleText = '<?php echo  "Percent of facilities providing LARC, $titleText"; ?>';
+        var subtitleText = '(<?php echo  "($titleText)"; ?>)';
         
          
         $('#chart13_div').highcharts({
@@ -398,11 +425,16 @@ $(function() {
                     x: -20 //center
                 },
                 xAxis: {
+                     title:{
+                        text:'Month',
+                        style:{ "fontWeight": "bold" }
+                    },
                     categories: <?php echo json_encode($monthNames); ?>
                 },
                 yAxis: {
                     title: {
-                        text: null
+                       text: '%Facilities',
+                       style:{ "fontWeight": "bold" }
                     },
                     labels: {
                         format: '{value}%'

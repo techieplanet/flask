@@ -544,8 +544,13 @@ class Helper2 {
     }
     
 
-    public function fetchTitleDate() {            
+    public function fetchTitleDate($lastPullDate="") {  
+             if(empty($lastPullDate) || $lastPullDate==""){
             $maxdate = $this->getLatestPullDate();
+            }else{
+            $maxdate = $lastPullDate;
+             }
+            //$maxdate = $this->getLatestPullDate();
             $titleDate = array(
                             'month_name' => date('F', strtotime($maxdate)),
                             'year' => date('Y', strtotime($maxdate))
@@ -554,6 +559,48 @@ class Helper2 {
 	    return $titleDate;
 	}
         
+    public function formatMonthNameYear($monthName){
+        $monthData = array();
+        foreach($monthName as $month){
+            $time = strtotime($month);
+            $month = date("F Y",$time);
+            $monthData[] = $month;
+        }
+        return $monthData;
+    }
+    
+    public function formatMonthName($monthName){
+        $monthData = array();
+        foreach($monthName as $month){
+            $time = strtotime($month);
+            $month = date("F",$time);
+            $monthData[] = $month;
+        }
+        return $monthData;
+    }
+     public function getLast12MonthsDate(){
+            $report = new Report();
+            $lastPullDate = $this->getLatestPullDate();
+            $tempTime = strtotime($lastPullDate);
+            
+            $startYear = date('Y',strtotime("-11 month",$tempTime));
+            $startMonth = date('m',strtotime("-11 month",$tempTime));
+            
+            $endYear = date('Y',$tempTime);
+            $endMonth = date('m',$tempTime);
+            
+           list($startYears,$endYears) = $report->getMonthlyDateRange($startMonth,$startYear,$endMonth,$endYear);
+           $monthNames = array();
+           foreach($startYears as $startD){
+               $formattedDate = date('M,Y',strtotime($startD));
+               $monthNames[]  = $formattedDate;
+           }
+           
+           $startYears = array_reverse($startYears);
+           $monthNames = array_reverse($monthNames);
+           return array($startYears,$monthNames);
+            
+        }       
     public function sumNumersAndDenoms($numerators, $denominators){
         $numerSum = $denomSum = 0; $output = array();
          $this->jLog(PHP_EOL);
@@ -852,6 +899,7 @@ class Helper2 {
         
         
         function doOverTimePercents($numerArray, $denomArray){
+            
             $output = array();
             if(!empty($numerArray)){
                 foreach ($numerArray as $i=>$numer){

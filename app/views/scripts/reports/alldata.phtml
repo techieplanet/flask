@@ -132,7 +132,7 @@ if(isset($this->criteria['total_participants'])){
             $(document).ready(function () {
                  checkTimeDateRange();
                  var countries = new Array("");
-                 $("#jqxComboBox").jqxComboBox({source: countries, multiSelect: true, width: 200, height: 25});
+                 $("#jqxComboBox").jqxComboBox({source: countries, multiSelect: true, width: '100%', height: 25});
                 $("#jqxComboBox input").on('focusout', function (event) {
                    var result = $("#jqxComboBox").jqxComboBox('val');
                    var initialData = $("#jqTraining").val();
@@ -187,7 +187,7 @@ if(isset($this->criteria['total_participants'])){
                    
                    var countries = trainingIdsForm;
                 // Create a jqxComboBox
-                $("#jqxComboBox").jqxComboBox({source: countries, multiSelect: true, width: 200, height: 25});           
+                    $("#jqxComboBox").jqxComboBox({source: countries, multiSelect: true, width: '100%', height: 25});           
 //                $("#jqxComboBox").jqxComboBox('selectItem', '681');
 //                $("#jqxComboBox").jqxComboBox('selectItem', '710');
                 
@@ -262,7 +262,7 @@ if(isset($this->criteria['total_participants'])){
                    
                    var countries = trainingIdsForm;
                 // Create a jqxComboBox
-                $("#jqxComboBox").jqxComboBox({source: countries, multiSelect: true, width: 200, height: 25});           
+                $("#jqxComboBox").jqxComboBox({source: countries, multiSelect: true, width: '100%', height: 25});           
 //                $("#jqxComboBox").jqxComboBox('selectItem', '681');
 //                $("#jqxComboBox").jqxComboBox('selectItem', '710');
                 
@@ -304,7 +304,7 @@ if(isset($this->criteria['total_participants'])){
                 
                 var countries = new Array("");
                 // Create a jqxComboBox
-                $("#jqxComboBox").jqxComboBox({source: countries, multiSelect: true, width: 200, height: 25});           
+                $("#jqxComboBox").jqxComboBox({source: countries, multiSelect: true, width: '100%', height: 25});           
 //                $("#jqxComboBox").jqxComboBox('selectItem', '681');
 //                $("#jqxComboBox").jqxComboBox('selectItem', '710');
                 
@@ -623,6 +623,9 @@ label {
      return true;
  }    
  
+ String.prototype.replaceAll = function(target, replacement) {
+  return this.split(target).join(replacement);
+};
  function errorAlert(error){
      document.getElementById("data").innerHTML = "<div id='statusBox' style='color:red;'><p align='center'>"+error+"</p></div>";
                   dialogCert = $( "#dialog-certification-message" ).dialog({
@@ -667,18 +670,21 @@ label {
 startLoading();
                },
             success: function(data) {
-//                stopLoading();
+               // stopLoading();
 //          alert(data);
           
              //document.getElementById("data").innerHTML = "Fetching...";
-             
+             //alert(data);
            var responseData =   jQuery.parseJSON(data);
             var error = String(responseData.error);
-            var noOutput = responseData.noOutput;
-            
+           
+//            alert(error);
+//            alert(noOutput);
+//            alert(responseData);
+//            alert(data);
             // alert(responseData.error);
              if(error!=""){
-                 error = error.replace(",", "<br/>");
+                 error = error.replaceAll(",", "<br/>");
                  errorAlert(error);
 //                 document.getElementById("message").innerHTML = "<div id='statusBox' style='color:red;'><p align='center'>* "+error+"</p></div>";
 //                 document.getElementById("messageFooter").innerHTML = "<div id='statusBox' style='color:red;'><p align='center'>* "+error+"</p></div>";
@@ -689,6 +695,7 @@ startLoading();
 //                 $('#message').show().fadeIn('slow');
 //                 $('#messageFooter').show().fadeIn('slow');
          }else{
+              var noOutput = responseData.noOutput;
              
              if(noOutput<=0){
                 error = "No matching results for this query";
@@ -716,7 +723,7 @@ startLoading();
                                     <thead>\n<tr>\n';
 
     jQuery.each( headersArray, function( key, value ) {
-        value = value.replace("@", ",");
+        value = value.replaceAll("@", ",");
        responseTable += '<th>'+value+'</th>';
 });
     responseTable += '\n</tr>\n</thead>\n<tbody>\n';
@@ -728,7 +735,7 @@ startLoading();
       var individualResponseTableDataArray = individualResponseTableData.split(","); 
       responseTable  += '<tr>\n';
       jQuery.each( individualResponseTableDataArray, function( key, result ) {
-          result = result.replace("@", ",");
+          result = result.replaceAll("@", ",");
           responseTable  += '<td>'+result+'</td>\n';
       })
       responseTable  += '</tr>';
@@ -820,10 +827,17 @@ stopLoading();
                                                     }
                                                      ////echo 'This is the thing you dnt do in school '.$this->criteria['aggregate_method']; ?>
                                                     <p style="width:100% !important; margin:0 auto !important;">
-                                                    <label for="aggreg_data"><input type="radio" name="aggregate_method" onClick="check_buttons();" value="aggreg_data" id="aggreg_data" <?php if($this->criteria['aggregate_method']=="aggreg_data"){ echo "checked='checked'";} ?>/>  <span>Show aggregate data for the lowest selected geographies&nbsp;</span></label>  &nbsp;&nbsp;&nbsp;
-                                                    <label for="facility_geog"> <input type="radio" name="aggregate_method" onclick="check_buttons();" id="facility_geog" value="facility_geog" <?php if($this->criteria['aggregate_method']=="facility_geog"){ echo "checked='checked'";} ?>/><span> Show facility data for selected geographies</span></label>&nbsp; &nbsp;&nbsp;  
+                                                    <label for="aggreg_data"><input type="radio" name="aggregate_method" onClick="check_buttons();" value="aggreg_data" id="aggreg_data" <?php if($this->criteria['aggregate_method']=="aggreg_data"){ echo "checked='checked'";} ?>/>  <span>Show aggregate data for the lowest selected geographies&nbsp;</span></label><br/>
+                                                    <label for="facility_geog"> <input type="radio" name="aggregate_method" onclick="check_buttons();" id="facility_geog" value="facility_geog" <?php if($this->criteria['aggregate_method']=="facility_geog"){ echo "checked='checked'";} ?>/><span> Show facility data for selected geographies</span></label><br/>  
                                                     <label for="facility_training"> <input type="radio" name="aggregate_method" onclick="check_buttons()" value="facility_training"  id="facility_training" <?php if($this->criteria['aggregate_method']=="facility_training"){ echo "checked='checked'";} ?>/><span> Show facility data for selected training IDs &nbsp;</span></label>      
-                                                    
+                                                     <div id="infobutton" class="infobutton" style="margin-left:300px !important;max-width:70px !important;margin-top:-30px !important;">
+                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                <div id="" class="infodiv" >
+                                                                                   To view and compare facility-level data and performance among facilities staffed with health workers who participated in a recent training, enter the appropriate training IDs in the dropdown menu below.
+                                                                                </div>
+                                                    </div>
+                                                                 
+                                                                 
                                                     </p>
                                                  <div style="float:right !important;width:100px !important;" align="right">
                                                             <input type="reset" name="reset"  value="Clear all selections" class="submitNoArrow" onclick="clearSelection();" />
@@ -852,11 +866,11 @@ stopLoading();
                                                             </div>
                                                         </div>
                                                     <div class="row" style="margin-left:45px !important;">
-                                                        <div class="col-md-2" >
+                                                        <div class="col-md-1" style="padding-right:8% !important;min-width:100px !important;" >
                                                            
 							<p align=""><span class="required"></span> National Report</p>
 							
-							<p align=""><select name="national">
+							<p align=""><select name="national" style="width:90px !important;">
                                                                 
                                                                 <option value="">--choose--</option>
                                                                 <option value="0" <?php if($this->criteria['national_report']=="0"){ echo 'selected="selected"'; }?>>National Report</option>
@@ -867,13 +881,13 @@ stopLoading();
 							
 						<p align="center">	<?php renderFilter($this->locationsPerGeo, 1, 'province_id', $this->criteria['province_id'], 'district_id', true,false,'10'); ?></p>
 </div>
-							<div class="col-md-2" style="min-width:200px">
+							<div class="col-md-2" style="min-width:150px">
 	
 							<p align="center">State</p>
 							
 							<p align="center"><?php renderFilter($this->locationsPerGeo, 2, 'district_id', $this->criteria['district_id'], 'region_c_id', true,false,'10'); ?></p>
                                                         </div>
-							<div class="col-md-2" style="min-width:200px">
+							<div class="col-md-1" style="min-width:150px">
 	
 							<p align="center">LGA</p>
 							
@@ -883,12 +897,12 @@ stopLoading();
                                                         
 
 							<!-- TA:17: 09/04/2014 START-->
-<?php ?><div class="col-md-3" style="min-width:200px" >
+<?php ?><div class="col-md-2" style="min-width:205px" >
                                                         <p align="center">Facility</p>
 							<p align="center">
 <?php renderFilter($this->locationsPerGeo, 4, 'facility_id', $this->criteria['facility_id'],'', true, false,'10'); ?></p>
 </div>
-                                                    <div class="col-md-2" style="min-width:200px">
+                                                    <div class="col-md-2" >
 							<p align="center"><?php echo t('Training ID'); ?></p>
 							
 							<p align="center"> 
@@ -1036,15 +1050,16 @@ echo "<option value=''  >--choose--</option>";
 
 						</div>
                                                         <div class="col-md-5" style="min-width:200px !important;">
+                                                            <div class="row">
                                                             <p align="center">Stock Outs</p>
-                                                            <p align="center">   <select name="stock_out[]"  multiple style="max-width: 200px !important;word-wrap:break-word !important;"> 
-                                                                <option value="">--choose</option>
+                                                            <p align="center">   <select name="stock_out[]"  multiple="true" style="max-width: 200px !important;word-wrap:break-word !important;"> 
+                                                                <option value="">--choose--</option>
                                                                <?php
                    
 		foreach ($this->stock_out_commodity_name_option as $item){
                     
                 
-                    if(in_array($item['id'], $this->criteria['stock_out'])){
+                    if(in_array($item['id'], $this->criteria['client'])){
                        $selected = "selected='selected'"; 
                     }else{
                         $selected = "";
@@ -1055,8 +1070,29 @@ echo "<option value=''  >--choose--</option>";
                 }
 	?>
 		
-                                                                </select>    </p>               
-														   
+                                                                </select>    </p>  
+                                                            
+                                                            <p align="center">Clients</p>
+                                                            <p align="center">   <select name="client[]"  multiple="true" style="max-width: 200px !important;word-wrap:break-word !important;"> 
+                                                                <option value="">--choose--</option>
+                                                               <?php
+                   
+		foreach ($this->clientDataArray as $item){
+                    
+                
+                    if(in_array($item['id'], $this->criteria['client'])){
+                       $selected = "selected='selected'"; 
+                    }else{
+                        $selected = "";
+                    }
+                 
+			echo "<option value=\"" . $item['id'] . "\"  ".$selected." title='".$item['commodity_name']."'>" . $item['commodity_name'] . "</option>\n";
+		
+                }
+	?>
+		
+                                                                </select>    </p>  
+                                                            </div>						   
                                                         </div>
                                                             </div>
                                                         </fieldset>

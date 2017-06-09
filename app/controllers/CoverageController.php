@@ -12,7 +12,8 @@
  */
 require_once ('ReportFilterHelpers.php');
 require_once ('models/table/Helper2.php');
-require_once('models/table/Coverage.php');
+require_once ('models/table/Coverage.php');
+require_once ('models/table/Report.php');
 
 class CoverageController extends ReportFilterHelpers {
     
@@ -121,20 +122,29 @@ class CoverageController extends ReportFilterHelpers {
             
             //get the parameters
             list($geoList, $tierValue) = $this->buildParameters();
-                
+            list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
+            $this->view->assign('monthDate',$monthDate);
+            $this->view->assign('monthName',$monthName);
+            
+            $lastPullDate = "";
+            if(isset($_POST['lastPullDate'])){
+                $lastPullDate = $_POST['lastPullDate'];
+            }
+            $this->view->assign('selectedDate',$lastPullDate);
+            //echo $lastPullDate;exit;
             //If no GEO selection made 
 	    if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"])){ 
-                $cumm_data = $coverage->fetchCummulativeTrainedWorkers(3, $geoList, $tierValue);
+                $cumm_data = $coverage->fetchCummulativeTrainedWorkers(3, $geoList, $tierValue,$lastPullDate);
                 $this->view->assign('cumm_data', $cumm_data);
 	    }
             else{
-                $cumm_data = $coverage->fetchCummulativeTrainedWorkers(3, $geoList, $tierValue);
+                $cumm_data = $coverage->fetchCummulativeTrainedWorkers(3, $geoList, $tierValue,$lastPullDate);
                 $this->view->assign('cumm_data', $cumm_data);
                 //var_dump($cumm_data); exit;
                 
                 $locationNames = $helper->getLocationNames($geoList);
-                $larc_cumm_location = $coverage->fetchCummulativeTrainedWorkersByLocation('larc',3, $geoList, $tierValue);
-                $fp_cumm_location = $coverage->fetchCummulativeTrainedWorkersByLocation('fp',3, $geoList, $tierValue);
+                $larc_cumm_location = $coverage->fetchCummulativeTrainedWorkersByLocation('larc',3, $geoList, $tierValue,$lastPullDate);
+                $fp_cumm_location = $coverage->fetchCummulativeTrainedWorkersByLocation('fp',3, $geoList, $tierValue,$lastPullDate);
                 
                 $this->view->assign('fp_cumm_location', $fp_cumm_location);
                 $this->view->assign('larc_cumm_location', $larc_cumm_location);
@@ -142,7 +152,7 @@ class CoverageController extends ReportFilterHelpers {
             }
                 
             //GNR:use max commodity date
-            $sDate = $helper->fetchTitleDate();
+            $sDate = $helper->fetchTitleDate($lastPullDate);
             $this->view->assign('tp_date', $sDate['month_name'] . ' '.$sDate['year']);
             
             $this->view->assign('base_url', $this->baseUrl);            
@@ -163,7 +173,15 @@ class CoverageController extends ReportFilterHelpers {
 	    $helper = new Helper2();
             
             //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
-	     
+	     list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
+            $this->view->assign('monthDate',$monthDate);
+            $this->view->assign('monthName',$monthName);
+            
+            $lastPullDate = "";
+            if(isset($_POST['lastPullDate'])){
+                $lastPullDate = $_POST['lastPullDate'];
+            }
+            $this->view->assign('selectedDate',$lastPullDate);
             //get the parameters
             list($geoList, $tierValue) = $this->buildParameters();
             
@@ -175,12 +193,12 @@ class CoverageController extends ReportFilterHelpers {
             //$locationNames = $helper->getLocationNames($geoList);
             
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
-                $fp_coverage = $coverage->fetchFacsWithHWProviding('fp', 'fp', $geoList, $tierValue, true);
-                $larc_coverage = $coverage->fetchFacsWithHWProviding('larc', 'larc', $geoList, $tierValue, true);
+                $fp_coverage = $coverage->fetchFacsWithHWProviding('fp', 'fp', $geoList, $tierValue, true,false,$lastPullDate);
+                $larc_coverage = $coverage->fetchFacsWithHWProviding('larc', 'larc', $geoList, $tierValue, true,false,$lastPullDate);
             }
             else{
-                $fp_coverage = $coverage->fetchFacsWithHWProviding('fp', 'fp', $geoList, $tierValue, false);
-                $larc_coverage = $coverage->fetchFacsWithHWProviding('larc', 'larc', $geoList, $tierValue, false);
+                $fp_coverage = $coverage->fetchFacsWithHWProviding('fp', 'fp', $geoList, $tierValue, false,false,$lastPullDate);
+                $larc_coverage = $coverage->fetchFacsWithHWProviding('larc', 'larc', $geoList, $tierValue, false,false,$lastPullDate);
             }
             
             $this->view->assign('fp_data',$fp_coverage);
@@ -188,7 +206,7 @@ class CoverageController extends ReportFilterHelpers {
             	
 	    //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
 	    //GNR:use max commodity date
-	    $sDate = $helper->fetchTitleDate();
+	    $sDate = $helper->fetchTitleDate($lastPullDate);
 	    $this->view->assign('date', $sDate['month_name'] . ' ' .$sDate['year']); 
 	    
             $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
@@ -202,7 +220,15 @@ class CoverageController extends ReportFilterHelpers {
         public function percentfacsprovidingAction() {
             $coverage = new Coverage();
             $helper = new Helper2();
-	    
+	    list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
+            $this->view->assign('monthDate',$monthDate);
+            $this->view->assign('monthName',$monthName);
+            
+            $lastPullDate = "";
+            if(isset($_POST['lastPullDate'])){
+                $lastPullDate = $_POST['lastPullDate'];
+            }
+            $this->view->assign('selectedDate',$lastPullDate);
 	    //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
 
             
@@ -210,14 +236,14 @@ class CoverageController extends ReportFilterHelpers {
             list($geoList, $tierValue) = $this->buildParameters();
 
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
-                $fp_coverage = $coverage->fetchPercentFacsProviding('fp', $geoList, $tierValue, true);
-                $larc_coverage = $coverage->fetchPercentFacsProviding('larc', $geoList, $tierValue, true);
-                $inj_coverage = $coverage->fetchPercentFacsProviding('injectables', $geoList, $tierValue, true);
+                $fp_coverage = $coverage->fetchPercentFacsProviding('fp', $geoList, $tierValue, true,false,$lastPullDate);
+                $larc_coverage = $coverage->fetchPercentFacsProviding('larc', $geoList, $tierValue, true,false,$lastPullDate);
+                $inj_coverage = $coverage->fetchPercentFacsProviding('injectables', $geoList, $tierValue, true,false,$lastPullDate);
             }
             else{
-                $fp_coverage = $coverage->fetchPercentFacsProviding('fp', $geoList, $tierValue, false);
-                $larc_coverage = $coverage->fetchPercentFacsProviding('larc', $geoList, $tierValue, false);
-                $inj_coverage = $coverage->fetchPercentFacsProviding('injectables', $geoList, $tierValue, false);
+                $fp_coverage = $coverage->fetchPercentFacsProviding('fp', $geoList, $tierValue, false,false,$lastPullDate);
+                $larc_coverage = $coverage->fetchPercentFacsProviding('larc', $geoList, $tierValue, false,false,$lastPullDate);
+                $inj_coverage = $coverage->fetchPercentFacsProviding('injectables', $geoList, $tierValue, false,false,$lastPullDate);
 
             }
 
@@ -229,7 +255,7 @@ class CoverageController extends ReportFilterHelpers {
 
             //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
             //GNR:use max commodity date
-            $sDate = $helper->fetchTitleDate();
+            $sDate = $helper->fetchTitleDate($lastPullDate);
             $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
 
             $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
@@ -248,17 +274,29 @@ class CoverageController extends ReportFilterHelpers {
             //$ids = $helper->getTierLocationsIds(1); var_dump($ids); exit;
             
 	    //$this->view->assign('title', $this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
+            list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
+            $this->view->assign('monthDate',$monthDate);
+            $this->view->assign('monthName',$monthName);
+            
+            $lastPullDate = "";
+            if(isset($_POST['lastPullDate'])){
+                $lastPullDate = $_POST['lastPullDate'];
+            }
+            $this->view->assign('selectedDate',$lastPullDate);
             
             //get the parameters
             list($geoList, $tierValue) = $this->buildParameters();                
 	    
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
-                $fp_coverage = $coverage->fetchPercentFacHWTrained('fp', $geoList, $tierValue, true);
-                $larc_coverage = $coverage->fetchPercentFacHWTrained('larc', $geoList, $tierValue, true);
+                $fp_coverage = $coverage->fetchPercentFacHWTrained('fp', $geoList, $tierValue, true,false,$lastPullDate);
+                $larc_coverage = $coverage->fetchPercentFacHWTrained('larc', $geoList, $tierValue, true,false,$lastPullDate);
             }
+            
             else{
-                $fp_coverage = $coverage->fetchPercentFacHWTrained('fp', $geoList, $tierValue, false);
-                $larc_coverage = $coverage->fetchPercentFacHWTrained('larc', $geoList, $tierValue, false);
+             
+                $fp_coverage = $coverage->fetchPercentFacHWTrained('fp', $geoList, $tierValue, false,false,$lastPullDate);
+                $larc_coverage = $coverage->fetchPercentFacHWTrained('larc', $geoList, $tierValue, false,false,$lastPullDate);
+                
             }
             
 //            var_dump($fp_coverage);
@@ -271,7 +309,7 @@ class CoverageController extends ReportFilterHelpers {
             //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
 	    //GNR:use max commodity date
 	    //$tDate = new DashboardCHAI();
-	    $sDate = $helper->fetchTitleDate();
+	    $sDate = $helper->fetchTitleDate($lastPullDate);
 	    $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']);
 	   
 //            $zone = $this->getSanParam('province_id');
@@ -298,17 +336,26 @@ class CoverageController extends ReportFilterHelpers {
             $coverage = new Coverage();
             $freshVisit = true;
             //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
+              list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
+            $this->view->assign('monthDatemultiple',$monthDate);
+            $this->view->assign('monthNamemultiple',$monthName);
+            
+            $lastPullDatemultiple = array();
+            if(isset($_POST['lastPullDatemultiple'])){
+                $lastPullDatemultiple = $_POST['lastPullDatemultiple'];
+            }
+            $this->view->assign('selectedDatemultiple',$lastPullDatemultiple);
             
             //get the parameters
             list($geoList, $tierValue) = $this->buildParameters();
             
-            if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
-                $fp_overtime = $coverage->fetchHWCoverageOvertime('fp', $geoList, $tierValue, true);
-                $larc_overtime = $coverage->fetchHWCoverageOvertime('larc', $geoList, $tierValue, true);
+            if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
+                $fp_overtime = $coverage->fetchHWCoverageOvertime('fp', $geoList, $tierValue, true,false,$lastPullDatemultiple);
+                $larc_overtime = $coverage->fetchHWCoverageOvertime('larc', $geoList, $tierValue, true,false,$lastPullDatemultiple);
             }
             else { 
-                $fp_overtime = $coverage->fetchHWCoverageOvertime('fp', $geoList, $tierValue, false);
-                $larc_overtime = $coverage->fetchHWCoverageOvertime('larc', $geoList, $tierValue, false);
+                $fp_overtime = $coverage->fetchHWCoverageOvertime('fp', $geoList, $tierValue, false,false,$lastPullDatemultiple);
+                $larc_overtime = $coverage->fetchHWCoverageOvertime('larc', $geoList, $tierValue, false,false,$lastPullDatemultiple);
                 $freshVisit = false;
             }
             
@@ -340,28 +387,47 @@ class CoverageController extends ReportFilterHelpers {
             $helper = new Helper2();
             $coverage = new Coverage();
             //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
-
+            //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
+	     list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
+            $this->view->assign('monthDatemultiple',$monthDate);
+            $this->view->assign('monthNamemultiple',$monthName);
+            
+            $lastPullDatemultiple = array();
+            if(isset($_POST['lastPullDatemultiple'])){
+                $lastPullDatemultiple = $_POST['lastPullDatemultiple'];
+            }
+            $this->view->assign('selectedDatemultiple',$lastPullDatemultiple);
             //get the parameters
+            
             list($geoList, $tierValue) = $this->buildParameters();
             
-            if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
-                $fp_overtime = $coverage->fetchProvidingOvertime('fp', $geoList, $tierValue, true);
-                $larc_overtime = $coverage->fetchProvidingOvertime('larc', $geoList, $tierValue, true);
+            if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
+                $fp_overtime = $coverage->fetchProvidingOvertime('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
+                $larc_overtime = $coverage->fetchProvidingOvertime('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
             }
             else {
-                $fp_overtime = $coverage->fetchProvidingOvertime('fp', $geoList, $tierValue, false);
-                $larc_overtime = $coverage->fetchProvidingOvertime('larc', $geoList, $tierValue, false);
+                $fp_overtime = $coverage->fetchProvidingOvertime('fp', $geoList, $tierValue, false,$lastPullDatemultiple);
+                $larc_overtime = $coverage->fetchProvidingOvertime('larc', $geoList, $tierValue, false,$lastPullDatemultiple);
             }
             
+            $monthNameDisplay = $helper->formatMonthName($lastPullDatemultiple);
             $this->view->assign('fp_overtime', $fp_overtime); 
             $this->view->assign('larc_overtime', $larc_overtime); 
-            
+            $this->view->assign('latestPullDatemultipleMonthName',$monthNameDisplay);
             //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
             //GNR:use max commodity date
             $sDate = $helper->fetchTitleDate();
+            
+            
+           
             $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
 
-            $overTimeDates = $helper->getPreviousMonthDates(12);
+           $overTimeDates = $helper->getPreviousMonthDates(12);
+            
+            if(!empty($lastPullDatemultiple)){
+               // echo 'It is not empty';
+             $overTimeDates = $lastPullDatemultiple;   
+            }
             $this->view->assign('start_date', date('F', strtotime($overTimeDates[0])). ' '. date('Y', strtotime($overTimeDates[0]))); 
             $this->view->assign('end_date', date('F', strtotime($overTimeDates[11])). ' '. date('Y', strtotime($overTimeDates[11]))); 
 
