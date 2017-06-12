@@ -59,7 +59,20 @@ $current_view = '/'.$path[1].'/'. $path[2];
 
 <p3>
     <div>
-        <?php         
+         <?php 
+    if(isset($this->monthDate)){
+    ?>
+    <select name="lastPullDate" id="lastPullDate" style="margin-bottom:5px !important">
+        <?php 
+        for($i=0;$i<sizeof($this->monthDate); $i++){
+            $selected = ($this->monthDate[$i]==$this->selectedDate)?"selected":"";
+            echo "<option value='".$this->monthDate[$i]."' $selected>".$this->monthName[$i]."</option>";
+        }
+        ?>
+    </select><br/>
+<?php 
+    }
+           
             $commsHtml = '';
             $selected = '';
             foreach($this->comms as $comm){
@@ -80,6 +93,21 @@ $current_view = '/'.$path[1].'/'. $path[2];
                 <!--<option value="0">ALL</option>-->
                 <?php echo $commsHtml; ?>
         </select>
+        <?php  
+     if(isset($this->monthDatemultiple)){
+    ?>
+    <select name="lastPullDatemultiple[]" id="lastPullDatemultiple" multiple="true" szize="5" style="margin-bottom:5px !important">
+        <?php 
+        for($i=0;$i<sizeof($this->monthDatemultiple); $i++){
+            $selected = (in_array($this->monthDatemultiple[$i],$this->selectedDatemultiple))?"selected":"";
+            echo "<option value='".$this->monthDatemultiple[$i]."' $selected>".$this->monthNamemultiple[$i]."</option>";
+        }
+        ?>
+    </select>
+   
+<?php 
+    }
+    ?>
     </div>
     <br/>
     

@@ -135,7 +135,9 @@ print ScriptContainer::$instance->renderJSHead();
 			</div>
 			<!-------   /////////////////////////// load scripts ////////////////////// -->
             <div class="nav-buttons">
-				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');?>
+				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');
+                             // print_r($this->consumptionArray);
+                                ?>
 			</div>
 			
 			<!-------   /////////////////////////// charts ////////////////////// -->
@@ -271,8 +273,19 @@ print ScriptContainer::$instance->renderJSHead();
         
         
         $commNames = array('new_acceptors'=>'New FP acceptors', 'current_users'=>'Current FP Users');
-        $consumptionArray = end($this->consumptionArray);
+     
+       
+        $consumptionArray = end($this->consumptionArrays);
+       // print_r($consumptionArray);
+        if(!empty($this->selectedDate)){
+         $fKey = date('F',strtotime($this->selectedDate));
+         $consumptionArray = $this->consumptionArrays[$fKey];
+        }
+       // echo '<br/><br/>';
+       // print_r($consumptionArray);exit;
         $locationNames = array_keys($consumptionArray);
+        
+        
 
         foreach($commNames as $alias=>$commName){
             //if(substr($commName, 0, 6) == 'Female') $commName = 'Current FP Users';
@@ -289,6 +302,10 @@ print ScriptContainer::$instance->renderJSHead();
         dataArray.push(obj);
 <?php        
         }//end commodity
+        
+        if(!empty($this->selectedDate)){
+              $this->date = date('F Y',strtotime($this->selectedDate));
+          }
 ?>
           
           var title_data = '';
@@ -387,11 +404,19 @@ function drawLocationBarChart() {
 <?php
       if($allow){
         $commNames = array('new_acceptors'=>'New family planning acceptors', 'current_users'=>'Female 15-49 years using modern contraceptives');
-        $consumptionArray = end($this->consumptionArray);
+        
+       
+        $consumptionArray = end($this->consumptionArrays);
+         if(!empty($this->selectedDate)){
+         $fKey = date('F',strtotime($this->selectedDate));
+         $consumptionArray = $this->consumptionArrays[$fKey];
+        }
         $locationNames = array_keys($consumptionArray);
         reset($consumptionArray); 
-        $firstKey = key($consumptionArray);       
+        $firstKey = key($consumptionArray);  
         
+        
+        //echo $firstKey;exit;
         $color = ''; $consumptionString = "";
         foreach ($consumptionArray as $location=>$indicators){ 
             $consumptionString .= $location == $firstKey ?
@@ -404,8 +429,13 @@ function drawLocationBarChart() {
 	  <?php //echo  " var title_date = 'Monthly Consumption by Method$this->title_date ' " ?>;
           
           var title_data = '';
+          
           <?php //if(isset($this->commodityAndLocation) && !empty($this->commodityAndLocation)) { ?>
-          <?php //if($allow) { ?>
+          <?php //if($allow) {
+          if(!empty($this->selectedDate)){
+              $this->date = date('F Y',strtotime($this->selectedDate));
+          }
+          ?>
               title_data = <?php echo "'$commodityName, $this->date'"; ?>;
               subtitleText = <?php echo "'($this->date)'"; ?>;
           <?php //} ?>
@@ -517,10 +547,16 @@ function drawDefaultLineChart() {
                     
 
 
-        <?php  $textHook = $this->geoListSelectionMade ? 'in selected geographies' : ''; ?>
+        <?php 
+        if(isset($this->selectedDatemultiple) && !empty($this->selectedDatemultiple)){
+         $textTitle = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+        }else{
+         $textTitle = $this->start_date.' to '.$this->end_date;    
+        }
+        $textHook = $this->geoListSelectionMade ? 'in selected geographies' : ''; ?>
         
-        var title_data = <?php echo "'Current FP users and New FP Acceptors $textHook, $this->start_date to $this->end_date'"; ?>;
-        var subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>;
+        var title_data = <?php echo "'Current FP users and New FP Acceptors $textHook, $textTitle'"; ?>;
+        var subtitleText = <?php echo "'($textTitle)'"; ?>;
         
                 $('#chart13_div').highcharts({
                     chart: {
@@ -622,13 +658,19 @@ function drawDefaultLineChart() {
                      
             <?php
                     }//end foreach
+                    
+                      if(isset($this->selectedDatemultiple) && !empty($this->selectedDatemultiple)){
+         $textTitle = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+        }else{
+         $textTitle = $this->start_date.' to '.$this->end_date;    
+        }
             ?>
 
         dataArray.push(obj); 
         
         
-          var title_data = <?php echo "'$commodityName, $this->start_date to $this->end_date'"; ?>;
-          var subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>;
+          var title_data = <?php echo "'$commodityName, $textTitle'"; ?>;
+          var subtitleText = <?php echo "'($textTitle)'"; ?>;
         
           
                 
@@ -767,10 +809,16 @@ function drawDefaultLineChart() {
                         dataArray.push(obj);
             <?php
                     }
+                    
+                    if(isset($this->selectedDatemultiple) && !empty($this->selectedDatemultiple)){
+         $textTitle = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+        }else{
+         $textTitle = $this->start_date.' to '.$this->end_date;    
+        }
             ?>
             
-            var title_data = <?php echo "'$commodityName in selected geographies, $this->start_date to $this->end_date'"; ?>;
-            var subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>;
+            var title_data = <?php echo "'$commodityName in selected geographies, $textTitle'"; ?>;
+            var subtitleText = <?php echo "'($textTitle)'"; ?>;
 
             $('#chart13_div').highcharts({
                     chart: {

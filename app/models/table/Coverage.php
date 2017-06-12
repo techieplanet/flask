@@ -113,7 +113,7 @@ class Coverage {
          * This method gets the count of coverage of trained workers in various 
          * geo-locations and tiers. Both FP and LARC
          */
-        public function fetchCummulativeTrainedWorkersByLocation($training_type, $year_amount, $geoList, $tierValue,$lastPullDate){
+        public function fetchCummulativeTrainedWorkersByLocation($training_type, $year_amount, $geoList, $tierValue,$lastPullDate=""){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $output = array (); 
             $helper = new Helper2();

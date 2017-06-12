@@ -443,10 +443,17 @@ function drawChart13() {
                         }//end commodity
                 ?>
                         
-                        
+                        <?php 
+               if(!empty($this->selectedDatemultiple)){
+                   
+                   $titleText = (sizeof($this->selectedDatemultiple)>1) ?"across selected dates" : "across selected date";
+               }else{
+                  $titleText = $this->start_date." to ".$this->end_date;
+               }
+               ?>
                        
-                        var title_data = <?php echo "'Consumption of FP commodities, $this->start_date to $this->end_date'"; ?>; 
-                        var subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>
+                        var title_data = <?php echo "'Consumption of FP commodities, $titleText'"; ?>; 
+                        var subtitleText = <?php echo "'($titleText)'"; ?>
                             
                         $('#chart13_div').highcharts({
                             chart: {
@@ -580,12 +587,19 @@ function drawChart13() {
                 <?php
                         }//end commodity
                 ?>
-        
+           <?php 
+               if(!empty($this->selectedDatemultiple)){
+                   
+                   $titleText = (sizeof($this->selectedDatemultiple)>1) ?"across selected dates" : "across selected date";
+               }else{
+                  $titleText = $this->start_date." to ".$this->end_date;
+               }
+               ?>
         
          var title_data = '';
           <?php if(isset($this->single_location)){ ?>
-              title_data = <?php echo "'Consumption of FP commodities in selected geographies, $this->start_date to $this->end_date'"; ?>; 
-              subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>
+              title_data = <?php echo "'Consumption of FP commodities in selected geographies, $titleText'"; ?>; 
+              subtitleText = <?php echo "'($titleText)'"; ?>
           <?php } ?>
         
         $('#chart13_div').highcharts({
@@ -838,7 +852,7 @@ function drawChart13() {
                   }
                 },
                 title: { 
-                    text: 'Consumption by method <br/>for selected commodities and geographies' ,  
+                    text: 'Consumption by method <br/>for selected commodities and geographies in <?php echo date("F Y",strtotime($this->selectedDate)); ?>' ,  
                     style: {
                         fontWeight: 'bold',
                         fontFamily: 'Arial',
@@ -1104,9 +1118,17 @@ function drawChart13() {
                 ?>
         
                 //console.log(dataArray);
+               <?php 
+               if(!empty($this->selectedDatemultiple)){
+                   
+                   $titleText = (sizeof($this->selectedDatemultiple)>1) ?"across selected dates" : "across selected date";
+               }else{
+                  $titleText = $this->start_date." to ".$this->end_date;
+               }
+               ?>
                 
-              var title_data = <?php echo "'Consumption of FP commodities in selected geographies, $this->start_date to $this->end_date'"; ?>;
-              var subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>
+              var title_data = <?php echo "'Consumption of FP commodities in selected geographies, $titleText'"; ?>;
+              var subtitleText = <?php echo "'($titleText)'"; ?>
         
         $('#chart13_div').highcharts({
                 chart: {
