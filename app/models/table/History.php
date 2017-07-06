@@ -72,6 +72,11 @@ class History extends ITechTable {
 				$select->setIntegrityCheck ( false );
 				$select->joinLeft ( array ('pr2' => 'person_secondary_responsibility_option' ), "secondary_responsibility_option_id = pr2.id", array ("secondary responsibility" => 'responsibility_phrase'  ) );
 			}
+                        
+                        if (array_search ( 'person_status_id', $this->_cols ) !== false) {
+				$select->setIntegrityCheck ( false );
+				$select->joinLeft ( array ('ps' => 'person_status' ), "person_status_id = ps.id", array ("title" => 'active','id' ) );
+			}
 
 			$select->joinLeft ( array ('tr' => 'trainer_history' ), "tr.pvid = person_history.vid", array('ifnull(tr.timestamp_updated,person_history.timestamp_created) as timestamp_updated'));
         $select->setIntegrityCheck ( false );

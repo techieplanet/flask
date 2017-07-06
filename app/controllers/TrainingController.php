@@ -1290,7 +1290,10 @@ $countParticipant = 0;
               
                
 	
-
+                  $person = new Person();
+                
+                 $allPersonStatus = $person->getAllPersonStatus();
+                 $this->view->assign('person_status',$allPersonStatus);
 		//find the first date in the database
 		$db = Zend_Db_Table_Abstract::getDefaultAdapter ();
 		$qualificationsArray = OptionList::suggestionList ( 

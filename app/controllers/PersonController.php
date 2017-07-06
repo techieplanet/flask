@@ -405,7 +405,8 @@ return $clear;
         }
         
 	public function doAddEditView() {
-
+            ini_set('display_errors', 0);
+            ini_set('display_startup_errors', 0);
 	try {
                 $this->editPerson();
 		//validate
@@ -449,6 +450,8 @@ return $clear;
                  // echo '<br/><br/>';echo $facility_id;
                   // echo ' '.$facilityidPerson[0];
                   // exit;
+                   $allPersonStatus = $personObj->getAllPersonStatus();
+                   $this->viewAssignEscaped('person_status',$allPersonStatus);
                    
                 $user = new User();
                 
@@ -1397,6 +1400,7 @@ return $clear;
 		            $facilityrow = $facilityObj->findOrCreate (  $facility_id );
 		            $pData ['facility'] = $facilityrow->toArray ();
                             }
+                            
                             //Helper2::jLog(print_r($pData,true));
                              $this->view->assign('person',$pData);
 				foreach ($status->messages as $k=>$v){
@@ -1417,7 +1421,8 @@ return $clear;
                                 $personData['last_name'] = $this->getSanParam ( 'last_name' );
                                 $personData['birthdate'] =  $birthParam ;
                                 $personData['facility_id'] = $facility_id;
-				$personData['active'] = 'active';
+				$personData['person_status_id'] = '1';
+                                $personData['active'] = 'active';
                                 $personData['primary_qualification_option_id'] = $this->getSanParam ( 'primary_qualification_option_id' );
                                
                                 $user = new User();
@@ -1662,6 +1667,7 @@ return $clear;
 		if (! $this->hasACL ( 'view_people' ) and ! $this->hasACL ( 'edit_people' )) {
 			$this->doNoAccessError ();
 		}
+                $person = new Person();
                 $reports = new Report();
                 $locationWhereQuery = "";
                 $user = new User();
@@ -1727,7 +1733,7 @@ return $clear;
 			$locationImplodeList = implode(",",$locationsCriteria);
 			$locationWhereQuery = "( region_c_id IN ($locationImplodeList) OR district_id IN ($locationImplodeList) OR province_id IN ($locationImplodeList) )";
 			}
-			Helper2::jLog($locationWhereQuery);
+			//Helper2::jLog($locationWhereQuery);
 		$criteria ['facility_name'] = $this->getSanParam ( 'facility_name' );
 		$criteria ['facilityInput'] = $this->getSanParam ( 'facilityInput' );
 		$criteria ['first_name'] = $this->getSanParam ( 'first_name' );
@@ -1760,9 +1766,10 @@ return $clear;
 				if ($criteria ['person_type'] == 'is_everyone' || $criteria['person_type']=='is_participant') {
 					// left join instead of inner for everyone
 					$sql = '
-					SELECT DISTINCT p.id, p.last_name, p.middle_name, p.first_name, p.gender, q.qualification_phrase,p.primary_qualification_option_id,p.phone_mobile,p.email, f.facility_name, province_name,province_id,district_name,district_id,region_c_name,region_c_id,p.active
+					SELECT DISTINCT p.id, p.last_name, p.middle_name, p.first_name, p.gender, q.qualification_phrase,p.primary_qualification_option_id,p.phone_mobile,p.email, f.facility_name, province_name,province_id,district_name,district_id,region_c_name,region_c_id,ps.title as active,p.person_status_id
 
 					FROM person as p
+                                        LEFT JOIN person_status as ps on ps.id = p.person_status_id
                                         LEFT JOIN person_to_training as ptt on p.id = ptt.person_id
 					LEFT JOIN person_qualification_option as q ON p.primary_qualification_option_id = q.id
 					LEFT JOIN (SELECT flv.facility_name as facility_name,flv.location_id, flv.id as facility_id,flv.lga_id as region_c_id,flv.lga as region_c_name,flv.state_id as district_id, flv.state as district_name, flv.geo_zone_id as province_id, flv.geo_zone as province_name FROM facility_location_view as flv
@@ -1773,11 +1780,12 @@ return $clear;
 				} 
                                 else {
 				$sql = '
-					SELECT DISTINCT p.id, p.last_name, p.middle_name, p.first_name, p.gender, q.qualification_phrase,p.primary_qualification_option_id,p.phone_mobile,p.email,f.facility_name, province_name,province_id,district_name,district_id,region_c_name,region_c_id,p.active
+					SELECT DISTINCT p.id, p.last_name, p.middle_name, p.first_name, p.gender, q.qualification_phrase,p.primary_qualification_option_id,p.phone_mobile,p.email,f.facility_name, province_name,province_id,district_name,district_id,region_c_name,region_c_id,ps.title as active,p.person_status_id
 
 					FROM person AS p LEFT JOIN (SELECT flv.facility_name as facility_name,flv.location_id, flv.id as facility_id,flv.lga_id as region_c_id,flv.lga as region_c_name,flv.state_id as district_id, flv.state as district_name, flv.geo_zone_id as province_id, flv.geo_zone as province_name FROM facility_location_view as flv
-
-) as f on f.facility_id = p.facility_id LEFT JOIN person_qualification_option AS q on q.id=p.primary_qualification_option_id';
+                                        
+) as f on f.facility_id = p.facility_id LEFT JOIN person_qualification_option AS q on q.id=p.primary_qualification_option_id 
+LEFT JOIN person_status as ps on ps.id = p.person_status_id';
 				
                                 
                                 }
@@ -1786,9 +1794,10 @@ return $clear;
                             
 				if ($criteria ['person_type'] == 'is_everyone') {
 					// left join instead of inner for everyone
-					$sql = 'SELECT DISTINCT p.id, p.last_name, p.middle_name, p.first_name, p.gender,p.phone_mobile,p.email, q.qualification_phrase, f.facility_name,p.primary_qualification_option_id,p.active
+					$sql = 'SELECT DISTINCT p.id, p.last_name, p.middle_name, p.first_name, p.gender,p.phone_mobile,p.email, q.qualification_phrase, f.facility_name,p.primary_qualification_option_id,ps.title as active,p.person_status_id
 
 					FROM person as p
+                                        LEFT JOIN person_status as ps on ps.id = p.person_status_id
 					LEFT JOIN person_qualification_option as q ON p.primary_qualification_option_id = q.id
 					LEFT JOIN (SELECT flv.facility_name as facility_name,flv.location_id, flv.id as facility_id,flv.lga_id as region_c_id,flv.lga as region_c_name,flv.state_id as district_id, flv.state as district_name, flv.geo_zone_id as province_id, flv.geo_zone as province_name FROM facility_location_view as flv
 
@@ -1800,8 +1809,9 @@ return $clear;
 					// Removed $field_name from SQL query. person table does
 				// not have province_name, district_name, or city_name columns. - its supposed to be from the facility
 				$sql = '
-                                        SELECT DISTINCT p.id, p.last_name, p.middle_name, p.first_name, p.gender, q.qualification_phrase,p.primary_qualification_option_id,p.phone_mobile,p.email, f.facility_name,p.active
+                                        SELECT DISTINCT p.id, p.last_name, p.middle_name, p.first_name, p.gender, q.qualification_phrase,p.primary_qualification_option_id,p.phone_mobile,p.email, f.facility_name,ps.title as active,p.person_status_id
 					FROM person AS p,
+                                        LEFT JOIN person_status as ps on ps.id = p.person_status_id
 					LEFT JOIN person_qualification_option AS q ON p.primary_qualification_option_id = q.id,
 					LEFT JOIN (SELECT flv.facility_name as facility_name,flv.location_id, flv.id as facility_id,flv.lga_id as region_c_id,flv.lga as region_c_name,flv.state_id as district_id, flv.state as district_name, flv.geo_zone_id as province_id, flv.geo_zone as province_name FROM facility_location_view as flv
 
@@ -1900,7 +1910,7 @@ return $clear;
                           //echo $sql;exit;
 			//print($sql);
                         
-                       Helper2::jLog("This is the new person query ".PHP_EOL.$sql.PHP_EOL);
+                     //  Helper2::jLog("This is the new person query ".PHP_EOL.$sql.PHP_EOL);
 			$rowArray = $db->fetchAll ( $sql );
                        
                         $resultData = array();
@@ -1909,7 +1919,7 @@ return $clear;
                             $count = 0;
                         foreach($rowArray as $row){
                             $count++;
-                                Helper2::jLog("$count primary qual selected is ".$qualification.' the one we want is '.$row['primary_qualification_option_id'].PHP_EOL);
+                               // Helper2::jLog("$count primary qual selected is ".$qualification.' the one we want is '.$row['primary_qualification_option_id'].PHP_EOL);
                            
                             if($row['primary_qualification_option_id'] === $qualification){
                                 $resultData[] = $row;
@@ -1922,7 +1932,7 @@ return $clear;
 			if ($criteria ['outputType']) {
 				$this->sendData ( $rowArray );
 			}
-                         Helper2::jLog(print_r($rowArray,true));
+                         //Helper2::jLog(print_r($rowArray,true));
 
 			foreach($rowArray as $key => $row) {
 				if ( isset( $row['gender'] ) and $row['gender'] ) {
@@ -1931,6 +1941,7 @@ return $clear;
 			}
 
 			$this->viewAssignEscaped ( 'results', $rowArray );
+                      
 			$this->view->assign ( 'count', count ( $rowArray ) );
 			
 		}
@@ -1949,6 +1960,9 @@ return $clear;
 		$qualificationsArray = OptionList::suggestionListHierarchical ( 'person_qualification_option', 'qualification_phrase', false, false );
 		$this->viewAssignEscaped ( 'qualifications', $qualificationsArray );
 
+                $allPersonStatus = $person->getAllPersonStatus();
+                //print_r($allPersonStatus);exit;
+                $this->viewAssignEscaped('person_status',$allPersonStatus);
 		//facilities list
 		$rowArray = OptionList::suggestionList ( 'facility', array ('facility_name', 'id' ), false, 999999 );
 		$facilitiesArray = array ();

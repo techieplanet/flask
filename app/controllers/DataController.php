@@ -30,12 +30,12 @@ class DataController extends ITechController {
     $table = new Training();
     
      $select = $table->select()
-        ->from('training', array('*'))
+        ->from('training', array('id','training_start_date','training_end_date'))
         ->setIntegrityCheck(false)
-        ->joinLeft (array('t'    => 'training_title_option'), "training_title_option_id = t.id",array('training_title' => 'training_title_phrase'))
+        ->joinLeft (array('t'    => 'training_title_option'), "training_title_option_id = t.id",array('training_title_phrase'))
         ->joinLeft (array('tl'   => 'training_location'), "training.training_location_id = tl.id",array('training_location_name', 'location_id'=>'tl.location_id'))
-        ->joinLeft (array('tg'   => 'training_got_curriculum_option'), "training.training_got_curriculum_option_id = tg.id",'training_got_curriculum_phrase')
-        ->joinLeft (array('tlvl' => 'training_level_option'), "training.training_level_option_id = tlvl.id",'training_level_phrase');
+//        ->joinLeft (array('tg'   => 'training_got_curriculum_option'), "training.training_got_curriculum_option_id = tg.id")
+       ->joinLeft (array('tlvl' => 'training_level'), "training.training_level_option_id = tlvl.id",array('level_title'));
         // todo inner joins were Causing trainings w/out level / title to not get dl'ed, might not print right w/out title, should replace nulls with 'unknown' or something
 
     $ids = $this->getSanParam('ids');
@@ -53,40 +53,41 @@ class DataController extends ITechController {
     $sorted[$row['id']] = $row;
    }
         
-   $sorted = $table->_fill_related($sorted, 'training_got_curriculum_option', 'training_got_curriculum_option_id', 'training_got_curriculum_phrase');
+  // $sorted = $table->_fill_related($sorted, 'training_got_curriculum_option', 'training_got_curriculum_option_id', 'training_got_curriculum_phrase');
 
    $locations = Location::getAll();
    foreach($sorted as $id => $row) {
     $city_info = Location::getCityInfo($row['location_id'], $this->setting('num_location_tiers'), $locations);
     if ( count($city_info) ) {
-      $sorted[$id]['city_name'] = $locations[$city_info['city_name']]['location_name'];
+    //  $sorted[$id]['city_name'] = $locations[$city_info['city_name']]['location_name'];
       $sorted[$id]['province_name'] = $locations[$city_info[1]]['name'];
       if ( $this->setting( 'display_region_b' ) ) $sorted[$id]['district_name'] = $locations[$city_info[2]]['name'];
-      if ( $this->setting( 'display_region_c' ) ) $sorted[$id]['region_c_name'] = $locations[$city_info[3]]['name'];
-      if ( $this->setting( 'display_region_d' ) ) $sorted[$id]['region_d_name'] = $locations[$city_info[4]]['name'];
-      if ( $this->setting( 'display_region_e' ) ) $sorted[$id]['region_e_name'] = $locations[$city_info[5]]['name'];
-      if ( $this->setting( 'display_region_f' ) ) $sorted[$id]['region_f_name'] = $locations[$city_info[6]]['name'];
-      if ( $this->setting( 'display_region_g' ) ) $sorted[$id]['region_g_name'] = $locations[$city_info[7]]['name'];
-      if ( $this->setting( 'display_region_h' ) ) $sorted[$id]['region_h_name'] = $locations[$city_info[8]]['name'];
-      if ( $this->setting( 'display_region_i' ) ) $sorted[$id]['region_i_name'] = $locations[$city_info[9]]['name'];
+//      if ( $this->setting( 'display_region_c' ) ) $sorted[$id]['region_c_name'] = $locations[$city_info[3]]['name'];
+//      if ( $this->setting( 'display_region_d' ) ) $sorted[$id]['region_d_name'] = $locations[$city_info[4]]['name'];
+//      if ( $this->setting( 'display_region_e' ) ) $sorted[$id]['region_e_name'] = $locations[$city_info[5]]['name'];
+//      if ( $this->setting( 'display_region_f' ) ) $sorted[$id]['region_f_name'] = $locations[$city_info[6]]['name'];
+//      if ( $this->setting( 'display_region_g' ) ) $sorted[$id]['region_g_name'] = $locations[$city_info[7]]['name'];
+//      if ( $this->setting( 'display_region_h' ) ) $sorted[$id]['region_h_name'] = $locations[$city_info[8]]['name'];
+//      if ( $this->setting( 'display_region_i' ) ) $sorted[$id]['region_i_name'] = $locations[$city_info[9]]['name'];
     }
      unset($sorted[$id]['location_id']); 
    }
    
    #todo refresher option 
-   $sorted = $table->_fill_related($sorted, 'training_custom_1_option', 'training_custom_1_option_id', 'custom1_phrase');
-   $sorted = $table->_fill_related($sorted, 'training_custom_2_option', 'training_custom_2_option_id', 'custom2_phrase');
+   //$sorted = $table->_fill_related($sorted, 'training_custom_1_option', 'training_custom_1_option_id', 'custom1_phrase');
+   //$sorted = $table->_fill_related($sorted, 'training_custom_2_option', 'training_custom_2_option_id', 'custom2_phrase');
    $sorted = $table->_fill_related($sorted, 'training_organizer_option', 'training_organizer_option_id', 'training_organizer_phrase');
-   $sorted = $table->_fill_related($sorted, 'training_level_option', 'training_level_option_id', 'training_level_phrase');
-   $sorted = $table->_fill_related($sorted, 'training_method_option', 'training_method_option_id', 'training_method_phrase');
-   $sorted = $table->_fill_related($sorted, 'trainer_language_option', 'training_primary_language_option_id', 'language_phrase');
-   $sorted = $table->_fill_related($sorted, 'trainer_language_option', 'training_secondary_language_option_id', 'language_phrase');
-   $sorted = $table->_fill_intersection_related($sorted, 'training_funding_option', 'training_to_training_funding_option', 'training_funding_option_id', 'funding_phrase');
-   $sorted = $table->_fill_intersection_related($sorted, 'training_pepfar_categories_option', 'training_to_training_pepfar_categories_option', 'training_pepfar_categories_option_id', 'pepfar_category_phrase');
-   $sorted = $table->_fill_intersection_related($sorted, 'training_topic_option', 'training_to_training_topic_option', 'training_topic_option_id', 'training_topic_phrase');
-  if($this->setting('multi_opt_refresher_course')){
-  	$sorted = $table->_fill_intersection_related($sorted, 'training_refresher_option', 'training_to_training_refresher_option', 'training_refresher_option_id', 'refresher_phrase_option');
-  }
+   
+  // $sorted = $table->_fill_related($sorted, 'training_level_option', 'training_level_option_id', 'training_level_phrase');
+   //$sorted = $table->_fill_related($sorted, 'training_method_option', 'training_method_option_id', 'training_method_phrase');
+   //$sorted = $table->_fill_related($sorted, 'trainer_language_option', 'training_primary_language_option_id', 'language_phrase');
+   //$sorted = $table->_fill_related($sorted, 'trainer_language_option', 'training_secondary_language_option_id', 'language_phrase');
+   //$sorted = $table->_fill_intersection_related($sorted, 'training_funding_option', 'training_to_training_funding_option', 'training_funding_option_id', 'funding_phrase');
+   //$sorted = $table->_fill_intersection_related($sorted, 'training_pepfar_categories_option', 'training_to_training_pepfar_categories_option', 'training_pepfar_categories_option_id', 'pepfar_category_phrase');
+   //$sorted = $table->_fill_intersection_related($sorted, 'training_topic_option', 'training_to_training_topic_option', 'training_topic_option_id', 'training_topic_phrase');
+//  if($this->setting('multi_opt_refresher_course')){
+//  	$sorted = $table->_fill_intersection_related($sorted, 'training_refresher_option', 'training_to_training_refresher_option', 'training_refresher_option_id', 'refresher_phrase_option');
+//  }
     
    //fill participants
    require_once('models/table/Person.php');
@@ -100,7 +101,7 @@ class DataController extends ITechController {
       continue; // dont print this training, the user has filtered by the url param ('ids')
     $ra = $row->toArray();
     unset($ra['training_id']);
-    $sorted[$tid]['participants'][] = $ra;
+    $sorted[$tid]['participant'][] = sizeof($ra);
    }
    
    //fill participants
@@ -115,11 +116,11 @@ class DataController extends ITechController {
     if ($ids && array_search ($tid, $ids) === false)
       continue; // dont print this training, the user has filtered by the url param ('ids')
     $ra = $row->toArray();
-    $ra['person_count_na'] = $ra['person_count_na'].'(na)';
-    $ra['person_count_male'] = $ra['person_count_male'].'(male)';
-    $ra['person_count_female'] = $ra['person_count_female'].'(female)';
+//    $ra['person_count_na'] = $ra['person_count_na'].'(na)';
+//    $ra['person_count_male'] = $ra['person_count_male'].'(male)';
+//    $ra['person_count_female'] = $ra['person_count_female'].'(female)';
     unset($ra['training_id']);
-    $sorted[$tid]['unknown participants'][] = $ra;
+   // $sorted[$tid]['unknown participants'][] = $ra;
    }
    
    //fill trainers
@@ -133,14 +134,31 @@ class DataController extends ITechController {
     if ($ids && array_search ($tid, $ids) === false)
       continue; // dont print this training, the user has filtered by the url param ('ids')
     $ra = $row->toArray();
-    unset($ra['training_id']);
-    $sorted[$tid]['trainers'][] = $ra;
+//    unset($ra['training_id']);
+//    $sorted[$tid]['trainers'][] = $ra;
+   }
+   
+   $resultData = array();
+   foreach($sorted as $row){
+       $tid = $row['id'];
+       $resultData[$tid]['Training ID'] = $tid;
+       $resultData[$tid]['Geaographical Zone'] = $sorted[$tid]['province_name'];
+       $resultData[$tid]['State'] =  $sorted[$tid]['district_name'];
+       $resultData[$tid]['Type of Training'] =  $sorted[$tid]['training_title_phrase'];
+       $resultData[$tid]['Training Location'] = $sorted[$tid]['training_location_name'];
+       $resultData[$tid]['Partner'] = $sorted[$tid]['training_organizer_phrase'];
+       $resultData[$tid]['Training Level'] = $sorted[$tid]['level_title'];
+       $resultData[$tid]['Training Start Date'] = $sorted[$tid]['training_start_date'];
+       $resultData[$tid]['Training End Date'] = $sorted[$tid]['training_end_date'];
+       $resultData[$tid]['Number of Participants'] =  $sorted[$tid]['participant'];
+      
+       
    }
    
    $this->view->assign('data', $sorted);
 
    if ($this->getSanParam('outputType') == 'csv') 
-      $this->sendData ( $this->reportHeaders ( false, $sorted ) );    
+      $this->sendData ( $this->reportHeaders ( false, $resultData ) );    
        
     } catch (Exception $e) {
       echo $e->getMessage();

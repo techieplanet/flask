@@ -1,9 +1,12 @@
+
 <?php require_once('views/helpers/DropDown.php'); ?>
 
 <script type="text/javascript">
     
    <!--//--><![CDATA[//><!--
-
+   YAHOO.util.Event.onDOMReady(function () {
+  		    	makeCalendar("birthdates","birth-day", "birth-month", "birth-year");
+  		    });
 
 
 function clearDisabledField()
@@ -130,6 +133,12 @@ window.location = url;
 
 YAHOO.namespace("example.container");
 
+
+
+
+                        
+
+
 function init() {
 
     
@@ -205,6 +214,12 @@ function init() {
   var handleFailure = function(o) {
     alert("<?php tp('Submission failed:');?> " + o.status);
   };
+  
+  
+  		 
+  		
+  
+           
 
   // Instantiate the Dialog
   YAHOO.example.container.addFacility = new YAHOO.widget.Dialog("addFacility",
@@ -567,11 +582,12 @@ YAHOO.util.Event.onDOMReady(function() {
 <?php if ( $this->setting['display_people_birthdate'] ) { ?>
 <div class="clear"></div>
 <div class="fieldLabel"><?php tp('Birth date');?></div>
-    <div class="fieldInput">
+    <div class="fieldInput" id="birthdates">
 	<?php tp('Day');?> <input id="birth-day" onchange="updateAge()" class="dayfield" type="text" value="<?php echo ($this->person['birthdate-day']=="0000")?'':$this->person['birthdate-day'];?>" name="birth-day" />
 	/ <?php tp('Month');?> <input id="birth-month" onchange="updateAge()" class="monthfield" type="text" value="<?php echo ($this->person['birthdate-month']=="00")?'':$this->person['birthdate-month'];?>" name="birth-month" />
 	/ <?php tp('Year');?> <input id="birth-year" onchange="updateAge()" class="yearfield" type="text" value="<?php echo ($this->person['birthdate-year']=="00")?'':$this->person['birthdate-year'];?>" name="birth-year" />
 </div>
+
 <?php }?>
 
 <!-- This hidden field is used to check if the form has being disabled so as not to submit the form  -->
@@ -587,53 +603,51 @@ YAHOO.util.Event.onDOMReady(function() {
   <?php if(isset($this->inactive)){ ?>
   <div id="hwkContainer" style="position: relative">
   <div class="fieldLabel"></div> 
+  
+  
+   <div class="fieldLabel"><span class="required">*</span>Status</div> 
   <div class="fieldInput" style="width:15%; float:left;">    
-  Active &nbsp;<input type="radio" name="active" onchange="showHiddenForm()" value="active" <?php echo (!empty($this->inactive) && $this->inactive == 'active')? 'checked':''; ?> /> &nbsp;
-  Inactive &nbsp;<input type="radio" name="active" onchange="showHiddenForm()" value="inactive" <?php echo (!empty($this->inactive) && $this->inactive == 'inactive')? 'checked':''; ?> />
+      <select name="person_status_id" id="person_status_id">
+  <?php 
+                                            //print_r($this->person_status);
+                                          
+                                            foreach($this->person_status as $pstatus){
+                                                $titleShow = $pstatus['title'];
+                                                $id = $pstatus['id'];
+                                               $selected = (!empty($this->person['person_status_id']) && $this->person['person_status_id'] == $id)? 'selected':'';
+                                               ?>
+       <option value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $titleShow; ?></option> 
+  
+  
+      <?php
+                                            }
+                                            ?>
+      </select>
+  
   </div>
+  
   
   <div id="infobutton" class="infobutton" style="width:10%; float: left;">
             <span class="infowrap"><i class="fa fa-info-circle"></i></span>
             <div id="" class="infodiv" >
-                'Inactive’ status indicates that the health worker is no longer actively providing clinical services
-                in a health facility. A health worker is marked as inactive if they are retired or deceased. 
-                Other reasons for the inactive status are also possible, in which case, a description should be given in the text box
-                <br><br>
-                ‘Active’ status indicates that the health worker is still actively providing clinical services in a health facility.
+               Active Provider status indicates that the health worker is currently actively providing clinical services in a health facility. These health workers are counted towards the total health workforce need for family planning Nigeria.
+<br/><br/>
+All other designations including Retired Provider, National Official, State Official, LGA Official or Deceased status indicates that the health worker is not actively providing clinical services in a health facility. These health workers are not counted towards the total health workforce need although they may serve other important functions such as supervision and training of trainers.
+
             </div>
  </div>
   <?php } ?>
   <span style="clear:left; display: block"></span>
   <?php if($this->showInactive){ ?>
   <div id="inActiveHw">
-      <div class="fieldLabel" id="inactive_reason_lbl"><span class="required">*</span>Deactivation Reason</div>
-              <div class="fieldInput">
-                  <select name="inactive_reason" id="inactiveReason">
-                      <option value="">--Select--</option>
-                      <?php 
-                        $reasons = $this->inactive_Reasons;
-                        foreach($reasons as $key=>$val)
-                        {
-                       ?>
-                      <option <?php echo ($this->inactive_reason == $val['id']) ? "selected" : "" ?> value="<?php echo $val['id']; ?>"><?php echo $val['reason'] ?></option>
-                    
-                      <?php
-                        }
-                      ?>
-                      
-                  </select>
-              </div>
-      <div class="fieldLabel" id="inactive_desc_lbl">Deactivation Description</div>
-      <div class="fieldInput">
-          <textarea name="inactive_desc" id="inactiveDesc" maxlength=""><?= $this->inactive_description ?></textarea>
-      </div>
+      
   </div> 
   </div>
   <script type="text/javascript">
         
       function showHiddenForm()
       {
-        var chkbox = document.getElementsByName("active");
+        var chkbox = document.getElementsByName("person_status_id");
         if(chkbox[1].checked)
         {
                

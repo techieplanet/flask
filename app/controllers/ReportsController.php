@@ -1272,9 +1272,9 @@ echo $sql . "<br>";
 		$rowArray = $db->fetchAll ( $sql );
 		$start_default = $rowArray [0] ['start'];
 		$parts = explode ( '-', $start_default );
-		//$criteria ['start-year'] = @$parts [0];
-		//$criteria ['start-month'] = @$parts [1];
-		//$criteria ['start-day'] = @$parts [2];
+		$criteria ['start-year'] = @$parts [0];
+		$criteria ['start-month'] = @$parts [1];
+		$criteria ['start-day'] = @$parts [2];
 
                 
                 $minimum_year = $parts [0];
@@ -1285,9 +1285,9 @@ echo $sql . "<br>";
 			$rowArray = $db->fetchAll ( $sql );
 			$end_default = $rowArray [0] ['start'];
 			$parts = explode ( '-', $end_default );
-			//$criteria ['end-year'] = @$parts [0];
-			//$criteria ['end-month'] = @$parts [1];
-			//$criteria ['end-day'] = @$parts [2];
+			$criteria ['end-year'] = @$parts [0];
+			$criteria ['end-month'] = @$parts [1];
+			$criteria ['end-day'] = @$parts [2];
                         
                         
                 $maximum_year = $parts[0];
@@ -1297,6 +1297,10 @@ echo $sql . "<br>";
                  
                 $defaultTrainingEndDateStart = $minimum_month."/".$minimum_day."/".$minimum_year;
                 $defaultTrainingEndDateEnd = $maximum_month."/".$maximum_day."/".$maximum_year;
+                
+                
+               
+                
 		if ($this->getSanParam ( 'start-year' ))
 		$criteria ['start-year'] = $this->getSanParam ( 'start-year' );
 		if ($this->getSanParam ( 'start-month' ))
@@ -1308,6 +1312,10 @@ echo $sql . "<br>";
                 
                 $defaultTrainingEndDateStart = $minimum_month."/".$minimum_day."/".$minimum_year;
                 $defaultTrainingEndDateEnd = $maximum_month."/".$maximum_day."/".$maximum_year;
+                
+               
+                
+                
 		} else {
 			$criteria ['end-year'] = date ( 'Y' );
 			$criteria ['end-month'] = date ( 'm' );
@@ -1317,38 +1325,46 @@ echo $sql . "<br>";
                 $criteria['trainingEndDateStart'] = $defaultTrainingEndDateStart;
                 $criteria['trainingEndDateEnd'] = $defaultTrainingEndDateEnd;
                 
-                if($this->getSanParam('trainingEndDateStart')){
-                $trainingEndDateStartValue = $this->getSanParam('trainingEndDateStart');
-                $criteria['trainingEndDateStart'] = $trainingEndDateStartValue;
-                $trainingEndDatesStart = array();
-                $trainingEndDatesStart = explode("/",$trainingEndDateStartValue);
-                
-                
-                $criteria ['start-day'] = $this->check_length_add_one($trainingEndDatesStart[1]);
-                $criteria ['start-month'] = $this->check_length_add_one($trainingEndDatesStart[0]);
-                $criteria ['start-year'] = $trainingEndDatesStart[2];
-                
-               
-                }
+//                if($this->getSanParam('trainingEndDateStart')){
+//                $trainingEndDateStartValue = $this->getSanParam('trainingEndDateStart');
+//                $criteria['trainingEndDateStart'] = $trainingEndDateStartValue;
+//                $trainingEndDatesStart = array();
+//                $trainingEndDatesStart = explode("/",$trainingEndDateStartValue);
+//                
+//                
+//                $criteria ['start-day'] = $this->check_length_add_one($trainingEndDatesStart[1]);
+//                $criteria ['start-month'] = $this->check_length_add_one($trainingEndDatesStart[0]);
+//                $criteria ['start-year'] = $trainingEndDatesStart[2];
+//                
+//               
+//                }
                 //echo $this->getSanParam('trainingEndDateEnd');exit;
-                if($this->getSanParam('trainingEndDateEnd')){
-                     $trainingEndDateEndValue = $this->getSanParam('trainingEndDateEnd');
-                     $criteria['trainingEndDateEnd'] = $trainingEndDateEndValue;
-                      $trainingEndDatesEnd = array();
-                      $trainingEndDatesEnd = explode("/",$trainingEndDateEndValue);
-                    
-                      $criteria ['end-day'] = $this->check_length_add_one($trainingEndDatesEnd[1]);
-                      $criteria ['end-month'] = $this->check_length_add_one($trainingEndDatesEnd[0]);
-                      $criteria ['end-year'] = $trainingEndDatesEnd[2];
-                }
+//                if($this->getSanParam('trainingEndDateEnd')){
+//                     $trainingEndDateEndValue = $this->getSanParam('trainingEndDateEnd');
+//                     $criteria['trainingEndDateEnd'] = $trainingEndDateEndValue;
+//                      $trainingEndDatesEnd = array();
+//                      $trainingEndDatesEnd = explode("/",$trainingEndDateEndValue);
+//                    
+//                      $criteria ['end-day'] = $this->check_length_add_one($trainingEndDatesEnd[1]);
+//                      $criteria ['end-month'] = $this->check_length_add_one($trainingEndDatesEnd[0]);
+//                      $criteria ['end-year'] = $trainingEndDatesEnd[2];
+//                }
+                
+                if ($this->getSanParam ( 'start-year' ))
+		$criteria ['start-year'] = $this->getSanParam ( 'start-year' );
+		if ($this->getSanParam ( 'start-month' ))
+		$criteria ['start-month'] = $this->getSanParam ( 'start-month' );
+		if ($this->getSanParam ( 'start-day' ))
+		$criteria ['start-day'] = $this->getSanParam ( 'start-day' );
+                
                
-		/*if ($this->getSanParam ( 'end-year' ))
+		if ($this->getSanParam ( 'end-year' ))
 		$criteria ['end-year'] = $this->getSanParam ( 'end-year' );
 		if ($this->getSanParam ( 'end-month' ))
 		$criteria ['end-month'] = $this->getSanParam ( 'end-month' );
 		if ($this->getSanParam ( 'end-day' ))
 		$criteria ['end-day'] = $this->getSanParam ( 'end-day' );
-*/
+
 		list($criteria, $location_tier, $location_id) = $this->getLocationCriteriaValues($criteria);
 
 		// find training name from new category/title format: categoryid_titleid

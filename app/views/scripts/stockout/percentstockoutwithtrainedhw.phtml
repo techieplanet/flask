@@ -247,17 +247,27 @@ print ScriptContainer::$instance->renderJSHead();
   <!-------   /////////////////////////// script 1,1 ////////////////////// -->
   //TA:17:18 Out of stock chart
   function drawChart11() {
-
+      var jNumData = new Array();
+      var jDenomData = new Array();
     <?php
         reset($this->fp_data); 
         $firstKey = key($this->fp_data); 
         $locationsString = ""; $valuesString = "";
 	foreach ($this->fp_data as $key=>$row){
            $locationsString .= "'" . $row['location'] . "',";
+           $location = $row['location'];
+           $numerator = $this->fp_numerator[''.$location.''];
+           $denominator = $this->fp_denominator[''.$location.''];
             if($firstKey == $key)
                 $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
             else
                 $valuesString .= round($row['percent']*100, 1) . ",";
+            
+              
+                    ?>
+                   jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
+                   jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
+                    <?php
 	}
         $locationsString = substr($locationsString, 0 , -1);
         $valuesString = substr($valuesString, 0 , -1);
@@ -312,7 +322,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 tooltip: {
                     formatter: function () {
-                        return '<b>' + this.x + '</b>:' + this.y + '%';
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x]);
                     }
                 },
                 plotOptions: {
@@ -337,7 +347,8 @@ print ScriptContainer::$instance->renderJSHead();
 
 //TA:17:18 Out of stock chart
  function drawChart12() {
-
+ var jNumData = new Array();
+ var jDenomData = new Array();
 	                                                           
     <?php
             reset($this->fp_data); 
@@ -345,10 +356,18 @@ print ScriptContainer::$instance->renderJSHead();
             $locationsString = ""; $valuesString = "";
             foreach ($this->larc_data as $key=>$row){
                 $locationsString .= "'" . $row['location'] . "',";
+                $location = $row['location'];
+                $numerator = $this->larc_numerator[''.$location.''];
+                $denominator = $this->larc_denominator[''.$location.''];
+                    
                 if($firstKey == $key)
                     $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
                 else
                     $valuesString .= round($row['percent']*100, 1) . ",";
+               ?>
+                   jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
+                   jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
+                            <?php
             }
             $locationsString = substr($locationsString, 0 , -1);
             $valuesString = substr($valuesString, 0 , -1);
@@ -403,7 +422,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 tooltip: {
                     formatter: function () {
-                        return '<b>' + this.x + '</b>:' + this.y + '%';
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x]);
                     }
                 },
                 plotOptions: {

@@ -633,6 +633,44 @@ class Helper2 {
         return array('output'=>$output, 'nationalAvg' => $nationalAvg);
     }
     
+    public function addNationalNumersAndDenoms($numerators, $denominators){
+        $numerSum = $denomSum = 0; $output = array();
+        $nationalNum = array();
+        $nationalDenom = array();
+         $this->jLog(PHP_EOL);
+       $this->jLog(print_r($denominators,true));
+       $this->jLog("---------------------->");
+       $this->jLog(PHP_EOL);
+       $this->jLog(print_r($numerators,true));
+       $this->jLog(PHP_EOL);
+        foreach ($numerators as $location=>$numer){
+            //$nationalNumerator += $numer;
+            //$nationalDenominator += $denominators[$location];
+            $this->jLog("The location is ".$numer.PHP_EOL);
+            
+            $output[] = array(
+                        'location' => $location,
+                        'percent' => (($numer>0)?($numer / $denominators[$location]):0)
+            );
+
+            $numerSum += $numer;
+            $denomSum += $denominators[$location];
+             
+//        $this->jLog(print_r($numer[$location],true));
+        
+        }
+        $nationalNum['National'] = $numerSum;
+        $nationalDenom['National'] = $denomSum;
+        
+        $finalNum = array();
+        $finalDenom  = array();
+        
+        $finalNum = array_merge($nationalNum,$numerators);
+        $finalDenom = array_merge($nationalDenom,$denominators);
+       
+        return array($finalNum,$finalDenom);
+    }
+    
     
 
     public function filterLocations($locationNames, $result, $tierText){
@@ -898,6 +936,32 @@ class Helper2 {
         }
         
         
+        function doOverTimeNumeratorDenominator($numerArray,$denomArray){
+              
+            $output = array();
+            if(!empty($numerArray)){
+                foreach ($numerArray as $i=>$numer){
+                   $output[] = array(
+                               'month' => $numer['month_name'],
+                               'year' => $numer['year'],
+                               'numerator' => $numer['fid_count'],
+                               'denominator' =>  $denomArray[$i]['fid_count']
+                   );
+               }
+            }
+            else{
+                foreach($denomArray as $i => $denom){
+                    $output[] = array(
+                               'month' => $denom['month_name'],
+                               'year' => $denom['year'],
+                               'numerator' => 0,
+                               'denominator' => $denom['fid_count']
+                        
+                   );
+                }
+            }
+           return $output;
+        }
         function doOverTimePercents($numerArray, $denomArray){
             
             $output = array();

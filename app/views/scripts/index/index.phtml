@@ -590,7 +590,15 @@ print ScriptContainer::$instance->renderJSHead();
   
   
   function drawChart13() {
-	
+	var jNumData = new Array();
+        var jDenomData = new Array();
+         
+         jNumData['FP'] = [];
+         jDenomData['FP'] = [];
+         
+         jNumData['LARC'] = [];
+         jDenomData['LARC'] = [];
+         
         var FPObject = {name: "FP", data: []};
         var LARCObject = {name: "LARC", data: []};
                     
@@ -600,9 +608,26 @@ print ScriptContainer::$instance->renderJSHead();
             if(!empty($this->fp_facs_providing)){
                 foreach ($this->fp_facs_providing as $key=>$value){ 
                     $month .= "'" . $this->fp_facs_providing[$key]['month'] . "',";
+                    $monthName = $this->fp_facs_providing[$key]['month'];
+                    
+                    
+                    $numeratorFP = $this->fp_numerator_facsprov[$monthName];
+                    $denominatorFP = $this->fp_denominator_facsprov[$monthName];
+                        
+                    $numeratorLARC = $this->larc_numerator_facsprov[$monthName];
+                    $denominatorLARC = $this->larc_denominator_facsprov[$monthName];
+                    
                     $fp_percent = round($this->fp_facs_providing[$key]['percent'] * 100,1);
                     $larc_percent = round($this->larc_facs_providing[$key]['percent'] * 100,1);
             ?>
+                    jNumData['FP']['<?php echo $monthName; ?>'] = <?php echo $numeratorFP ?>;
+                    
+                    jDenomData['FP']['<?php echo $monthName; ?>'] = <?php echo $denominatorFP ?>;
+                    
+                    jNumData['LARC']['<?php echo $monthName; ?>'] = <?php echo $numeratorLARC ?>;
+                    
+                    jDenomData['LARC']['<?php echo $monthName; ?>'] = <?php echo $denominatorLARC ?>;
+                    
                     //set PHP values into JS objects
                     FPObject.data.push(<?php echo $fp_percent; ?>);
                     LARCObject.data.push(<?php echo $larc_percent; ?>);
@@ -663,7 +688,7 @@ print ScriptContainer::$instance->renderJSHead();
                     tooltip: {
                         formatter: function () {
                             return '<b>' + this.x + '</b><br/>' +
-                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>';
+                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
                         }
                     },
                     legend: {
@@ -679,6 +704,14 @@ print ScriptContainer::$instance->renderJSHead();
     
     
     function drawChart14() {
+        var jNumData = new Array();
+        var jDenomData = new Array();
+         
+         jNumData['% FP facilities stocked out of any FP commodity for 7 days'] = [];
+         jDenomData['% FP facilities stocked out of any FP commodity for 7 days'] = [];
+         
+         jNumData['% implant facilities stocked out of implants'] = [];
+         jDenomData['% implant facilities stocked out of implants'] = [];
         
         var sevenObject = {name: '% FP facilities stocked out of any FP commodity for 7 days', data: []};
         var implantsObject = {name: '% implant facilities stocked out of implants', data: []};
@@ -688,9 +721,24 @@ print ScriptContainer::$instance->renderJSHead();
             if(!empty($this->fp_facs_providing_stockedout)){
                 foreach ($this->fp_facs_providing_stockedout as $key=>$monthProviders){ 
                     $month .= "'" . $monthProviders['month'] . "',";
+                    $monthName = $monthProviders['month'];
+                    
+                    $numeratorFP = $this->fp_numerator_stockout[$monthName];
+                    $denominatorFP = $this->fp_denominator_stockout[$monthName];
+                        
+                    $numeratorLARC = $this->larc_numerator_stockout[$monthName];
+                    $denominatorLARC = $this->larc_denominator_stockout[$monthName];
+                        
                     $seven_days_percent = round($monthProviders['seven_days_percent'] * 100,1);
                     $implant_percent = round($this->larc_facs_providing_stockedout[$key]['implant_percent'] * 100,1);
         ?>                    
+                  jNumData['% FP facilities stocked out of any FP commodity for 7 days']['<?php echo $monthName; ?>'] = <?php echo $numeratorFP ?>;
+                    
+                    jDenomData['% FP facilities stocked out of any FP commodity for 7 days']['<?php echo $monthName; ?>'] = <?php echo $denominatorFP ?>;
+                    
+                    jNumData['% implant facilities stocked out of implants']['<?php echo $monthName; ?>'] = <?php echo $numeratorLARC ?>;
+                    
+                    jDenomData['% implant facilities stocked out of implants']['<?php echo $monthName; ?>'] = <?php echo $denominatorLARC ?>;
                     //set PHP values into JS objects
                     sevenObject.data.push(<?php echo $seven_days_percent; ?>);
                     implantsObject.data.push(<?php echo $implant_percent; ?>);
@@ -752,7 +800,7 @@ print ScriptContainer::$instance->renderJSHead();
                     tooltip: {
                         formatter: function () {
                             return '<b>' + this.x + '</b><br/>' +
-                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>';
+                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
                         }
                     },
                     legend: {
