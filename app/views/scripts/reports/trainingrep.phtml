@@ -169,11 +169,19 @@ if( $this->criteria['aggregate_method']=="view_part_names"){
 <?php } ?>
 <script>
  $(function() {
-	$('#trainingEndDateStart').datepick();
-        $('#trainingEndDateEnd').datepick();
+	$('#trainingEndDateStart').datepick({
+             dateFormat: "dd/mm/yyyy"
+        });
+        $('#trainingEndDateEnd').datepick({
+             dateFormat: "dd/mm/yyyy"
+        });
         
-        $('#dobStart').datepick();
-        $('#dobEnd').datepick();
+        $('#dobStart').datepick({
+             dateFormat: "dd/mm/yyyy"
+        });
+        $('#dobEnd').datepick({
+             dateFormat: "dd/mm/yyyy"
+        });
 	
 });
 
@@ -912,7 +920,7 @@ $url = $_SERVER['REQUEST_URI'] . "&csv=1";
                 </div>
                         <div class="clear" style="height : 100px;"></div>
 			
-                </div>			
+               		
 	
 			<div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
 			</div>

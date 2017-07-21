@@ -96,8 +96,9 @@ class ITechTable extends Zend_Db_Table_Abstract
 
 	public function insert(array $data) {
 		require_once('models/Session.php');
-
-		if(in_array('timestamp_created', $this->_cols)) { $data['timestamp_created'] = $this->now_expr(); }
+                date_default_timezone_set('Africa/Lagos');
+                $today = date("Y-m-d H:i:s");
+		if(in_array('timestamp_created', $this->_cols)) { $data['timestamp_created'] = $today; }
 		if(in_array('created_by', $this->_cols)) { $data['created_by'] = Session::getCurrentUserId(); }
 		if(in_array('is_deleted', $this->_cols)) { $data['is_deleted'] = 0; }
 
@@ -106,7 +107,9 @@ class ITechTable extends Zend_Db_Table_Abstract
 
 	public function update(array $data,$where) {
 		require_once('models/Session.php');
-		if(in_array('timestamp_updated', $this->_cols)) { $data['timestamp_updated'] = $this->now_expr(); }
+                date_default_timezone_set('Africa/Lagos');
+                $today = date("Y-m-d H:i:s");
+		if(in_array('timestamp_updated', $this->_cols)) { $data['timestamp_updated'] = $today; }
 		if(in_array('modified_by', $this->_cols)) { $data['modified_by'] = Session::getCurrentUserId(); }
 
 		return parent::update($data,$where);

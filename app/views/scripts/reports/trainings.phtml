@@ -546,8 +546,10 @@ echo DropDown::render_report_filter('training_primary_language_option', 'showPri
 																	echo ((array_key_exists('cnt', $row) !== false )? ','.$row['id']: $row['id']);
 
 																	// print_r($row); 
+                                                                                                                                        $trainEndDate = strtotime($row['training_end_date']);
+                                                                                                                                        $training_end_date = date("d-m-Y",$trainEndDate);
 																	
-																	echo ',"'.$row['training_end_date'].'"';
+																	echo ',"'.$training_end_date.'"';
                                                                                                                                         
 
 																	if ( $this->criteria['showProvince'] )

@@ -17,6 +17,7 @@ class Helper2 {
     //put your code here
     
     public function getDbAdapter(){
+        
         return $db = Zend_Db_Table_Abstract::getDefaultAdapter();
     }
     

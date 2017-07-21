@@ -638,12 +638,17 @@ a.export { font-weight:bold; background:url(../images/excel.jpg) center right no
 a.export.block { display:block; line-height:16px; float:left; }
 
 
-
+/*
 #footer-by-itech { color:#e7e7e7; font-size:11px; margin-top:0.5em; text-align:center; }
 
 #footer-by-itech a { color:#e7e7e7; }
 
 #footer-by-itech a:hover { color:#fff; text-decoration:none; }
+*/
+
+#footer-by-itech a { color:#c3d6e3; }
+#footer-by-itech {border-radius: 2px;color: rgb(255, 255, 255);background-color: #008c00;font-size: 13px;margin-top:  1.5em;text-align:center;padding-bottom: 10px !important;padding-top: 10px !important;}
+
 
 /****************
 

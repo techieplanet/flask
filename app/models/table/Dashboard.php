@@ -383,8 +383,21 @@ class Dashboard {
                 $latestDate = $helper->getLatestPullDate();
                 
                 $cacheManager = new CacheManager();
-            
-               
+              if($commodity_type == 'fp'){
+                    $cacheValueNumerator = $cacheManager->getIndicator(CacheManager::STOCK_OUTS_OVERTIME_FP_NUMERATOR, $latestDate);
+                    $cacheValueDenominator = $cacheManager->getIndicator(CacheManager::STOCK_OUTS_OVERTIME_FP_DENOMINATOR, $latestDate);
+              }
+                else if($commodity_type == 'larc'){
+                    $cacheValueNumerator = $cacheManager->getIndicator(CacheManager::STOCK_OUTS_OVERTIME_LARC_NUMERATOR, $latestDate);
+                    $cacheValueDenominator = $cacheManager->getIndicator(CacheManager::STOCK_OUTS_OVERTIME_LARC_DENOMINATOR, $latestDate);
+                } 
+                
+                //if this is a freshvisit
+                if($cacheValueNumerator && $cacheValueDenominator && $freshVisit){ 
+                    $finalNumerator = json_decode($cacheValueNumerator,true);
+                    $finalDenominator = json_decode($cacheValueDenominator,true);
+                    
+                }else{
                
                     //needed variables
                     $tierText = $helper->getLocationTierText($tierValue);
@@ -432,6 +445,9 @@ class Dashboard {
                         
                     }
                     
+                    
+                    
+                
                     //print_r($numerators); echo '<br><br>';
                     //print_r($denominators); echo '<br><br>';
                     //print_r($output); echo '<br><br>';
@@ -443,7 +459,37 @@ class Dashboard {
                 
                $finalNumerator = array_reverse($finalNumerator);
                $finalDenominator = array_reverse($finalDenominator);
+               
+               if($commodity_type == 'fp'){
+                        //$aliasNumerator = CacheManager::PERCENT_FACS_HW_PROVIDING_FP;
+                        $aliasNumerator = CacheManager::STOCK_OUTS_OVERTIME_FP_NUMERATOR;
+                        $aliasDenominator = CacheManager::STOCK_OUTS_OVERTIME_FP_DENOMINATOR;
+               } else if($commodity_type == 'larc'){
+                       
+                        $aliasNumerator = CacheManager::STOCK_OUTS_OVERTIME_LARC_NUMERATOR;
+                        $aliasDenominator = CacheManager::STOCK_OUTS_OVERTIME_LARC_DENOMINATOR;
+               }
                     
+                    //check if to save month national data
+                    if((!$cacheValueNumerator OR !$cacheValueDenominator) && $freshVisit){ //fresh in month
+                        
+                        $dataArray = array(
+                            'date_cached'=> $latestDate,
+                            'indicator' => 'Stock Outs Overtime FP/LARC Numerator/Denominator',
+                            'indicator_alias' => $aliasNumerator,
+                            'value' => json_encode($finalNumerator)
+                        );
+                        $cacheManager->setIndicator($dataArray);
+                        
+                        $dataArray = array(
+                            'date_cached'=> $latestDate,
+                            'indicator' => 'Stock Outs Overtime FP/LARC Numerator/Denominator',
+                            'indicator_alias' => $aliasDenominator,
+                            'value' => json_encode($finalDenominator)
+                        );
+                        $cacheManager->setIndicator($dataArray);
+                    }
+        }
                     
                  
                 

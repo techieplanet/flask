@@ -363,6 +363,7 @@ return $clear;
             
         }
         public function editPerson(){
+          // echo date_default_timezone_get();exit;
            
            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
            $select = $db->select()
@@ -564,7 +565,7 @@ return $clear;
 			$other_reason_option_id = $rowArray[0]['id'];
 		}
 		$this->viewAssignEscaped ( 'other_reason_option_id', $other_reason_option_id );
-
+                    $personData = array();
 		if ($request->isPost ()) {
 
 			$errortext = "";
@@ -753,7 +754,9 @@ return $clear;
 				} else {
 					$personrow->person_custom_2_option_id = null;
 				}
-
+                                
+                                      
+                                        
 				if ($this->setting('display_mod_skillsmart')){
 
 					$personrow->govemp_option_id             = $this->getSanParam('govemp_option_id');
@@ -777,10 +780,9 @@ return $clear;
 					$personrow->supervision_frequency_id     = $this->getSanParam('supervision_frequency_id');
 					$personrow->supervisors_profession       = $this->getSanParam('supervisors_profession');
 					$personrow->facilitydepartment_id        = $this->getSanParam('facilitydepartment_id');
-                                        $currDate = new Zend_Db_Expr('CURDATE()');
-                                        $personrow->timestamp_updated = $currDate;
-                                        
-                                        $personrow->timestamp_created = $currDate;
+                                        //$currDate = new Zend_Db_Expr('CURDATE()');
+                                       
+                                        //$personrow->timestamp_created = $currDate;
                                         //$personrow->created_by = $user->get_userid();
                                         
 					$training_recieved_arr = array();
@@ -945,7 +947,14 @@ return $clear;
                     $personrow->inactive_reason = 0;
                     $personrow->inactive_description = '';
                 }
-				if ($personrow->save ()) {
+                                        //date_default_timezone_set('Africa/Lagos');
+                                        $today = date("Y-m-d H:i:s");
+                                        $personrow->timestamp_updated  = $today;
+                                        
+                                        $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+                                        $personSave = $personObj->update($personrow->toArray(), 'id  ='.$personrow->id);
+                                        //$db->
+				if ($personSave) {
                                       
                                     file_put_contents("personlogger.txt", print_r($personrow, true));
                                             
@@ -1302,7 +1311,7 @@ return $clear;
         
     
     public function doAddView() {
-
+//echo date_default_timezone_get();exit;
 	try {
                 //$this->editPerson();
 		
@@ -1319,7 +1328,9 @@ return $clear;
                 
                 //$personObj = new Person();
                 $personData = array();
-                $facility = new Facility();                
+                $user = new User();
+                $facility = new Facility();     
+                 $personObj = new Person();
 
 		//locations
 		$locations = Location::getAll();
@@ -1421,14 +1432,16 @@ return $clear;
                                 $personData['last_name'] = $this->getSanParam ( 'last_name' );
                                 $personData['birthdate'] =  $birthParam ;
                                 $personData['facility_id'] = $facility_id;
-				$personData['person_status_id'] = '1';
+				$personData['person_status_id'] = $this->getSanParam ( 'person_status_id' );
                                 $personData['active'] = 'active';
                                 $personData['primary_qualification_option_id'] = $this->getSanParam ( 'primary_qualification_option_id' );
                                
                                 $user = new User();
                                 $personData['created_by'] = $user->getUserID();
                                 $currDate = new Zend_Db_Expr('CURDATE()');
-                                $personData['timestamp_created'] = $currDate;
+                                $today = date("Y-m-d H:i:s");
+                               // Helper2::jLog("This is the current date".$currDate);
+                                $personData['timestamp_created'] = $today;
                         }
                 
                         $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
@@ -1463,7 +1476,29 @@ return $clear;
                 $this->view->assign ( 'status', $status );
                 $this->view->assign('userRange',true);
                 
-
+                 $allPersonStatus = $personObj->getAllPersonStatus();
+                 $this->viewAssignEscaped('person_status',$allPersonStatus);
+                   
+                $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+                $sql = "select * from inactive_reason";
+                $inactiveReasonArray = $db->fetchAll($sql);
+                //Load the Inactive Records
+                $this->view->assign('inactive', true);
+               
+                
+                //TP: check of the user is an LGA so as to enable the user to be able to use the inactive checkbox for the retired HW
+                if($user->isUserAnLga()){
+                    $this->view->assign('showInactive',false);
+                }else{
+                    $this->view->assign('showInactive',true);
+                }
+                
+                
+                if($user->is_user_an_admin())
+                {
+                    $this->view->assign("isAdmin",true);
+                }
+                
 //		//view it
 //		$facilityObj = new Facility ( );
 //		$facilityrow = $facilityObj->findOrCreate ( $personrow->facility_id );

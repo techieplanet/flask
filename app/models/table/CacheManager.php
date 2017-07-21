@@ -48,6 +48,12 @@ class CacheManager {
     const STOCK_OUTS_OVERTIME_FP = 'stock_outs_overtime_fp';
     const STOCK_OUTS_OVERTIME_LARC = 'stock_outs_overtime_larc';
     
+    const STOCK_OUTS_OVERTIME_FP_NUMERATOR = 'stock_outs_overtime_larc_numerator';
+    const STOCK_OUTS_OVERTIME_FP_DENOMINATOR = 'stock_outs_overtime_larc_denominator';
+    
+    const STOCK_OUTS_OVERTIME_LARC_NUMERATOR = 'stock_outs_overtime_larc_numerator';
+    const STOCK_OUTS_OVERTIME_LARC_DENOMINATOR = 'stock_outs_overtime_larc_denominator';
+    
     const USERINDICATORS = 'user_indicators';
     
     

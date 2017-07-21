@@ -19,7 +19,7 @@
    
     #accordion {
         width:50%;
-        float:left;
+        //float:left;
         margin-left:50px;
        color:green;
  
@@ -92,6 +92,17 @@ autoHeight: false
 $("div.accordion2").accordion({
 event: "click",
 heightStyle: "fill",
+height:"content",
+collapsible: true,
+activate: 0,
+active:false,
+autoHeight: false
+});
+
+
+$("div.accordion3").accordion({
+event: "click",
+heightStyle: "fill",
 height:"100px",
 collapsible: false,
 activate: 0,
@@ -120,9 +131,13 @@ autoHeight: false
 			
 							
 	
-			<div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
-			</div>
+			
+			
 		</div>
+                <?php echo $this->reporting_rate; ?>
+            <div id="pageHolder">
+                <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
+            </div>
 	</body>
 </html>
 

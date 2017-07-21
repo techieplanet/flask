@@ -12056,8 +12056,8 @@ public function trainingresultAction(){
                  $maximum_month = $maximum_end_date[1];
                  $maximum_day = $maximum_end_date[2];
                  
-                 $defaultTrainingEndDateStart = $minimum_month."/".$minimum_day."/".$minimum_year;
-                 $defaultTrainingEndDateEnd = $maximum_month."/".$maximum_day."/".$maximum_year;
+                 $defaultTrainingEndDateStart = $minimum_day."/".$minimum_month."/".$minimum_year;
+                 $defaultTrainingEndDateEnd = $maximum_day."/".$maximum_month."/".$maximum_year;
                  
 		$criteria = array ();
 		$where = array ();
@@ -12331,11 +12331,11 @@ if(!empty($locations)){
                 $start_year = "";
                 
                
-                if(isset($trainingEndDatesStart[1])){
-                    $start_day = $this->check_length_add_one($trainingEndDatesStart[1]);
-                }
                 if(isset($trainingEndDatesStart[0])){
-                    $start_month = $this->check_length_add_one($trainingEndDatesStart[0]);
+                    $start_day = $this->check_length_add_one($trainingEndDatesStart[0]);
+                }
+                if(isset($trainingEndDatesStart[1])){
+                    $start_month = $this->check_length_add_one($trainingEndDatesStart[1]);
                 }
                 if(isset($trainingEndDatesStart[2])){
                     $start_year = $trainingEndDatesStart[2];
@@ -12345,11 +12345,11 @@ if(!empty($locations)){
                 $end_day = "";
                 $end_month = "";
                 $end_year = "";
-                 if(isset($trainingEndDatesEnd[1])){
-                   $end_day = $this->check_length_add_one($trainingEndDatesEnd[1]);
+                 if(isset($trainingEndDatesEnd[0])){
+                   $end_day = $this->check_length_add_one($trainingEndDatesEnd[0]);
                 }
-                if(isset($trainingEndDatesEnd[0])){
-                    $end_month = $this->check_length_add_one($trainingEndDatesEnd[0]);
+                if(isset($trainingEndDatesEnd[1])){
+                    $end_month = $this->check_length_add_one($trainingEndDatesEnd[1]);
                 }
                 if(isset($trainingEndDatesEnd[2])){
                     $end_year = $trainingEndDatesEnd[2];
@@ -12372,11 +12372,11 @@ if(!empty($locations)){
                 $dob_start_month = "";
                 $dob_start_year = "";
                 
-                if(isset($dobStartDatesValue[1])){
-                    $dob_start_day = $this->check_length_add_one($dobStartDatesValue[1]);
-                }
                 if(isset($dobStartDatesValue[0])){
-                    $dob_start_month = $this->check_length_add_one($dobStartDatesValue[0]);
+                    $dob_start_day = $this->check_length_add_one($dobStartDatesValue[0]);
+                }
+                if(isset($dobStartDatesValue[1])){
+                    $dob_start_month = $this->check_length_add_one($dobStartDatesValue[1]);
                 }
                 if(isset($dobStartDatesValue[2])){
                     $dob_start_year = $dobStartDatesValue[2];
@@ -12388,11 +12388,11 @@ if(!empty($locations)){
                 $dob_end_day  = "";
                 $dob_end_month = "";
                 $dob_end_year = "";
-                if(isset($dobEndDatesValue[1])){
-                   $dob_end_day = $this->check_length_add_one($dobEndDatesValue[1]);
-                }
                 if(isset($dobEndDatesValue[0])){
-                    $dob_end_month = $this->check_length_add_one($dobEndDatesValue[0]);
+                   $dob_end_day = $this->check_length_add_one($dobEndDatesValue[0]);
+                }
+                if(isset($dobEndDatesValue[1])){
+                    $dob_end_month = $this->check_length_add_one($dobEndDatesValue[1]);
                 }
                 if(isset($dobEndDatesValue[2])){
                     $dob_end_year = $dobEndDatesValue[2];
@@ -12518,9 +12518,9 @@ if(!empty($locations)){
                  $training_organizer = $record['training_organizer_phrase'];
                  $training_organizer = str_replace(",", "@", $training_organizer);
                  $trainStartDate = strtotime($record['training_start_date']);
-                 $training_start_date = date("m-d-Y",$trainStartDate);
+                 $training_start_date = date("d-m-Y",$trainStartDate);
                  $trainEndDate = strtotime($record['training_end_date']);
-                 $training_end_date = date("m-d-Y",$trainEndDate);
+                 $training_end_date = date("d-m-Y",$trainEndDate);
                  $participants = $this->get_counter_person_trainings($training_id,$facilityq);
                  $data_collector = array($link,$trainingtitle,$training_organizer,$training_start_date,$training_end_date,$participants);
              
@@ -13046,9 +13046,9 @@ else if($agrregate_method=="view_part_names"){
 //            $training_end_date = $persons['training_end_date'];
               
               $trainStartDate = strtotime($persons['training_start_date']);
-              $training_start_date = date("m-d-Y",$trainStartDate);
+              $training_start_date = date("d-m-Y",$trainStartDate);
               $trainEndDate = strtotime($persons['training_end_date']);
-              $training_end_date = date("m-d-Y",$trainEndDate);
+              $training_end_date = date("d-m-Y",$trainEndDate);
               
               $certification = $persons['certification'];
               $genders = $persons['gender'];
@@ -13192,8 +13192,8 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                  $maximum_month = $maximum_end_date[1];
                  $maximum_day = $maximum_end_date[2];
                  
-                 $defaultTrainingEndDateStart = $minimum_month."/".$minimum_day."/".$minimum_year;
-                 $defaultTrainingEndDateEnd = $maximum_month."/".$maximum_day."/".$maximum_year;
+                 $defaultTrainingEndDateStart = $minimum_day."/".$minimum_month."/".$minimum_year;
+                 $defaultTrainingEndDateEnd = $maximum_day."/".$maximum_month."/".$maximum_year;
                  
 		$criteria = array ();
 		$where = array ();
@@ -13458,11 +13458,11 @@ if(isset($locations)){
                 $start_year = "";
                 
                
-                if(isset($trainingEndDatesStart[1])){
-                    $start_day = $this->check_length_add_one($trainingEndDatesStart[1]);
-                }
                 if(isset($trainingEndDatesStart[0])){
-                    $start_month = $this->check_length_add_one($trainingEndDatesStart[0]);
+                    $start_day = $this->check_length_add_one($trainingEndDatesStart[0]);
+                }
+                if(isset($trainingEndDatesStart[1])){
+                    $start_month = $this->check_length_add_one($trainingEndDatesStart[1]);
                 }
                 if(isset($trainingEndDatesStart[2])){
                     $start_year = $trainingEndDatesStart[2];
@@ -13472,11 +13472,11 @@ if(isset($locations)){
                 $end_day = "";
                 $end_month = "";
                 $end_year = "";
-                 if(isset($trainingEndDatesEnd[1])){
-                   $end_day = $this->check_length_add_one($trainingEndDatesEnd[1]);
+                 if(isset($trainingEndDatesEnd[0])){
+                   $end_day = $this->check_length_add_one($trainingEndDatesEnd[0]);
                 }
-                if(isset($trainingEndDatesEnd[0])){
-                    $end_month = $this->check_length_add_one($trainingEndDatesEnd[0]);
+                if(isset($trainingEndDatesEnd[1])){
+                    $end_month = $this->check_length_add_one($trainingEndDatesEnd[1]);
                 }
                 if(isset($trainingEndDatesEnd[2])){
                     $end_year = $trainingEndDatesEnd[2];
@@ -13501,11 +13501,11 @@ if(isset($locations)){
                 $dob_start_month = "";
                 $dob_start_year = "";
                 
-                if(isset($dobStartDatesValue[1])){
-                    $dob_start_day = $this->check_length_add_one($dobStartDatesValue[1]);
-                }
                 if(isset($dobStartDatesValue[0])){
-                    $dob_start_month = $this->check_length_add_one($dobStartDatesValue[0]);
+                    $dob_start_day = $this->check_length_add_one($dobStartDatesValue[0]);
+                }
+                if(isset($dobStartDatesValue[1])){
+                    $dob_start_month = $this->check_length_add_one($dobStartDatesValue[1]);
                 }
                 if(isset($dobStartDatesValue[2])){
                     $dob_start_year = $dobStartDatesValue[2];
@@ -13517,11 +13517,11 @@ if(isset($locations)){
                 $dob_end_day  = "";
                 $dob_end_month = "";
                 $dob_end_year = "";
-                if(isset($dobEndDatesValue[1])){
-                   $dob_end_day = $this->check_length_add_one($dobEndDatesValue[1]);
-                }
                 if(isset($dobEndDatesValue[0])){
-                    $dob_end_month = $this->check_length_add_one($dobEndDatesValue[0]);
+                   $dob_end_day = $this->check_length_add_one($dobEndDatesValue[0]);
+                }
+                if(isset($dobEndDatesValue[1])){
+                    $dob_end_month = $this->check_length_add_one($dobEndDatesValue[1]);
                 }
                 if(isset($dobEndDatesValue[2])){
                     $dob_end_year = $dobEndDatesValue[2];
@@ -13647,9 +13647,9 @@ if(isset($locations)){
                  $trainingtitle = $record['training_title_phrase'];
                  $training_organizer = $record['training_organizer_phrase'];
                  $trainStartDate = strtotime($record['training_start_date']);
-                 $training_start_date = date("m-d-Y",$trainStartDate);
+                 $training_start_date = date("d-m-Y",$trainStartDate);
                  $trainEndDate = strtotime($record['training_end_date']);
-                 $training_end_date = date("m-d-Y",$trainEndDate);
+                 $training_end_date = date("d-m-Y",$trainEndDate);
                  $participants = $this->get_counter_person_trainings($training_id,$facilityq);
                  $data_collector = array($link,$trainingtitle,$training_organizer,$training_start_date,$training_end_date,$participants);
              
@@ -13984,9 +13984,9 @@ else if($agrregate_method=="view_part_names"){
 //              $training_end_date = $persons['training_end_date'];
               
               $trainStartDate = strtotime($persons['training_start_date']);
-              $training_start_date = date("m-d-Y",$trainStartDate);
+              $training_start_date = date("d-m-Y",$trainStartDate);
               $trainEndDate = strtotime($persons['training_end_date']);
-              $training_end_date = date("m-d-Y",$trainEndDate);
+              $training_end_date = date("d-m-Y",$trainEndDate);
               $certification = $persons['certification'];
               $genders = $persons['gender'];
               $location_id = $persons['location_id'];
