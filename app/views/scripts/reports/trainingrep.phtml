@@ -29,9 +29,9 @@
 		$enclosure_esc = preg_quote($enclosure, '/');
 	
 		$output = array();
-if(isset($this->criteria['total_participants'])){
+if($this->criteria['aggregate_method'] == "view_part_names" || $this->criteria['aggregate_method'] == "view_aggregate_part"){
                                     $output[] = "Total Participants: ".$this->criteria['total_participants']."";
-                                }  else if(isset($this->criteria['total_training'])) {
+                                }  else if($this->criteria['aggregate_method'] == "view_aggregate_train" || $this->criteria['aggregate_method'] == "view_individual_train") {
                                     $output[] = "Total Trainings: ".$this->criteria['total_training']."";
                                 } 
 		foreach ($data as $row){
@@ -169,11 +169,19 @@ if( $this->criteria['aggregate_method']=="view_part_names"){
 <?php } ?>
 <script>
  $(function() {
-	$('#trainingEndDateStart').datepick();
-        $('#trainingEndDateEnd').datepick();
+	$('#trainingEndDateStart').datepick({
+             dateFormat: "dd/mm/yyyy"
+        });
+        $('#trainingEndDateEnd').datepick({
+             dateFormat: "dd/mm/yyyy"
+        });
         
-        $('#dobStart').datepick();
-        $('#dobEnd').datepick();
+        $('#dobStart').datepick({
+             dateFormat: "dd/mm/yyyy"
+        });
+        $('#dobEnd').datepick({
+             dateFormat: "dd/mm/yyyy"
+        });
 	
 });
 
@@ -422,6 +430,10 @@ label {
      return true;
  }    
  
+ String.prototype.replaceAll = function(target, replacement) {
+  return this.split(target).join(replacement);
+};
+ 
    function errorAlert(error){
      document.getElementById("data").innerHTML = "<div id='statusBox' style='color:red;'><p align='center'>"+error+"</p></div>";
                   dialogCert = $( "#dialog-certification-message" ).dialog({
@@ -534,7 +546,7 @@ else{
       var individualResponseTableDataArray = individualResponseTableData.split(","); 
       responseTable  += '<tr>\n';
       jQuery.each( individualResponseTableDataArray, function( key, result ) {
-          result = result.replace("@", ",");
+          result = result.replaceAll("@", ",");
           responseTable  += '<td>'+result+'</td>\n';
       })
       responseTable  += '</tr>';
@@ -635,7 +647,7 @@ stopLoading();
 							
 							<p align="center"><?php renderFilter($this->locationsPerGeo, 2, 'district_id', $this->criteria['district_id'], 'region_c_id', true,false,'10'); ?></p>
                                                         </div>
-							<div class="col-md-2" >
+							<div class="col-md-3" >
 	
 							<p align="center">LGA</p>
 							
@@ -644,7 +656,7 @@ stopLoading();
                                                         </div>
 
 							<!-- TA:17: 09/04/2014 START-->
-<?php ?><div class="col-md-3" >
+<?php ?><div class="col-md-5" >
                                                         <p align="center">Facility</p>
 							<p align="center">
 <?php renderFilter($this->locationsPerGeo, 4, 'facility_id', $this->criteria['facility_id'],'', true, false,'10'); ?></p>
@@ -662,7 +674,7 @@ stopLoading();
 							
 							<p align="center"><?php renderFilter($this->locations, 2, 'aggreg_district_id', $this->criteria['district_id'], 'aggreg_region_c_id', true,false,'10'); ?></p>
                                                         </div>
-							<div class="col-md-2" >
+							<div class="col-md-3" >
 	
 							<p align="center">LGA</p>
 							
@@ -671,12 +683,21 @@ stopLoading();
                                                         </div>
 
 							<!-- TA:17: 09/04/2014 START-->
-<?php ?><div class="col-md-3" >
+<?php ?><div class="col-md-5" >
                                                         <p align="center">Facility</p>
 							<p align="center">
 <?php renderFilter($this->locations, 4, 'aggreg_facility_id', $this->criteria['facility_id'],'', true, false,'10'); ?></p>
 </div></div>
-							<div class="col-md-3" >
+							
+                                       
+                                            </div>
+                                        </div>
+                                        
+                                       
+                                        
+                                            <div class="col-md-11" style="border:1px solid black;margin:0 auto;padding-bottom: 3px;">
+                                                <div class="row">	
+                                                    <div class="col-md-3" >
 							<p align="center"><?php echo t('Training Type'); ?></p>
 							
 							<p align="center"><select name="training_type[]" id="trainingtype" multiple size="10" >
@@ -692,14 +713,6 @@ echo "<option value=''  >--choose--</option>";
 	}
 ?>
 							</select></p></div>
-                                       
-                                            </div>
-                                        </div>
-                                        
-                                       
-                                        
-                                            <div class="col-md-11" style="border:1px solid black;margin:0 auto;padding-bottom: 3px;">
-                                                <div class="row">	   
 							<div class="col-md-4" >
 
 							<p align="center"><?php echo 'Training Organizer'; ?></p>
@@ -718,23 +731,7 @@ echo "<option value=''  >--choose--</option>";
 		}
 	?>
 							</select></p></div>
-                                                        <div class="col-md-2" >
-							
-	<p align="center"><?php echo t('Trained (End Date)'); ?></p>
-							<p align="center"><input type="text" id="trainingEndDateStart"  value="<?php echo $this->criteria['trainingEndDateStart']; ?>" name="trainingEndDateStart" style="width:70% !important"/></p>
-							
-                                                             
-                                                            <p align="center"> to &nbsp;</p>      
-                                                                        
-                                                              <p align="center"><input type="text" id="trainingEndDateEnd"  value="<?php echo $this->criteria['trainingEndDateEnd'];  ?>" name="trainingEndDateEnd"  style="width:70% !important"/></p>                  
-                                                                                
-                                                                                
-                                                                                     
-															
-                                                      
-                                                       
-
-						</div>
+                                                        
                                                         <div class="col-md-2" >
 							<p align="center"><?php echo t('Professional Qualification'); ?></p>
 							
@@ -752,34 +749,41 @@ echo "<option value=''  >--choose--</option>";
 		}
 	?>
 							</select></p>
-                                                       <p align="center">Certification</p>
-							
-							<p align="center"><select name="certification" style="max-height:25px; " id="certification"> 
-                                                                <option value="" >--choose</option>
-                                                                <option value="Y" <?php if($this->criteria['certification']=="Yes") echo 'selected="selected"';?>>Yes</option>
-                                                                <option value="N" <?php if($this->criteria['certification']=="No") echo 'selected="selected"';?>>No</option>
-                                                            </select>    </p>    
-                                                       <input type="hidden" name="csv" value="0"  id="csvid"/>
-                                                        </div>
-                                                        <div class="col-md-2" >
-                                                            <div id="csvdownload"></div>
-                                                           <p align="center">Gender</p>
+                                                         <p align="center">Gender</p>
 							
 							   <p align="center"><select name="gender" style="max-height:25px;" id="gender"> 
                                                                 <option value="" >--choose--</option>
                                                                 <option value="male" <?php if($this->criteria['gender']=="male") echo 'selected="selected"';?>>Male</option>
                                                                 <option value="female" <?php if($this->criteria['gender']=="female") echo 'selected="selected"';?>>Female</option>
                                                             </select>    
-                                                           </p>                                                   
+                                                           </p>  
+                                                     
+                                                       <input type="hidden" name="csv" value="0"  id="csvid"/>
+                                                        </div>
+                                                        <div class="col-md-3" >
+                                                            <div id="csvdownload"></div>
+                                                            <p align="center">Active Provider Status</p>
+                                                            <p align="center"> <select name="person_status_id[]" id="person_status_id" multiple  size="10">
+                                                <?php 
+                                                echo "<option value=''  >--choose--</option>";
+                                            //print_r($this->person_status);
+                                          
+                                            foreach($this->person_status as $pstatus){
+                                                $titleShow = $pstatus['title'];
+                                                $id = $pstatus['id'];
+                                                //$id = ($id==0 || $id=="")?1:$id;
+                                                $selected = (in_array($id, $this->criteria['person_status_id']))? 'selected' : '';
+                                              // $selected = (!empty($this->criteria['person_status_id']) && $this->criteria['person_status_id'] == $id)? 'selected':'';
+                                               ?>
+                                              <option value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $titleShow; ?></option> 
+  
+  
+                                            <?php
+                                            }
+                                            ?>
+                                                                </select></p>
                                                         
-	                                                   <p align="center"><?php echo t('Date of Birth'); ?></p>
-
-							
-                                                           <p align="center"><input type="text" id="dobStart"  value="<?php echo $this->criteria['dobStart']; ?>" name="dobStart" style="width:70% !important" placeholder="mm/dd/yyyy"/></p>
-							   <p align="center"> to &nbsp;</p>      
-                                                           <p align="center"><input type="text" id="dobEnd"  value="<?php echo $this->criteria['dobEnd'];  ?>" name="dobEnd"  style="width:70% !important" placeholder="mm/dd/yyyy"/></p>                  
-                                                                        
-                                                                                
+	                                                          
                                                                                 
                                                                                 
                                                                                      
@@ -788,6 +792,45 @@ echo "<option value=''  >--choose--</option>";
 													
 
                                                         </div>
+                                                <div class="row">
+                                                    <div class="col-md-4 col-md-push-1" >
+							
+	<p align="center"><?php echo t('Trained End Date Range'); ?></p>
+							<p align="center"><input type="text" id="trainingEndDateStart"  value="<?php echo $this->criteria['trainingEndDateStart']; ?>" name="trainingEndDateStart" style="width:30% !important"/>
+							
+                                                             
+                                                            &nbsp;&nbsp; to &nbsp;&nbsp;     
+                                                         <input type="text" id="trainingEndDateEnd"  value="<?php echo $this->criteria['trainingEndDateEnd'];  ?>" name="trainingEndDateEnd"  style="width:30% !important"/></p>                  
+                                                                                
+                                                                                
+                                                                                     
+															
+                                                      
+                                                       
+
+						</div>
+                                                    <div class="col-md-2">
+                                                          <p align="center">Certification</p>
+							
+							<p align="center"><select name="certification" style="max-height:25px; " id="certification"> 
+                                                                <option value="" >--choose</option>
+                                                                <option value="Y" <?php if($this->criteria['certification']=="Yes") echo 'selected="selected"';?>>Yes</option>
+                                                                <option value="N" <?php if($this->criteria['certification']=="No") echo 'selected="selected"';?>>No</option>
+                                                            </select>    </p>    
+                                                    </div>
+                                                    
+                                                    <div class="col-md-4">
+                                                         <p align="center"><?php echo t('Date of Birth'); ?></p>
+
+							
+                                                           <p align="center"><input type="text" id="dobStart"  value="<?php echo $this->criteria['dobStart']; ?>" name="dobStart" style="width:30% !important" placeholder="mm/dd/yyyy"/>
+							 &nbsp;&nbsp;to &nbsp;&nbsp;    
+                                                           <input type="text" id="dobEnd"  value="<?php echo $this->criteria['dobEnd'];  ?>" name="dobEnd"  style="width:30% !important" placeholder="mm/dd/yyyy"/></p>                  
+                                                                        
+                                                                        
+                                                    </div>
+                                                   
+                                                </div>
                                                             
                                             </div>
                                         </div>
@@ -908,7 +951,7 @@ $url = $_SERVER['REQUEST_URI'] . "&csv=1";
                 </div>
                         <div class="clear" style="height : 100px;"></div>
 			
-                </div>			
+               		
 	
 			<div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
 			</div>

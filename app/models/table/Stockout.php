@@ -18,14 +18,19 @@ require_once 'CacheManager.php';
 class Stockout {
     //put your code here
     
-    public function fetchPercentStockOutFacsWithTrainedHW($training_type, $geoList, $tierValue, $freshVisit, $updateMode = false){
+    public function fetchPercentStockOutFacsWithTrainedHW($training_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
 		$db = Zend_Db_Table_Abstract::getDefaultAdapter();
 		
                 $output = array(array('location'=>'National', 'percent'=>0)); 
                 $helper = new Helper2();
                 $cacheManager = new CacheManager();
             
+                if(empty($lastPullDate) || $lastPullDate==""){
                 $latestDate = $helper->getLatestPullDate();
+                }else{
+                $latestDate = $lastPullDate;
+                 }
+                 
                 if($training_type == 'fp')
                     $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_HW_STOCKED_OUT_FP, $latestDate);
                 else if($training_type == 'larc')
@@ -42,7 +47,11 @@ class Stockout {
                     //needed variables
                     $tierText = $helper->getLocationTierText($tierValue);
                     $tierFieldName = $helper->getTierFieldName($tierText);
-                    $latestDate = $helper->getLatestPullDate();
+                    if(empty($lastPullDate) || $lastPullDate==""){
+                $latestDate = $helper->getLatestPullDate();
+                }else{
+                $latestDate = $lastPullDate;
+                 }
 
                     //where clauses
                     if($training_type == 'fp'){
@@ -107,6 +116,69 @@ class Stockout {
                 
                 //var_dump($output); exit;
                 return $output;
+    }
+    
+    
+    public function fetchPercentStockOutFacsWithTrainedHWNumeratorDenominator($training_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
+		$db = Zend_Db_Table_Abstract::getDefaultAdapter();
+		
+                $output = array(array('location'=>'National', 'percent'=>0)); 
+                $helper = new Helper2();
+                $cacheManager = new CacheManager();
+            
+                if(empty($lastPullDate) || $lastPullDate==""){
+                $latestDate = $helper->getLatestPullDate();
+                }else{
+                $latestDate = $lastPullDate;
+                 }
+                 
+             
+                //check if page is just being loaded
+                //fresh session, month data already registered
+                //just retrieve registered data
+               
+                    //needed variables
+                    $tierText = $helper->getLocationTierText($tierValue);
+                    $tierFieldName = $helper->getTierFieldName($tierText);
+                    if(empty($lastPullDate) || $lastPullDate==""){
+                $latestDate = $helper->getLatestPullDate();
+                }else{
+                $latestDate = $lastPullDate;
+                 }
+
+                    //where clauses
+                    if($training_type == 'fp'){
+                        $tt_where = "(fptrained > 0 OR larctrained > 0)";
+                        $commodityWhere = "commodity_alias = 'so_fp_seven_days'";
+                    }
+                    else if($training_type == 'larc'){
+                        $tt_where = 'larctrained > 0';
+                        $commodityWhere = "commodity_alias = 'so_implants'";
+                    }
+
+
+                    $dateWhere = "date = '$latestDate'";
+                    $reportingWhere = 'facility_reporting_status = 1';
+                    $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
+                    $stockoutWhere = "stock_out='Y'";
+                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
+                                        $tt_where . ' AND ' . $commodityWhere . ' AND ' .
+                                        $stockoutWhere. ' AND ' . $locationWhere;
+
+                    $stockoutHelper = new StockoutHelper();                
+                    $numerators = $stockoutHelper->getStockoutFacsWithTrainedHWCountByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
+
+                    //change long where
+                    $longWhereClause = $dateWhere . ' AND ' . $tt_where . ' AND ' . $locationWhere;
+                    //$denominators = $stockoutHelper->getStockoutFacsWithTrainedHWCountByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
+                    $denominators = $helper->getReportingFacsWithTrainedHWOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
+                    
+                    list($finalNum,$finalDenom) = $helper->addNationalNumersAndDenoms($numerators,$denominators);
+                   
+                   return array($finalNum,$finalDenom);
+               
+                
+               
     }
     
     
@@ -236,12 +308,16 @@ class Stockout {
     }
     
     
-    public function fetchPercentFacsProvidingButStockedOut($commodity_type, $geoList, $tierValue, $freshVisit, $sortResults){
+    public function fetchPercentFacsProvidingButStockedOut($commodity_type, $geoList, $tierValue, $freshVisit, $sortResults,$lastPullDate=""){
 		$db = Zend_Db_Table_Abstract::getDefaultAdapter();
 		
                 $output = array(array('location'=>'National', 'percent'=>0)); 
                 $helper = new Helper2();
+                 if(empty($lastPullDate) || $lastPullDate==""){
                 $latestDate = $helper->getLatestPullDate();
+                }else{
+                $latestDate = $lastPullDate;
+                 }
                 
                 $cacheManager = new CacheManager();
             
@@ -334,6 +410,65 @@ class Stockout {
                 
                 
                 return $output;
+    }
+    
+    
+    public function fetchPercentFacsProvidingButStockedOutNumeratorDenominator($commodity_type, $geoList, $tierValue, $freshVisit, $sortResults,$lastPullDate=""){
+		$db = Zend_Db_Table_Abstract::getDefaultAdapter();
+		
+                $output = array(array('location'=>'National', 'percent'=>0)); 
+                $helper = new Helper2();
+                 if(empty($lastPullDate) || $lastPullDate==""){
+                $latestDate = $helper->getLatestPullDate();
+                }else{
+                $latestDate = $lastPullDate;
+                 }
+                
+                $cacheManager = new CacheManager();
+            
+               
+             
+                    //needed variables
+                    $tierText = $helper->getLocationTierText($tierValue);
+                    $tierFieldName = $helper->getTierFieldName($tierText);
+
+
+                    //where clauses
+                    if($commodity_type == 'fp'){
+                        $commodityTypeWhere = "commodity_type = 'fp'";
+                        $commodityAliasWhere = "commodity_alias = 'so_fp_seven_days'";
+                    }
+                    else if($commodity_type == 'larc'){
+                        $commodityTypeWhere = "commodity_type = 'larc'";
+                        $commodityAliasWhere = "commodity_alias = 'so_implants'";
+                    }
+
+
+                    $dateWhere = "c.date = '$latestDate'";
+                    //use 5 months interval because current month is inclusive
+                    $date6MonthsIntervalWhere = "c.date >= DATE_SUB('$latestDate', INTERVAL 5 MONTH) AND c.date <= '$latestDate'";
+                    $reportingWhere = 'facility_reporting_status = 1';
+                    $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
+                    $stockoutWhere = "stock_out='Y'";
+                    $consumptionWhere = 'consumption > 0';
+
+                    $mainWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
+                                        $commodityAliasWhere . ' AND ' . $stockoutWhere . ' AND ' .
+                                        $locationWhere;
+                    $subWhereClause = $commodityTypeWhere . ' AND ' . $consumptionWhere . ' AND ' .
+                                      $date6MonthsIntervalWhere . ' AND ' . $locationWhere;;
+
+                    $stockoutHelper = new StockoutHelper();                
+                    $numerators = $stockoutHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause, $geoList, $tierText, $tierFieldName);
+
+                    //change main where
+                    $mainWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . $locationWhere;
+                    $denominators = $stockoutHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause, $geoList, $tierText, $tierFieldName);
+
+                    list($finalNum,$finalDenom) = $helper->addNationalNumersAndDenoms($numerators,$denominators);
+                   
+                   return array($finalNum,$finalDenom);
+                  
     }
     
     

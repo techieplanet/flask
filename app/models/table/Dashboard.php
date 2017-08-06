@@ -177,6 +177,48 @@ class Dashboard {
         }	
         
         
+        public function fetchFacsProvidingNumeratorDenominator($commodity_type) {
+            $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+            $output = array(); $helper = new Helper2();
+            $cacheManager = new CacheManager();
+
+            //$denominator = $this->getMonthlyFacilitiesReportingWithConsumption();
+            $latestDate = $helper->getLatestPullDate();
+            
+           
+             
+                        //where clauses
+                        if($commodity_type == 'fp')
+                            $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+                        else if($commodity_type == 'larc')
+                            $ct_where = "commodity_type = 'larc'";
+
+                        $dateWhere = '(date <= (SELECT MAX(date) FROM facility_report_rate) AND date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
+                        $reportingWhere = 'facility_reporting_status = 1';
+                        $consumptionWhere = 'consumption > 0';
+                    
+                        $nationalHelper = new CoverageNationalHelper();
+                        $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
+                                           $consumptionWhere . ' AND ' . $ct_where;
+                        $numerators = $nationalHelper->getNationalFacProvidingOverTime($longWhereClause);
+                        
+                        $denominators = $nationalHelper->getNationalReportingFacsOvertime($dateWhere);
+                        
+                        $finalNumerator = array();
+                        $finalDenominator = array();
+                        
+                        foreach ($numerators as $i => $row){
+                            $month = $numerators[$i]['month_name'];
+                            $finalNumerator[$month] = $numerators[$i]['fid_count'];
+                            $finalDenominator[$month] = $denominators[$i]['fid_count'];
+                          
+                        }
+                        
+                       
+                 return  array($finalNumerator,$finalDenominator);
+          
+        }
+        
         /*
          * This method is now obsolete but keeping for some time just in case
          */
@@ -236,7 +278,7 @@ class Dashboard {
         
         
         //this method replaces the above method
-        public function fetchFacsProvidingStockedoutOvertime($commodity_type, $geoList, $tierValue, $freshVisit) {
+        public function fetchFacsProvidingStockedoutOvertime($commodity_type, $geoList, $tierValue, $freshVisit,$lastPullDatemultiple=array()) {
             $db = Zend_Db_Table_Abstract::getDefaultAdapter();
 		
                 $output = array(); 
@@ -291,11 +333,11 @@ class Dashboard {
                                       $locationWhere;;
 
                     $dashboardHelper = new DashboardHelper();                
-                    $numerators = $dashboardHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause);
+                    $numerators = $dashboardHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause,$lastPullDatemultiple);
 
                     //change main where
                     $mainWhereClause = $reportingWhere . ' AND ' . $locationWhere;
-                    $denominators = $dashboardHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause);
+                    $denominators = $dashboardHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause,$lastPullDatemultiple);
 
                     foreach ($numerators as $date=>$numer){
                         $output[] = array(
@@ -330,6 +372,130 @@ class Dashboard {
                 
                 return array_reverse($output);
         }
+        
+        
+        //this method gets the numerators and the denominators of the method above
+        public function fetchFacsProvidingStockedoutOvertimeNumeratorDenominator($commodity_type, $geoList, $tierValue, $freshVisit,$lastPullDatemultiple=array()) {
+            $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+		
+                $output = array(); 
+                $helper = new Helper2();
+                $latestDate = $helper->getLatestPullDate();
+                
+                $cacheManager = new CacheManager();
+              if($commodity_type == 'fp'){
+                    $cacheValueNumerator = $cacheManager->getIndicator(CacheManager::STOCK_OUTS_OVERTIME_FP_NUMERATOR, $latestDate);
+                    $cacheValueDenominator = $cacheManager->getIndicator(CacheManager::STOCK_OUTS_OVERTIME_FP_DENOMINATOR, $latestDate);
+              }
+                else if($commodity_type == 'larc'){
+                    $cacheValueNumerator = $cacheManager->getIndicator(CacheManager::STOCK_OUTS_OVERTIME_LARC_NUMERATOR, $latestDate);
+                    $cacheValueDenominator = $cacheManager->getIndicator(CacheManager::STOCK_OUTS_OVERTIME_LARC_DENOMINATOR, $latestDate);
+                } 
+                
+                //if this is a freshvisit
+                if($cacheValueNumerator && $cacheValueDenominator && $freshVisit){ 
+                    $finalNumerator = json_decode($cacheValueNumerator,true);
+                    $finalDenominator = json_decode($cacheValueDenominator,true);
+                    
+                }else{
+               
+                    //needed variables
+                    $tierText = $helper->getLocationTierText($tierValue);
+                    $tierFieldName = $helper->getTierFieldName($tierText);
+
+
+                    //where clauses
+                    if($commodity_type == 'fp'){
+                        $commodityTypeWhere = "commodity_type = 'fp'";
+                        $commodityAliasWhere = "commodity_alias = 'so_fp_seven_days'";
+                        $percentIndexText = 'seven_days_percent';
+                    }
+                    else if($commodity_type == 'larc'){
+                        $commodityTypeWhere = "commodity_type = 'larc'";
+                        $commodityAliasWhere = "commodity_alias = 'so_implants'";
+                        $percentIndexText = 'implant_percent';
+                    }
+
+
+                    $dateWhere = "c.date = '$latestDate'";
+                    //use 5 months interval because current month is inclusive
+                    $date6MonthsIntervalWhere = "c.date >= DATE_SUB('$latestDate', INTERVAL 5 MONTH) AND c.date <= '$latestDate'";
+                    $reportingWhere = 'facility_reporting_status = 1';
+                    $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
+                    $stockoutWhere = "stock_out='Y'";
+                    $consumptionWhere = 'consumption > 0';
+
+                    $mainWhereClause = $reportingWhere . ' AND ' . 
+                                        $commodityAliasWhere . ' AND ' . $stockoutWhere . ' AND ' .
+                                        $locationWhere;
+                    $subWhereClause = $commodityTypeWhere . ' AND ' . $consumptionWhere . ' AND ' .
+                                      $locationWhere;;
+
+                    $dashboardHelper = new DashboardHelper();                
+                    $numerators = $dashboardHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause,$lastPullDatemultiple);
+
+                    //change main where
+                    $mainWhereClause = $reportingWhere . ' AND ' . $locationWhere;
+                    $denominators = $dashboardHelper->getFacsProvidingButStockedout($mainWhereClause, $subWhereClause,$lastPullDatemultiple);
+
+                    foreach ($numerators as $date=>$numer){
+                        $month = date('F', strtotime($date));
+                        $finalNumerator[$month] = $numer;
+                        $finalDenominator[$month] = $denominators[$date];
+                        
+                    }
+                    
+                    
+                    
+                
+                    //print_r($numerators); echo '<br><br>';
+                    //print_r($denominators); echo '<br><br>';
+                    //print_r($output); echo '<br><br>';
+                    //exit;
+                    
+                   
+                
+                
+                
+               $finalNumerator = array_reverse($finalNumerator);
+               $finalDenominator = array_reverse($finalDenominator);
+               
+               if($commodity_type == 'fp'){
+                        //$aliasNumerator = CacheManager::PERCENT_FACS_HW_PROVIDING_FP;
+                        $aliasNumerator = CacheManager::STOCK_OUTS_OVERTIME_FP_NUMERATOR;
+                        $aliasDenominator = CacheManager::STOCK_OUTS_OVERTIME_FP_DENOMINATOR;
+               } else if($commodity_type == 'larc'){
+                       
+                        $aliasNumerator = CacheManager::STOCK_OUTS_OVERTIME_LARC_NUMERATOR;
+                        $aliasDenominator = CacheManager::STOCK_OUTS_OVERTIME_LARC_DENOMINATOR;
+               }
+                    
+                    //check if to save month national data
+                    if((!$cacheValueNumerator OR !$cacheValueDenominator) && $freshVisit){ //fresh in month
+                        
+                        $dataArray = array(
+                            'date_cached'=> $latestDate,
+                            'indicator' => 'Stock Outs Overtime FP/LARC Numerator/Denominator',
+                            'indicator_alias' => $aliasNumerator,
+                            'value' => json_encode($finalNumerator)
+                        );
+                        $cacheManager->setIndicator($dataArray);
+                        
+                        $dataArray = array(
+                            'date_cached'=> $latestDate,
+                            'indicator' => 'Stock Outs Overtime FP/LARC Numerator/Denominator',
+                            'indicator_alias' => $aliasDenominator,
+                            'value' => json_encode($finalDenominator)
+                        );
+                        $cacheManager->setIndicator($dataArray);
+                    }
+        }
+                    
+                 
+                
+                
+                return array($finalNumerator,$finalDenominator);
+           }
         
         
         

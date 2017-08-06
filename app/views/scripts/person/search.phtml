@@ -41,11 +41,13 @@
         var myRowClasses = settings.aoData[dataIndex].nTr.className.split(" ");
         console.log(myRowClasses);
         
-        
+        //alert(filter);
         if(filter == active || filter == "" || filter == "all")
         {
             return true;
         }
+        
+        
         return false;
      }
     );
@@ -111,8 +113,10 @@
        
        dataTableObj = $("#peopleTable").DataTable({
         fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            if(aData[8] === "inactive")
+     
+            if(aData[8].toString().toLowerCase().trim() !== "active" && aData[8].toString().toLowerCase().trim() !== "active provider" && aData[8].toString().toLowerCase().trim()!== "")
             {
+               
                 $(nRow).addClass('grey')
             }
         }    
@@ -229,9 +233,22 @@
                                         
                                         <span style="font-size: 11px;font-weight: bold; color:#696969;font-family: Arial, Helvetica, sans-serif;">Filter By Active status</span> 
                                         <select id="activeStatus" onchange="filterByActiveStatus()">
+                                            
                                             <option value="all">All</option>
-                                            <option value="active">Active</option>
-                                            <option value="inactive">Inactive</option>
+                                            
+                                            
+                                            <?php 
+                                            //print_r($this->person_status);
+                                          
+                                            foreach($this->person_status as $pstatus){
+                                                $titleShow = $pstatus['title'];
+                                                $titleValue = strtolower(trim($pstatus['title']));
+                                                echo '<option value="'.$titleShow.'">'.$titleShow.'</option>';
+                                                if($pstatus['id']==1){
+                                                  //  echo '<option value="inactive">All Inactive Providers</option>';
+                                                }
+                                            }
+                                            ?>
                                         </select>
                                         <br /><br />
                                         
@@ -322,7 +339,7 @@
                                                                              
                                                                                 $thisrow[] = addslashes($row['phone_mobile']);
                                                                                 
-                                                                                $thisrow[] = addslashes($row['active']);
+                                                                                $thisrow[] = (string) addslashes($row['active']);
 
 
 										if($row['res']=="0"){
@@ -397,7 +414,7 @@
                                                     {key:"facility_name", label: "<?php echo 'Facility Name';?>", sortable:true, resizeable:true},
                                                     
 						{key:"qualification_phrase", label: "<?php tp('Cadre');?>", sortable:true, resizeable:true},
-                                                {key:"active", label: "Active", sortable:true, resizable:true},
+                                                {key:"active", label: "Status", sortable:true, resizable:true},
                                                     <?php ?> //TA:17: 09/09/2014
 						
 						

@@ -60,6 +60,7 @@ print ScriptContainer::$instance->renderJSHead();
     
 </style>        
     
+    
 <!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/prettify-bundle.js"></script>-->
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
@@ -90,12 +91,13 @@ print ScriptContainer::$instance->renderJSHead();
 
 <script>
   $(function() {
-    $( "#accordion" ).accordion({active: 1});    
+    $( "#accordion" ).accordion({active: 1});
+    //set high charts global color scheme for all high charts instances on this page
+    Highcharts.setOptions({
+            colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#AAAA11', '#B77322']
+        });
   });
   </script>
-
-    
-    
 </head>
 <body class="yui-skin-sam">
     
@@ -133,7 +135,9 @@ print ScriptContainer::$instance->renderJSHead();
 			</div>
 			<!-------   /////////////////////////// load scripts ////////////////////// -->
             <div class="nav-buttons">
-				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');?>
+				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');
+                             // print_r($this->consumptionArray);
+                                ?>
 			</div>
 			
 			<!-------   /////////////////////////// charts ////////////////////// -->
@@ -203,16 +207,8 @@ print ScriptContainer::$instance->renderJSHead();
 
 		<!-------   /////////////////////////// main gnr ////////////////////// -->
 
-                
-                
 
 <script type="text/javascript">
-    
-    $(function () {
-        Highcharts.setOptions({
-            colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#AAAA11', '#B77322']
-        });
-    });
     
   var newFPCurrentMonth = "This chart shows number of clients who accepted a modern family planning method for the first time in their lives in the most recent month for the selected geography.";
   var newFPOvertime = "This chart shows the number of clients who accepted a modern family planning method for the first time in their lives over a period of 12 months for the selected geography.";
@@ -277,8 +273,19 @@ print ScriptContainer::$instance->renderJSHead();
         
         
         $commNames = array('new_acceptors'=>'New FP acceptors', 'current_users'=>'Current FP Users');
-        $consumptionArray = end($this->consumptionArray);
+     
+       
+        $consumptionArray = end($this->consumptionArrays);
+       // print_r($consumptionArray);
+        if(!empty($this->selectedDate)){
+         $fKey = date('F',strtotime($this->selectedDate));
+         $consumptionArray = $this->consumptionArrays[$fKey];
+        }
+       // echo '<br/><br/>';
+       // print_r($consumptionArray);exit;
         $locationNames = array_keys($consumptionArray);
+        
+        
 
         foreach($commNames as $alias=>$commName){
             //if(substr($commName, 0, 6) == 'Female') $commName = 'Current FP Users';
@@ -295,6 +302,10 @@ print ScriptContainer::$instance->renderJSHead();
         dataArray.push(obj);
 <?php        
         }//end commodity
+        
+        if(!empty($this->selectedDate)){
+              $this->date = date('F Y',strtotime($this->selectedDate));
+          }
 ?>
           
           var title_data = '';
@@ -332,12 +343,17 @@ print ScriptContainer::$instance->renderJSHead();
                         },
                     },
                     xAxis: {
+                         title: {
+                      text: 'Geography',
+                      style:{ "fontWeight": "bold" }
+                      },
                         categories: <?php echo json_encode($locationNames); ?>
                     },
                     yAxis: {
                         title: {
-                            text: null
-                        }
+                      text: '#Users',
+                      style:{ "fontWeight": "bold" }
+                      }
                     },
                     tooltip: {
                         formatter: function () {
@@ -388,11 +404,19 @@ function drawLocationBarChart() {
 <?php
       if($allow){
         $commNames = array('new_acceptors'=>'New family planning acceptors', 'current_users'=>'Female 15-49 years using modern contraceptives');
-        $consumptionArray = end($this->consumptionArray);
+        
+       
+        $consumptionArray = end($this->consumptionArrays);
+         if(!empty($this->selectedDate)){
+         $fKey = date('F',strtotime($this->selectedDate));
+         $consumptionArray = $this->consumptionArrays[$fKey];
+        }
         $locationNames = array_keys($consumptionArray);
         reset($consumptionArray); 
-        $firstKey = key($consumptionArray);       
+        $firstKey = key($consumptionArray);  
         
+        
+        //echo $firstKey;exit;
         $color = ''; $consumptionString = "";
         foreach ($consumptionArray as $location=>$indicators){ 
             $consumptionString .= $location == $firstKey ?
@@ -405,8 +429,13 @@ function drawLocationBarChart() {
 	  <?php //echo  " var title_date = 'Monthly Consumption by Method$this->title_date ' " ?>;
           
           var title_data = '';
+          
           <?php //if(isset($this->commodityAndLocation) && !empty($this->commodityAndLocation)) { ?>
-          <?php //if($allow) { ?>
+          <?php //if($allow) {
+          if(!empty($this->selectedDate)){
+              $this->date = date('F Y',strtotime($this->selectedDate));
+          }
+          ?>
               title_data = <?php echo "'$commodityName, $this->date'"; ?>;
               subtitleText = <?php echo "'($this->date)'"; ?>;
           <?php //} ?>
@@ -436,12 +465,17 @@ function drawLocationBarChart() {
                         },
                     },
                     xAxis: {
+                        title: {
+                      text: 'Geography',
+                      style:{ "fontWeight": "bold" }
+                      },
                         categories: <?php echo json_encode($locationNames); ?>
                     },
                     yAxis: {
                         title: {
-                            text: null
-                        }
+                      text: '#Users',
+                      style:{ "fontWeight": "bold" }
+                      }
                     },
                     tooltip: {
                         formatter: function () {
@@ -513,10 +547,16 @@ function drawDefaultLineChart() {
                     
 
 
-        <?php  $textHook = $this->geoListSelectionMade ? 'in selected geographies' : ''; ?>
+        <?php 
+        if(isset($this->selectedDatemultiple) && !empty($this->selectedDatemultiple)){
+         $textTitle = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+        }else{
+         $textTitle = $this->start_date.' to '.$this->end_date;    
+        }
+        $textHook = $this->geoListSelectionMade ? 'in selected geographies' : ''; ?>
         
-        var title_data = <?php echo "'Current FP users and New FP Acceptors $textHook, $this->start_date to $this->end_date'"; ?>;
-        var subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>;
+        var title_data = <?php echo "'Current FP users and New FP Acceptors $textHook, $textTitle'"; ?>;
+        var subtitleText = <?php echo "'($textTitle)'"; ?>;
         
                 $('#chart13_div').highcharts({
                     chart: {
@@ -544,12 +584,17 @@ function drawDefaultLineChart() {
                         //x: -20 //center
                     },
                     xAxis: {
+                         title: {
+                      text: 'Month',
+                      style:{ "fontWeight": "bold" }
+                      },
                         categories: <?php echo json_encode($monthNames); ?>
                     },
                     yAxis: {
                         title: {
-                            text: null
-                        },
+                      text: '#Users',
+                      style:{ "fontWeight": "bold" }
+                      },
                         plotLines: [{
                             value: 0,
                             width: 1,
@@ -613,13 +658,19 @@ function drawDefaultLineChart() {
                      
             <?php
                     }//end foreach
+                    
+                      if(isset($this->selectedDatemultiple) && !empty($this->selectedDatemultiple)){
+         $textTitle = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+        }else{
+         $textTitle = $this->start_date.' to '.$this->end_date;    
+        }
             ?>
 
         dataArray.push(obj); 
         
         
-          var title_data = <?php echo "'$commodityName, $this->start_date to $this->end_date'"; ?>;
-          var subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>;
+          var title_data = <?php echo "'$commodityName, $textTitle'"; ?>;
+          var subtitleText = <?php echo "'($textTitle)'"; ?>;
         
           
                 
@@ -651,12 +702,18 @@ function drawDefaultLineChart() {
                         //x: -20 //center
                     },
                     xAxis: {
+                        : {
+                         title: {
+                      text: 'Month',
+                      style:{ "fontWeight": "bold" }
+                      },
                         categories: <?php echo json_encode($monthNames); ?>
                     },
                     yAxis: {
-                        title: {
-                            text: null
-                        },
+                         title: {
+                      text: '#Users',
+                      style:{ "fontWeight": "bold" }
+                      },
                         plotLines: [{
                             value: 0,
                             width: 1,
@@ -752,10 +809,16 @@ function drawDefaultLineChart() {
                         dataArray.push(obj);
             <?php
                     }
+                    
+                    if(isset($this->selectedDatemultiple) && !empty($this->selectedDatemultiple)){
+         $textTitle = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+        }else{
+         $textTitle = $this->start_date.' to '.$this->end_date;    
+        }
             ?>
             
-            var title_data = <?php echo "'$commodityName in selected geographies, $this->start_date to $this->end_date'"; ?>;
-            var subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>;
+            var title_data = <?php echo "'$commodityName in selected geographies, $textTitle'"; ?>;
+            var subtitleText = <?php echo "'($textTitle)'"; ?>;
 
             $('#chart13_div').highcharts({
                     chart: {
@@ -783,12 +846,17 @@ function drawDefaultLineChart() {
                         //x: -20 //center
                     },
                     xAxis: {
+                        title: {
+                      text: 'Month',
+                      style:{ "fontWeight": "bold" }
+                      },
                         categories: <?php echo json_encode($monthNames); ?>
                     },
                     yAxis: {
                         title: {
-                            text: null
-                        },
+                      text: '#Users',
+                      style:{ "fontWeight": "bold" }
+                      },
                         plotLines: [{
                             value: 0,
                             width: 1,
@@ -825,12 +893,15 @@ function drawDefaultLineChart() {
     
 </script>
 
-    <script src="../js/highcharts/highcharts.js"></script>
-    <script src="../js/highcharts/modules/exporting.js"></script>   
+
+
+                
+      <script src="../js/highcharts/highcharts.js"></script>
+        <script src="../js/highcharts/modules/exporting.js"></script>   
 
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
 
-
+<script src="../js/tp/functions.js"></script>
 
 </body>
 

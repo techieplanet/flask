@@ -26,6 +26,15 @@ Table.GridOne {
 	
 }
 
+  th{
+    max-width:24px !important;
+    background:#009900 !important; /*#006600;*/
+    color:white !important;
+    text-align:center !important;
+    font-weight: bold !important;
+    outline: 0.1em solid #fff !important;
+}
+
 Table.GridOne Td {	
 	padding:1px;
 	border: 1px solid #0000;
@@ -324,10 +333,10 @@ input[type=radio]:not(old):checked +  label > span > span{
 <table border="1" class="GridOne">
     
                                         <thead style="text-align:center;">
-                                            <caption>Table 1:  Awareness and use of contraceptives in Nigeria</caption>
+                                            <caption style="padding: 4px !important;">Nigeria DHS 2013 Indicators: Awareness and use of contraceptives in Nigeria</caption>
                                             <tr  style="text-align:center;">
-                                                <th rowspan="3">Zone</th>
-                                                <th rowspan="3">State</th>
+                                                <th rowspan="3" style="max-width:24px !important; width:24px !important">Zone</th>
+                                                <th rowspan="3" style="max-width:24px !important;width:24px !important">State</th>
                                           <th colspan="16" class="cpr">CPR </th>  
                                             <th rowspan="3" class="unmet">Unmet need among currently<br/> married women aged 15-49</th>
                                             <th colspan="4" class="knowledge">Knowledge </th>

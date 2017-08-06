@@ -19,7 +19,7 @@ class Consumption {
     //put your code here
 
   
-        public function fetchConsumptiomPerCommodity($commodity_id=0, $geoList, $tierValue){
+        public function fetchConsumptiomPerCommodity($commodity_id=0, $geoList, $tierValue,$lastPullDate=""){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $output = array (); 
             $helper = new Helper2();
@@ -27,7 +27,11 @@ class Consumption {
             $tierText = $helper->getLocationTierText($tierValue);
             $tierFieldName = $helper->getTierFieldName($tierText);
             $locationNames = $helper->getLocationNames($geoList);
+            if(empty($lastPullDate)){
             $latestDate = $helper->getLatestPullDate();
+            }else{
+            $latestDate = $lastPullDate;
+            }
             
             //where clauses
             if($commodity_id > 0)
@@ -85,12 +89,19 @@ class Consumption {
         }
         
         
-        public function fetchConsumptionByCommodityOverTime(){
+        public function fetchConsumptionByCommodityOverTime($lastPullDatemultiple = array()){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $output = array (); 
             $helper = new Helper2();
             
-            $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+           if(empty($lastPullDatemultiple)){
+                    
+             $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+            }else{
+                   
+             $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+             }
+            //$dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
             
             $commodityWhere = "(commodity_type = 'fp' OR commodity_type = 'larc')";
             
@@ -122,7 +133,7 @@ class Consumption {
             return $consOverTime;
         }
         
-        public function fetchAllConsumptionBySingleLocationOverTime($geoList, $tierValue){
+        public function fetchAllConsumptionBySingleLocationOverTime($geoList, $tierValue,$lastPullDatemultiple = array()){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $output = array (); 
             $helper = new Helper2();
@@ -136,7 +147,15 @@ class Consumption {
             $methodName = '';
             $commodityWhere = "(commodity_type = 'fp' OR commodity_type = 'larc')";
             
-            $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+             if(empty($lastPullDatemultiple)){
+                    
+             $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+            }else{
+                   
+             $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+             }
+             
+           // $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
             $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
             $longWhereClause = $dateWhere . ' AND ' . $commodityWhere . ' AND ' . $locationWhere;
             
@@ -174,7 +193,7 @@ class Consumption {
             return array(current($locationNames), $consOverTime);  
         }
         
-        public function fetchConsumptionByCommodityAndLocationOverTime($commodityIDList, $geoList, $tierValue){
+        public function fetchConsumptionByCommodityAndLocationOverTime($commodityIDList, $geoList, $tierValue,$lastPullDatemultiple = array()){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $output = array (); $methodNames = array(); 
             $helper = new Helper2();
@@ -197,8 +216,16 @@ class Consumption {
                 $commodityWhere = "c.name_id IN (" . $commodityIDListString . ")";
                 
             }
+            if(empty($lastPullDatemultiple)){
+                    
+             $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+            }else{
+                   
+             $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+             }
             
-            $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+            //$dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+            
             $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
             
             $longWhereClause = $commodityWhere . ' AND ' . $dateWhere . ' AND ' . $locationWhere;
@@ -225,7 +252,7 @@ class Consumption {
             GROUP BY cno.id, geo_zone, date                   
             ORDER BY `display_order`, date DESC, geo_zone ASC
          */
-        public function fetchNewAcceptorsAndCurrentUsers($selectedMethods, $geoList, $tierValue, $freshVisit){
+        public function fetchNewAcceptorsAndCurrentUsers($selectedMethods, $geoList, $tierValue, $freshVisit,$lastPullDatemultiple=array()){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $output = array(); $commNames = array();
             $helper = new Helper2(); $cacheManager = new CacheManager();
@@ -268,8 +295,17 @@ class Consumption {
                 $output = json_decode($cacheValue, true);
             }
             else{
-            
-                $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+            if(empty($lastPullDatemultiple)){
+                    
+             $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+            }else{
+                   
+             $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+             }
+                
+                //$dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+                
+                
                 $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
                 $locationNames = $helper->getLocationNames($geoList);
 
@@ -281,7 +317,7 @@ class Consumption {
                 //echo $longWhereClause; exit;
 
                 $consHelper = new ConsumptionHelper();
-                $output = $consHelper->getNewAcceptorsAndCurrentUsers($commNames, $commodityWhere, $locationWhere, $locationNames, $dateWhere, $tierText, $groupArray, $orderArray);
+                $output = $consHelper->getNewAcceptorsAndCurrentUsers($commNames, $commodityWhere, $locationWhere, $locationNames, $dateWhere, $tierText, $groupArray, $orderArray,$lastPullDatemultiple);
                 //echo var_dump($output);
                 
                 //echo "<br><br><br><br>";
@@ -298,7 +334,11 @@ class Consumption {
                          //$output[$monthName] = array('National' => $output[$monthName]['National']) + $output[$monthName];
                          
                          $arr = array('new_acceptors'=>$totalNewAcceptors, 'current_users'=>$totalCurrentUsers);
+                         if(is_array($output[$monthName])){
                          $output[$monthName] = array_merge(array('National' => $arr), $output[$monthName]);
+                         }else{
+                         //$output[$monthName] = array_merge(array('National' => $arr), array());    
+                         }
                     }
                     //echo var_dump($output); exit;
                 }

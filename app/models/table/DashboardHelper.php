@@ -99,14 +99,18 @@ class DashboardHelper {
     
     
         //this method works in place of the above 2
-        public function getFacsProvidingButStockedout($mainWhereClause, $subWhereClause){
+        public function getFacsProvidingButStockedout($mainWhereClause, $subWhereClause,$lastPullDatemultiple=array()){
             set_time_limit(2000);
             $db = Zend_Db_Table_Abstract::getDefaultAdapter();
             $helper = new Helper2();
 
             //get all monthly dates in previous 12 months range
+            if(!empty($lastPullDatemultiple)){
+                $monthlyDates = $lastPullDatemultiple;
+            }else{
+            
             $monthlyDates = $helper->getPreviousMonthDates(12);
-
+            }
             //$commTypes = array('fp','larc');
             $output = array();
 

@@ -173,7 +173,7 @@ print ScriptContainer::$instance->renderJSHead();
 				
 
 								<!-------   /////////////////////////// chart 2,1 ////////////////////// -->
-								
+<!--								
 					<div id="bottomrow" class="container">
 						<div id="homecontent" class="container">
 							<div id="homecontent-mid" class="row rounded">
@@ -188,12 +188,12 @@ print ScriptContainer::$instance->renderJSHead();
 							</div>
 						</div>
 								
-								<!-------   /////////////////////////// chart 2,2 ////////////////////// -->
+								-----   /////////////////////////// chart 2,2 ////////////////////// 
 								
 								
 								<div class="main-search"></div>
 
-					</div>
+					</div>-->
 				</div>
 		
 	</div>
@@ -231,7 +231,17 @@ print ScriptContainer::$instance->renderJSHead();
   <!-------   /////////////////////////// script 1,1 ////////////////////// -->
 
     function drawChart11() {
-
+         var jNumData = new Array();
+         var jDenomData = new Array();
+         
+         jNumData['% FP facilities stocked out of any FP commodity for 7 days'] = [];
+         jDenomData['% FP facilities stocked out of any FP commodity for 7 days'] = [];
+         
+         jNumData['% implant facilities stocked out of implants'] = [];
+         jDenomData['% implant facilities stocked out of implants'] = [];
+         
+         
+       
             var sevenObject = {name: '% FP facilities stocked out of any FP commodity for 7 days', data: []};
             var implantsObject = {name: '% implant facilities stocked out of implants', data: []};
 
@@ -240,9 +250,25 @@ print ScriptContainer::$instance->renderJSHead();
                 if(!empty($this->fp_facs_providing_stockedout)){
                     foreach ($this->fp_facs_providing_stockedout as $key=>$monthProviders){ 
                         $month .= "'" . $monthProviders['month'] . "',";
+                        $monthName = $monthProviders['month'];
+                        $numeratorFP = $this->fp_numerator[$monthName];
+                        $denominatorFP = $this->fp_denominator[$monthName];
+                        
+                        $numeratorLARC = $this->larc_numerator[$monthName];
+                        $denominatorLARC = $this->larc_denominator[$monthName];
+                        
+                        
                         $seven_days_percent = round($monthProviders['seven_days_percent'] * 100,1);
                         $implant_percent = round($this->larc_facs_providing_stockedout[$key]['implant_percent'] * 100,1);
             ?>
+                    jNumData['% FP facilities stocked out of any FP commodity for 7 days']['<?php echo $monthName; ?>'] = <?php echo $numeratorFP ?>;
+                    
+                    jDenomData['% FP facilities stocked out of any FP commodity for 7 days']['<?php echo $monthName; ?>'] = <?php echo $denominatorFP ?>;
+                    
+                    jNumData['% implant facilities stocked out of implants']['<?php echo $monthName; ?>'] = <?php echo $numeratorLARC ?>;
+                    
+                    jDenomData['% implant facilities stocked out of implants']['<?php echo $monthName; ?>'] = <?php echo $denominatorLARC ?>;
+                    
                         //set PHP values into JS objects
                         sevenObject.data.push(<?php echo $seven_days_percent; ?>);
                         implantsObject.data.push(<?php echo $implant_percent; ?>);
@@ -255,8 +281,18 @@ print ScriptContainer::$instance->renderJSHead();
             ?>
                     
                 <?php 
-                    $title = ($this->freshvisit) ? "Stock out at facilities providing FP overtime" : "Stock outs in selected geographies, $this->start_date to $this->end_date";
-                    $subtitle = "($this->start_date to $this->end_date)";    
+                if(!empty($this->selectedDatemultiple)){
+                    if(sizeof($this->selectedDatemultiple) > 1){
+                  $title = ($this->freshvisit) ? "Stock out at facilities providing FP, across selected dates" : "Stock outs in selected geographies across, selected dates";
+                  $subtitle = "(across selected dates)";   
+                    }else{
+                       $title = ($this->freshvisit) ? "Stock out at facilities providing FP, across selected date" : "Stock outs in selected geographies across, selected date";
+                  $subtitle = "(across selected date)";  
+                    }
+                }else{
+                     $title = ($this->freshvisit) ? "Stock out at facilities providing FP, $this->start_date to $this->end_date" : "Stock outs in selected geographies, $this->start_date to $this->end_date";
+                    $subtitle = "($this->start_date to $this->end_date)"; 
+                }
               ?>;
 
 
@@ -282,12 +318,17 @@ print ScriptContainer::$instance->renderJSHead();
                         x: -20 //center
                     },
                     xAxis: {
+                        title:{
+                     text:'Month',
+                     style:{ "fontWeight": "bold" }
+                   },
                         categories: [<?php echo $month; ?>]
                     },
                     yAxis: {
-                        title: {
-                            text: null
-                        },
+                       title: {
+                        text: '%Facilities',
+                        style:{ "fontWeight": "bold" }
+                    },
                         labels: {
                             format: '{value}%'
                         },
@@ -300,7 +341,7 @@ print ScriptContainer::$instance->renderJSHead();
                     tooltip: {
                         formatter: function () {
                             return '<b>' + this.x + '</b><br/>' +
-                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>';
+                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
                         }
                     },
                     legend: {
@@ -322,9 +363,10 @@ print ScriptContainer::$instance->renderJSHead();
 
       <script src="../js/highcharts/highcharts.js"></script>
       <script src="../js/highcharts/modules/exporting.js"></script>
-      
+                </div>
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
-
+                </div>
+    <script src="../js/tp/functions.js"></script>
 </body>
 
 </html>

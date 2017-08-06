@@ -6,6 +6,8 @@
  *  Fuse IQ -- todd@fuseiq.com
  *
  */
+date_default_timezone_set('Africa/Lagos');
+$isAdmin = false;
 echo 
     '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" >';
 function no_soft_space_str($v){
@@ -154,7 +156,7 @@ $navMain['reports']['archivedreports']				= t('Archived PDF Reports');
                 $navMain['menu']['definitionspage'] = t('Definitions');
              
               $navMain['menu']['rrate'] = t('Reporting Rates');
-               $navMain['menu']['info'] = t('DHS Result');
+               $navMain['menu']['info'] = t('DHS 2013');
              $user = new User();
              
               //TP checking if the user is a user with an ADMIN ROLE
@@ -167,6 +169,7 @@ $navMain['reports']['archivedreports']				= t('Archived PDF Reports');
                 $navMain['analytics'] = array('index'=>'Analytics');
                     
             }
+            $navMain['menu']['userguide'] = t('User Guide');
 
          
 
@@ -239,6 +242,7 @@ $navMain['reports']['archivedreports']				= t('Archived PDF Reports');
 	}
         if($user->is_user_an_admin()){
             $navMain['user']['requestaccess'] = t('View Request User Registration');
+            $isAdmin = true;
           }
         
 	 $user = new User(); 
@@ -283,6 +287,7 @@ if(isset(Settings::$CSS)) {
 
 ?>
 
+<?php $headerText = ""; ?>
 
 <!-- login links -->
 <a href="<?php echo Settings::$COUNTRY_BASE_URL;?>"><img src="<?php
@@ -311,6 +316,35 @@ if(isset(Settings::$CSS)) {
 	}
 
 ?>" id="headerImg" alt="banner" /></a>
+
+<?php 
+$baseLink = Settings::$COUNTRY_BASE_URL;
+         $url_parts = explode('.', $_SERVER['HTTP_HOST']);
+	$engender = false;
+	if ( isset($this->setting['logo_id']) ) {
+		$src = $baseLink.'/images/indexhome.png';
+	} else if ( @$url_parts[0] == 'eventsmart' OR @$url_parts[1] == 'eventsmart' ) {
+		$src =  $baseLink.'/images/engenderhealth-logo-v2.gif';
+		$engender = true;
+	} else {
+		switch ( strtolower(Settings::$COUNTRY_NAME) ) {
+			case 'haiti':
+			$src =  $baseLink.'/images/haiti_flag.jpg';
+			break;
+			case 'tanzaniapartners':
+			$src = $baseLink.'/images/tanzanian_flag.png';
+			break;
+			case 'tanzanianacp':
+			$src = $baseLink.'/images/tanzanian_flag.png';
+			break;
+			default:
+			$src = $baseLink.'/images/header.gif';
+			break;
+		}
+	}
+        
+        $headerText .= '<a href="'.$baseLink.'"><img src="'.$src.'" />';
+?>
 <!-- TA:17:15 changes css -->
 <style>
 .ui-dialog-titlebar {
@@ -346,6 +380,20 @@ if(isset(Settings::$CSS)) {
 
 </div><div class="clear"></div>
 
+<?php 
+$headerText .= '<div style="float:right;"><div id="headerLinks">'.t('Welcome').', '.$firstName.'<span class="pipe">|</span>'.$loginoutLink.'&nbsp;<div style="margin-top:70px; text-align:right; ">';
+if(count($this->languages_enabled) > 1) {
+				foreach( $this->languages_enabled as $lang_opt) {
+					$opts []= '<a href="'.Settings::$COUNTRY_BASE_URL.'/index/language?opt='.urlencode($lang_opt).'">'.t($this->languages[$lang_opt]).'</a>';
+				}
+				$headerText .= implode ('&nbsp;|&nbsp;', $opts);
+			}
+        $headerText .= '</div></div></div><div class="clear"></div>';
+        
+        $headerText .= '<div id="navMain">';
+                        
+?>
+
 	<!-- main navigation -->
 	<div id="navMain">
 		<?php
@@ -371,30 +419,39 @@ if(isset(Settings::$CSS)) {
 			echo '
 			<div class="flydown" '.($dir == 'user'? 'style="float:right;"':'').' onmouseover="fadeShow(this,\''.$dir.'\');" onmouseout="fadeOut(this,\''.$dir.'\');">
 			';
+                        $headerText .= '<div class="flydown" '.($dir == 'user'? 'style="float:right;"':'').' onmouseover="fadeShow(this,\''.$dir.'\');" onmouseout="fadeOut(this,\''.$dir.'\');">
+			';
                         if($dir == 'index' || $dir=='dash' || $dir=='user' || $dir=="index/requestaccess" || $dir == "analytics") {
                           echo '<a href="'.Settings::$COUNTRY_BASE_URL.'/'.$dir.'" id="nav'.$dir.'">' . $navRay['index'] . '</a>';  
+                          $headerText .= '<a href="'.Settings::$COUNTRY_BASE_URL.'/'.$dir.'" id="nav'.$dir.'">' . $navRay['index'] . '</a>';
                         }else{
                          echo '<a href="#" id="nav'.$dir.'">' . $navRay['index'] . '</a>';   
+                         $headerText .= '<a href="#" id="nav'.$dir.'">' . $navRay['index'] . '</a>';
                         }
 			//echo '<a href="#" id="nav'.$dir.'">' . $navRay['index'] . '</a>';
 
 			// Fly-down menu items
 			if(count($navRay) > 1) {
 				echo '<div class="flydownItems">';
+                                $headerText .= '<div class="flydownItems">';
 				foreach($navRay as $file => $label) {
 					if( strstr($file, '->') ){
 						$fragments = explode('->', $file);
 						echo '<a '.(strlen($file)?'href="'.Settings::$COUNTRY_BASE_URL.'/'.$fragments[0].'/'.$fragments[1].'"':'').' >'.$label.'</a>';
+                                                $headerText .= '<a '.(strlen($file)?'href="'.Settings::$COUNTRY_BASE_URL.'/'.$fragments[0].'/'.$fragments[1].'"':'').' >'.$label.'</a>';
 					} else {
 						if($file != 'index') {
 							echo '<a '.(strlen($file)?'href="'.Settings::$COUNTRY_BASE_URL.'/'.$dir.'/'.$file.'"':'').' >'.$label.'</a>';
+                                                        $headerText .= '<a '.(strlen($file)?'href="'.Settings::$COUNTRY_BASE_URL.'/'.$dir.'/'.$file.'"':'').' >'.$label.'</a>';
 						}
 					}
 				}
 				echo '</div>';
+                                $headerText .= '</div>';
 			}
 
 			echo '</div>';
+                        $headerText .= '</div>';
 
 		}
 
@@ -402,6 +459,15 @@ if(isset(Settings::$CSS)) {
 
 
 	</div>
+        <?php 
+        $headerText .= '</div>';
+         $user = new User();
+         
+        if($isAdmin){
+            file_put_contents('headertext.txt', $headerText);
+        }
+        
+        ?>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

@@ -295,7 +295,7 @@ print ScriptContainer::$instance->renderJSHead();
 <?php   
             }//year loop
 
-            $hAxisTitle = '';
+            $hAxisTitle = '2015 target number of HWs to be trained in LARC: 5500';
             $national_title = "Total HWs trained in selected geographies";
             $nationalSubtitle = "as of $this->tp_date";    
         }
@@ -411,12 +411,17 @@ print ScriptContainer::$instance->renderJSHead();
                         },
                     },
                     xAxis: {
+                        title:{
+                            text:'Year',
+                            style:{ "fontWeight": "bold" }
+                        },
                         categories: [<?php echo $yearsString; ?>],
                         
                     },
                     yAxis: {
                         title: {
-                            text: ''
+                            text: '#HWs Trained',
+                            style:{ "fontWeight": "bold" }
                         }
                     },
                     tooltip: {
@@ -519,14 +524,15 @@ print ScriptContainer::$instance->renderJSHead();
                     xAxis: {
                         categories: [<?php echo $yearsString; ?>],
                         title: {
-                            text: '<?php echo $hAxisTitle; ?>',
+                            text: 'Year<br/><br/><?php echo $hAxisTitle; ?>',
                             style:{ "fontWeight": "bold" }
                         }
                         
                     },
                     yAxis: {
                         title: {
-                            text: ''
+                            text: '#HWs Trained',
+                            style:{ "fontWeight": "bold" }
                         }
                     },
                     tooltip: {
@@ -590,10 +596,15 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     xAxis: {
                         categories: [<?php echo $locationsString; ?>],
+                        title: {
+                            text: 'Geography',
+                            style:{ "fontWeight": "bold" }
+                        }
                     },
                     yAxis: {
                         title: {
-                            text: null
+                            text: '#HWs Trained',
+                            style:{ "fontWeight": "bold" }
                         }
                     },
                     tooltip: {
@@ -659,10 +670,15 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     xAxis: {
                         categories: [<?php echo $locationsString; ?>],
+                        title: {
+                        text: 'Geography',
+                        style:{ "fontWeight": "bold" }
+                            }
                     },
                     yAxis: {
                         title: {
-                            text: null
+                            text: '#HWs Trained',
+                            style:{ "fontWeight": "bold" }
                         }
                     },
                     tooltip: {
@@ -718,7 +734,7 @@ print ScriptContainer::$instance->renderJSHead();
 <script src="../js/highcharts/modules/exporting.js"></script>
 
 <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
-
+<script src="../js/tp/functions.js"></script>
 
 
 </body>

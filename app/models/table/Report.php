@@ -28,7 +28,7 @@ class Report {
                            return array($starts_years,$ends_years);
     }
     
-    
+       
         public function get_location_category_unique($category,$condition=""){
        // $db = Zend_Db_Table_Abstract::getDefaultAdapter();
       if($category=="zone"){
@@ -326,6 +326,37 @@ class Report {
            $result = $db->fetchAll($sql);
              return $result[0]['counter'];
        }
+       
+       public function getTrainingIDFacilityID($facility_id,$tempStartDate,$tempEndDate){
+        $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+            $where = array();
+            $where[] = "(training_end_date>='$tempStartDate' AND training_end_date<='$tempEndDate')";
+            
+             if(!empty($facility_id)){
+                $where[]  = "(flv.id IN ($facility_id) )";
+            
+            }
+            
+            
+
+            $implodedWhere = implode(" AND ",$where);
+            $sqlImplode = "";
+            if(!empty($implodedWhere)){
+                $sqlImplode = "WHERE $implodedWhere";
+            }
+            
+            $sql = "SELECT flv.id as facility_id,flv.facility_name,flv.state,flv.lga,t.id as training_id,tto.training_title_phrase,torg.training_organizer_phrase, count(DISTINCT(p.id)) as hwcount FROM training as t 
+                    LEFT JOIN person_to_training as ptt on t.id = ptt.training_id LEFT JOIN person as p on ptt.person_id = p.id 
+                    LEFT JOIN facility_location_view as flv on flv.id=p.facility_id LEFT JOIN training_title_option as tto on tto.id = t.training_title_option_id 
+                    LEFT JOIN training_organizer_option as torg  on torg.id=t.training_organizer_option_id $sqlImplode GROUP BY flv.id,t.id ORDER BY state ASC";
+           
+            $result = $db->fetchAll($sql);
+//            Helper2::jLog(print_r($result,true));
+//            Helper2::jLog($sql);
+            return $result;
+           
+       }
+
         public function selectAggregateFacDataWithTrainingID($trainingID,$tempStartDate,$tempEndDate,$implodeLocations){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $where = array();
@@ -352,6 +383,8 @@ class Report {
                     LEFT JOIN training_organizer_option as torg  on torg.id=t.training_organizer_option_id $sqlImplode GROUP BY flv.id,t.id ORDER BY state ASC";
            
             $result = $db->fetchAll($sql);
+//            Helper2::jLog(print_r($result,true));
+//            Helper2::jLog($sql);
             return $result;
           
         }
@@ -420,7 +453,11 @@ class Report {
          if(!empty($consumption)){
           foreach($consumption as $cons){
               $consName = $this->get_commodity_option_name($cons);
+              if($cons==37 || $cons==36 || $cons=="37" || $cons=="36"){
+                 $headers[] = "$consName (Clients)"; 
+              }else{
               $headers[] = "Consumption of $consName";
+              }
           }
          }
           
@@ -460,7 +497,11 @@ class Report {
          if(!empty($consumption)){
           foreach($consumption as $cons){
               $consName = $this->get_commodity_option_name($cons);
+              if($cons==37 || $cons==36 || $cons=="37" || $cons=="36"){
+                 $headers[] = "$consName (Clients)"; 
+              }else{
               $headers[] = "Consumption of $consName";
+              }
           }
          }
           
@@ -532,7 +573,11 @@ class Report {
          if(!empty($consumption)){
           foreach($consumption as $cons){
               $consName = $this->get_commodity_option_name($cons);
+              if($cons==37 || $cons==36 || $cons=="37" || $cons=="36"){
+                 $headers[] = "$consName (Clients)"; 
+              }else{
               $headers[] = "Consumption of $consName";
+              }
           }
          }
           
@@ -1197,6 +1242,8 @@ class Report {
                             
                             
                         }
+                        
+                        
                         return array($starts_years,$ends_years);
         
     }

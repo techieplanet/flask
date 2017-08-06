@@ -179,7 +179,7 @@ print ScriptContainer::$instance->renderJSHead();
 
 								<!-------   /////////////////////////// chart 2,1 ////////////////////// -->
 								
-					<div id="bottomrow" class="container">
+<!--					<div id="bottomrow" class="container">
 						<div id="homecontent" class="container">
 							<div id="homecontent-mid" class="row rounded">
 								<div id="homebanner" class="rounded">
@@ -193,12 +193,12 @@ print ScriptContainer::$instance->renderJSHead();
 							</div>
 						</div>
 								
-								<!-------   /////////////////////////// chart 2,2 ////////////////////// -->
+								-----   /////////////////////////// chart 2,2 ////////////////////// 
 								
 								
 								<div class="main-search"></div>
 
-					</div>
+					</div>-->
 				</div>
 		
 	</div>
@@ -237,7 +237,8 @@ print ScriptContainer::$instance->renderJSHead();
 
   //TA:17:18 Stock outs charts
   function drawChart11() {
-
+      var jNumData = new Array();
+      var jDenomData = new Array();
 
     <?php
         reset($this->fp_data); 
@@ -245,10 +246,19 @@ print ScriptContainer::$instance->renderJSHead();
         $locationsString = ""; $valuesString = "";
 	foreach ($this->fp_data as $key=>$row){
             $locationsString .= "'" . $row['location'] . "',";
+            $location = $row['location'];
+            $numerator = $this->fp_numerator[''.$location.''];
+            $denominator = $this->fp_denominator[''.$location.''];
+           
             if($firstKey == $key)
                 $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
             else
                 $valuesString .= round($row['percent']*100, 1) . ",";
+            
+                    ?>
+                   jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
+                   jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
+                    <?php
 	}
         $locationsString = substr($locationsString, 0 , -1);
         $valuesString = substr($valuesString, 0 , -1);
@@ -284,11 +294,16 @@ print ScriptContainer::$instance->renderJSHead();
                     enabled: false
                 },
                 xAxis: {
+                    title:{
+                     text:'Geography',
+                     style:{ "fontWeight": "bold" }
+                   },
                     categories: [<?php echo $locationsString; ?>]
                 },
                 yAxis: {
-                    title: {
-                        text: null
+                   title: {
+                        text: '%Facilities',
+                        style:{ "fontWeight": "bold" }
                     },
                     labels: {
                         format: '{value}%'
@@ -296,7 +311,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 tooltip: {
                     formatter: function () {
-                        return '<b>' + this.x + '</b>:' + this.y + '%';
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x]);
                     }
                 },
                 plotOptions: {
@@ -322,6 +337,8 @@ print ScriptContainer::$instance->renderJSHead();
 
  //TA:17:18 Stock outs charts
  function drawChart12() {
+ var jNumData = new Array();
+ var jDenomData = new Array();
 	                                                           
         <?php
              reset($this->fp_data); 
@@ -329,11 +346,22 @@ print ScriptContainer::$instance->renderJSHead();
              $locationsString = ""; $valuesString = "";
              foreach ($this->larc_data as $key=>$row){
                 $locationsString .= "'" . $row['location'] . "',";
+                $numerator = $this->larc_numerator[''.$location.''];
+                $denominator = $this->larc_denominator[''.$location.''];
+                    
                 if($firstKey == $key)
                     $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
                 else
                     $valuesString .= round($row['percent']*100, 1) . ",";
+                
+                
+                     ?>
+                   jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
+                   jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
+                            <?php
 		}
+                
+                
 	?>
 
             var titleText = '<?php echo  "Percent of facilities providing implants stocked out of implants, $this->date"; ?>';
@@ -367,11 +395,16 @@ print ScriptContainer::$instance->renderJSHead();
                     enabled: false
                 },
                 xAxis: {
+                    title:{
+                     text:'Geography',
+                     style:{ "fontWeight": "bold" }
+                   },
                     categories: [<?php echo $locationsString; ?>]
                 },
                 yAxis: {
                     title: {
-                        text: null
+                        text: '%Facilities',
+                        style:{ "fontWeight": "bold" }
                     },
                     labels: {
                         format: '{value}%'
@@ -379,7 +412,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 tooltip: {
                     formatter: function () {
-                        return '<b>' + this.x + '</b>:' + this.y + '%';
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x]);
                     }
                 },
                 plotOptions: {
@@ -409,12 +442,12 @@ print ScriptContainer::$instance->renderJSHead();
   devsite.github.Link.convertAnchors();
   window.prettyPrint();
 </script>	
-
+                </div>
   <script src="../js/highcharts/highcharts.js"></script>
 <script src="../js/highcharts/modules/exporting.js"></script>
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
-
-
+                </div>
+<script src="../js/tp/functions.js"></script>
 
 </body>
 

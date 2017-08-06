@@ -1290,7 +1290,10 @@ $countParticipant = 0;
               
                
 	
-
+                  $person = new Person();
+                
+                 $allPersonStatus = $person->getAllPersonStatus();
+                 $this->view->assign('person_status',$allPersonStatus);
 		//find the first date in the database
 		$db = Zend_Db_Table_Abstract::getDefaultAdapter ();
 		$qualificationsArray = OptionList::suggestionList ( 
@@ -1714,18 +1717,47 @@ $countParticipant = 0;
 					}
 
 				}
-
+                                
+                                 $today = date("Y-m-d H:i:s");
 				if ($this->_getParam ( 'action' ) == 'add') {
 					$do_save_approval_history = true;
-				}
+                                        $row->timestamp_created = $today;
+				}else{
+                                  $row->timestamp_updated = $today;  
+                                }
 				$row->training_refresher_option_id = 0; // refresher / bugfix - this col isnt used anymore
                                 //echo 'Hello';exit;
-                                $currDate = new Zend_Db_Expr('CURDATE()');
-                                $row->timestamp_updated = $currDate;
-                                $row->timestamp_created = $currDate;
+                                //$currDate = new Zend_Db_Expr('CURDATE()');
+                                
+                               
+                                        //$row->timestamp_updated  = $today;
+                                        
+                                        $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+                                        if ($this->_getParam ( 'action' ) == 'add') {
+                                            $trainingdata = new Training();
+                                            //$trainingSave = $row->save();
+                                            $rowData = $row->toArray();
+                                           
+                                            unset($rowData['id']);
+                                            // Helper2::jLog("THis is before we  perform the operattion".print_r($rowData,true));
+                                            // Helper2::jLog("This is the sql query".$db->insert('training',$rowData));
+                                            $trainingid = $trainingObj->insert($rowData);
+                                            $trainingSave = $trainingid;
+//                                            Helper2::jLog("This is the id "+$id);
+//                                             $id = $db->lastInsertId();
+//                                             Helper2::jLog("This is the id "+$id);
+////                                             $select = $trainingdata->select()
+////                                                     ->from('training')
+////                                                     ->where("id = $id");
+                                            $row = $trainingObj->findOrCreate ( $trainingid );
+                                                   //$row->id = 1;  
+		
+                                        }else{
+                                        $trainingSave = $trainingObj->update($row->toArray(), 'id  ='.$row->id);
+                                        }
 //                                print_r($row);
 //                                exit;
-				if ($row->save ()) {
+				if ($trainingSave) {
                                         
                                     //Tp: push data to soap server
                                         
