@@ -99,7 +99,7 @@ $facilityData[] = $rowData;
             
         }
     }
-        public function rratedemoAction(){
+        public function rrateAction(){
              $this->_countrySettings = array();
 		$this->_countrySettings = System::getAll();
                 $facility = new Facility();
@@ -375,7 +375,7 @@ $lgaArray['facilities'] = array();
 $this->view->assign('reporting_rate',json_encode($rrateArray));
 $this->view->assign('date_format',$format);
         }
-        public function rrateAction(){
+        public function rratedemoAction(){
              $this->_countrySettings = array();
 		$this->_countrySettings = System::getAll();
                 $facility = new Facility();

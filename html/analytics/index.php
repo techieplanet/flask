@@ -13,14 +13,19 @@
     
     <!-- Fontawesome css -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" >
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
     
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
     <!-- JQuery UI css -->
-    <link rel="stylesheet" href="css/jquery-ui.min.css" >
-    <link rel="stylesheet" href="css/jquery-ui.theme.min.css" >
+    <link rel="stylesheet" href="css/jquery-ui.min.css" />
+    <link rel="stylesheet" href="css/jquery-ui.theme.min.css" />
     <!-- JQuery DataTable CSS -->
     <link rel="stylesheet" href="http://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" type="text/css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="css/main.css">
+
+			
+			<script src='../js/flydown.js'></script>
+
+			
     <script src="js/jquery-1.12.0.min.js"></script>
     
     <script>
@@ -64,16 +69,84 @@
     </script>
   </head>
   <body>
-    
+      <div id="pageHolder">
+   <div id="header">
+    <a href="http://techieplanetltd.com/chai/trainsmart/html"><img src="http://techieplanetltd.com/chai/trainsmart/html/images/indexhome.png" />
+
+	<div style="float:right;">
+
+<div id="headerLinks">Welcome, Techie<span class="pipe">|</span><a href="http://techieplanetltd.com/chai/trainsmart/html/user/logout">logout</a>&nbsp;
+<div style="margin-top:70px; text-align:right; "></div>
+</div>
+
+</div>
+
+<div class="clear"></div>
+
+<div id="navMain">
+
+	<div class="flydown"  onmouseover="fadeShow(this,'index');" onmouseout="fadeOut(this,'index');">
+			<a href="http://techieplanetltd.com/chai/trainsmart/html/index" id="navindex">Home</a></div>
+
+			<div class="flydown"  onmouseover="fadeShow(this,'training');" onmouseout="fadeOut(this,'training');">
+			<a href="#" id="navtraining">Trainings</a>
+
+			<div class="flydownItems"><a href="http://techieplanetltd.com/chai/trainsmart/html/training/view" >View/Edit Training</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/training/add" >Add New Training</a></div></div>
+
+			<div class="flydown"  onmouseover="fadeShow(this,'person');" onmouseout="fadeOut(this,'person');">
+			<a href="#" id="navperson">People</a><div class="flydownItems"><a href="http://techieplanetltd.com/chai/trainsmart/html/person/search" >View/Edit Person</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/person/add" >Add New Person</a></div></div>
+
+			<div class="flydown"  onmouseover="fadeShow(this,'facility');" onmouseout="fadeOut(this,'facility');">
+			<a href="#" id="navfacility">Places</a><div class="flydownItems"><a href="http://techieplanetltd.com/chai/trainsmart/html/facility/search" >View/Edit Facility</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/facility/searchLocation" >View/Edit Training Location</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/facility/addLocation" >Add Training Location</a></div></div>
+
+			<div class="flydown"  onmouseover="fadeShow(this,'reports');" onmouseout="fadeOut(this,'reports');">
+			<a href="#" id="navreports">Reports</a><div class="flydownItems"><a href="http://techieplanetltd.com/chai/trainsmart/html/reports/alldata" >All Data</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/reports/trainingrep" >Training Data</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/reports/facilitysummary" >Facility  Data</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/reports/archivedreports" >Archived PDF Reports</a></div></div>
+
+			<div class="flydown"  onmouseover="fadeShow(this,'menu');" onmouseout="fadeOut(this,'menu');">
+			<a href="#" id="navmenu">info</a><div class="flydownItems"><a href="http://techieplanetltd.com/chai/trainsmart/html/menu/definitionspage" >Definitions</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/menu/rrate" >Reporting Rates</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/menu/info" >DHS 2013</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/menu/import" >Import DHS Data</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/menu/userguide" >User Guide</a></div></div>
+
+			<div class="flydown"  onmouseover="fadeShow(this,'analytics');" onmouseout="fadeOut(this,'analytics');">
+			<a href="http://techieplanetltd.com/chai/trainsmart/html/analytics" id="navanalytics">Analytics</a></div>
+
+			<div class="flydown" style="float:right;" onmouseover="fadeShow(this,'user');" onmouseout="fadeOut(this,'user');">
+			<a href="http://techieplanetltd.com/chai/trainsmart/html/user" id="navuser">My Account</a><div class="flydownItems">
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/user/../admin/country-settings" >Country Setup</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/user/../admin/training-settings" >Training Settings</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/user/../admin/people-settings" >People Settings</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/user/../admin/facilities-settings" >Facility Settings</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/user/add" >Add New User</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/user/search" >Edit User</a>
+                            <a href="http://techieplanetltd.com/chai/trainsmart/html/user/requestaccess" >View Request User Registration</a></div></div>
+
+
+		</div>
   
-      
-  <nav class="navbar" style="margin-bottom:0;">
+   </div>
+      </div>
+<!--  <nav class="navbar" style="margin-bottom:0;">
+      <div class="row">
+          <div class="col-md-2">
     <a href="" id="headerImg" class="navbar-brand"><img src="img/logo.png" alt="FP Dashboar Logo" /></a> 
-<!--          <ul class="nav navbar-nav pull-xs-right">
+          </div>
+          <ul class="nav navbar-nav pull-xs-right">
               <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
               <li class="nav-item"><a href="#" class="nav-link">ABOUT</a></li> 
-         </ul>-->
-  </nav>
+         </ul>
+
+      </div>
+  </nav>-->
+      
       <hr style="margin:0;" />    
   
       <div class="container-fluid" style="background-color: #f2f2f2;position: relative;min-height: 700px;">
@@ -108,7 +181,12 @@
                           </ul>
                       </li>
                   </ul>
-                  
+                  <hr/>
+                  <li class="nav-item">
+                          <b>Usage data in this section is from June,2016 to date</b>
+                          
+                      </li>
+            
               </div>
               <!-- End of dashboard sidebar -->
               

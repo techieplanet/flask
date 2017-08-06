@@ -3,6 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title><?php echo $this->translation['Application Name'];?> | <?php tp('Info');?></title>
+               
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css" />
+                 <link rel="stylesheet" href="../jqtree/styles.css" />
+                 <link rel="stylesheet" href="../jqtree/css/jquery.treegrid.css" />
+       
 		<?php
 		require_once('views/helpers/Location.php');
 		require_once('views/helpers/ScriptContainer.php');
@@ -12,132 +18,409 @@
 
 		?>
 
-<link rel="stylesheet" href="views/helpers/jquery-ui.css" />
-<script src="views/helpers/jquery-1.9.1.js"></script>
-<script src="views/helpers/jquery-ui.js"></script>
+  <script type="text/javascript" src="../jqtree/js/jquery.treegrid.min.js"></script>
 <style type="text/css">
-   
-    #accordion {
-        width:50%;
-        //float:left;
-        margin-left:50px;
-       color:green;
- 
-    }
-    .accordion1{
-        width:100%;
-    }
-    #accordion p{
-        text-align:left;
-    }
-    #accordion h3{
-        color:green;       
-        background:#DEEBE6;
-        
-    }
-    .tab{
-        padding-right:60%;
-    }
-    .tableft{
-        padding-left:10%;
-        width:60%;
-        float:left;
-        text-align: left;
-        
-    }
-    .tabstateleft{
-       width:60%;
-    
-       text-align:left;
-    }
   
-    .tabright{
-        width:30%;
-        float:right;
-        text-align:right;
+    #headertree{
+        
+    height: 30px !important;
+    outline: 1px solid !important;
+
+    }
+    
+    #headertree th{
+        font-weight: bold !important;
+        outline: 1px solid !important;
+        color: #fff !important;
+        text-align:center !important;
+    }
+   
+    .tree tr,td{
+        outline: 0.005em solid !important;
+    }
+    #rightalign{
+        text-align: right !important;
+        padding-right: 4px !important;
+    }
+    #national{
+        color: green !important;
         
     }
-    #accordion :hover{
-        
-    }
-    .ui-accordion .ui-accordion-content{
-        width:90% !important;
-        margin: 0 auto;
+    
+    #bold{
+        font-weight:bold !important;
     }
      body{
-                        font-size: 12px !important;
-                    }
+         font-size: 12px !important;
+           }
+     .tree{
+          width: 100% !important;
+          }
+
 </style>		
                 
-             <script>
-$(function () {
-$("#accordion").accordion({
-event: "click",
-heightStyle: "content",
-collapsible: true,
-activate: 0,
-active:false,
-autoHeight: false
+<script type="text/javascript">
+     var jsonData = <?php echo $this->reporting_rate; ?>;
+    var htmlAppend = "";
+    var zones = new Array();
+    //this is for fetching the states
+    function showStates(zoneKey,id){
+         startLoading();
+        var states = jsonData[zoneKey]['states'];
+        var loadedStates = zones[zoneKey]['states'];
+        //alert(loadedStates.length);
+      if($(".treegrid-"+zoneKey).treegrid('isExpanded') && loadedStates.length<=0){
+         //zones[zoneKey]['states'] = states;
+   var htmlAppend = "";
+$.each( states, function( key, value ) {
+   var name = value.name;
+   //var name = value.name;
+   var allfac = value.allfac;
+   var facrep = value.facrep;
+   var allfacrrate = value.allfacrrate+"%";
+   var allfacprovfp = value.allfacprovfp;
+   var facprovfprep = value.facprovfprep;
+   var facprovfprrate = value.facprovfprrate+"%";
+   var cssClass = "treegrid-"+zoneKey+""+key;
+   var subclass = "treegrid-parent-"+zoneKey+""+key;
+   zones[zoneKey]['states'][key] = new Array();
+   zones[zoneKey]['states'][key]['lga'] = new Array();
+   var url = "treegrid-parent-"+zoneKey;
+   var htmlData = '<tr class="'+cssClass+' '+url+'" onclick="showLGAS('+key+','+zoneKey+',this)">\n\
+                <td id="bold">'+name+'</td>\n\
+                <td id="rightalign">'+allfac+'</td>\n\
+                <td id="rightalign">'+facrep+'</td>\n\
+                <td id="rightalign">'+allfacrrate+'</td>\n\
+                <td id="rightalign">'+allfacprovfp+'</td>\n\
+                <td id="rightalign">'+facprovfprep+'</td>\n\
+                <td id="rightalign">'+facprovfprrate+'</td>\n\
+                </tr><tr class="treegrid-#1 '+subclass+'"></tr>';
+    // alert(htmlData);
+   htmlAppend += htmlData;
+});
 
-});
-$("div.accordion1").accordion({
-event: "click",
-heightStyle: "content",
-collapsible: true,
-activate: 0,
-active:false,
-autoHeight: false
-});
-
-$("div.accordion2").accordion({
-event: "click",
-heightStyle: "fill",
-height:"content",
-collapsible: true,
-activate: 0,
-active:false,
-autoHeight: false
-});
+//lert($(".treegrid-"+zoneKey).children().length);
+// if($('.treegrid-8').children().length <= 0){
+                // $('.tree').append(html);
+              
+      $(".treegrid-"+zoneKey).after(htmlAppend);
+      $('.tree').treegrid({'initialState':'collapsed'});
+      $(".treegrid-"+zoneKey).treegrid('expand');
+  
+                  }
+  stopLoading();
+  }
 
 
-$("div.accordion3").accordion({
-event: "click",
-heightStyle: "fill",
-height:"100px",
-collapsible: false,
-activate: 0,
-active:false,
-autoHeight: false
+
+
+    
+    
+    
+    
+    
+    //this is for fetching the local governments
+     function showLGAS(stateKey,zoneKey,id){
+         startLoading();
+        var LGAS = jsonData[zoneKey]['states'][stateKey]['lga'];
+   var htmlAppend = "";
+var loadedLGAs = zones[zoneKey]['states'][stateKey]['lga'];
+        //alert(loadedStates.length);
+      if($(".treegrid-"+zoneKey+""+stateKey).treegrid('isExpanded') && loadedLGAs.length<=0){
+         //zones[zoneKey]['states'] = states;
+   var htmlAppend = "";
+$.each( LGAS, function( key, value ) {
+   var name = value.name;
+   //var name = value.name;
+   var lgaid = value.id;
+   var allfac = value.allfac;
+   var facrep = value.facrep;
+   var allfacrrate = value.allfacrrate+"%";
+   var allfacprovfp = value.allfacprovfp;
+   var facprovfprep = value.facprovfprep;
+   var facprovfprrate = value.facprovfprrate+"%";
+   var cssClass = "treegrid-"+zoneKey+""+stateKey+""+key;
+   var subclass = "treegrid-parent-"+zoneKey+""+stateKey+""+key;
+   zones[zoneKey]['states'][stateKey]['lga'][key] = new Array();
+   zones[zoneKey]['states'][stateKey]['lga'][key]['facilities'] = new Array();
+   var url = "treegrid-parent-"+zoneKey+""+stateKey;
+   var htmlData = '<tr class="'+cssClass+' '+url+'" onclick="showFacilities('+key+','+stateKey+','+zoneKey+','+lgaid+')">\n\
+                <td>'+name+'</td>\n\
+                <td id="rightalign">'+allfac+'</td>\n\
+                <td id="rightalign">'+facrep+'</td>\n\
+                <td id="rightalign">'+allfacrrate+'</td>\n\
+                <td id="rightalign">'+allfacprovfp+'</td>\n\
+                <td id="rightalign">'+facprovfprep+'</td>\n\
+                <td id="rightalign">'+facprovfprrate+'</td>\n\
+                </tr><tr class="treegrid-#1 '+subclass+'"></tr>';
+    // alert(htmlData);
+   htmlAppend += htmlData;
 });
+ $(".treegrid-"+zoneKey+""+stateKey).after(htmlAppend);
+      $('.tree').treegrid({'initialState':'collapsed'});
+      
+      $(".treegrid-"+zoneKey).treegrid('expand');
+      $(".treegrid-"+zoneKey+""+stateKey).treegrid('expand');
+
+    }
+    
+    stopLoading();
+    }
+    
+    var facilities = null;
+    function fetchResultViaAjax(lga_id,date_format,lgakey,stateKey,zoneKey){
+    var data = "";
+      $.ajax({
+            type: "POST",
+            url: "<?php echo $this->base_url;?>/menu/rratefacilities",
+            data: {lga:lga_id,lastPullDate:date_format},
+            beforeSend: function() {
+           console.log("before the ajax call");
+            startLoading();
+               },
+            success: function(data) {
+              // alert(data);
+              console.log("ajax call is successful");
+          facilities =  jQuery.parseJSON(data);
+         // alert(facilities);
+         displayFacilites(facilities,lgakey,stateKey,zoneKey);
+           stopLoading();
+     
+         },
+            error: function(jqXHR, textStatus, errorThrown){
+              console.log(" The following error occured: "+ textStatus, errorThrown );
+
+                stopLoading();
+            }
+
+        });
+        
+ }
+ 
+ 
+   function displayFacilites(facilities,lgakey,stateKey,zoneKey){
+  //beforeLoading();
+     var htmlAppend = "";
+$.each( facilities, function( key, value ) {
+    
+   var name = value.name;
+   //var name = value.name;
+   var allfac = value.allfac;
+   var facrep = value.facrep;
+   var allfacrrate = value.allfacrrate+"";
+   var allfacprovfp = value.allfacprovfp;
+   var facprovfprep = value.facprovfprep;
+   var facprovfprrate = value.facprovfprrate+"";
+   var cssClass = "treegrid-"+zoneKey+""+stateKey+""+lgakey+""+key+"-fac";
+   var subclass = "treegrid-parent-"+zoneKey+""+stateKey+""+lgakey+""+key;
+   zones[zoneKey]['states'][stateKey]['lga'][lgakey]['facilities'][key] = name
+  // zones[zoneKey]['states'][stateKey]['lga'][lgakey]['facilities'][key] = name;
+   var url = "treegrid-parent-"+zoneKey+""+stateKey+""+lgakey;
+   var htmlData = '<tr class="'+cssClass+' '+url+'" >\n\
+                <td>'+name+'</td>\n\
+                <td id="rightalign">'+allfac+'</td>\n\
+                <td id="rightalign">'+facrep+'</td>\n\
+                <td id="rightalign">'+allfacrrate+'</td>\n\
+                <td id="rightalign">'+allfacprovfp+'</td>\n\
+                <td id="rightalign">'+facprovfprep+'</td>\n\
+                <td id="rightalign">'+facprovfprrate+'</td>\n\
+                </tr>';
+    // alert(htmlData);
+   htmlAppend += htmlData;
 });
+ $(".treegrid-"+zoneKey+""+stateKey+""+lgakey).after(htmlAppend);
+      $('.tree').treegrid({'initialState':'collapsed'});
+      
+      $(".treegrid-"+zoneKey).treegrid('expand');
+      $(".treegrid-"+zoneKey+""+stateKey).treegrid('expand');
+       $(".treegrid-"+zoneKey+""+stateKey+""+lgakey).treegrid('expand');
+      
+//endLoading();
+ //stopLoading();
+ 
+    }
+    
+    
+    
+    
+    //this is for fetching the facilities
+    function showFacilities(lgakey,stateKey,zoneKey,id){
+   
+    startLoading();
+   
+    var loadedFacilities = zones[zoneKey]['states'][stateKey]['lga'][lgakey]['facilities'];
+ 
+          
+   var htmlAppend = "";
+
+        //alert(loadedStates.length);
+      if($(".treegrid-"+zoneKey+""+stateKey+""+lgakey).treegrid('isExpanded') && loadedFacilities.length<=0){
+            fetchResultViaAjax(id,'<?php echo $this->selectedDate; ?>',lgakey,stateKey,zoneKey);
+           
+         //zones[zoneKey]['states'] = states;
+ 
+    }
+    
+   
+    stopLoading();
+    }
+    
+               $(document).ready(function () {  
+               
+                   
+                                      
+   
+ var htmlAppend = "";
+$.each( jsonData, function( key, value ) {
+   var name = value.name;
+   var allfac = value.allfac;
+   var facrep = value.facrep;
+   var allfacrrate = value.allfacrrate+"%";
+   var allfacprovfp = value.allfacprovfp;
+   var facprovfprep = value.facprovfprep;
+   var facprovfprrate = value.facprovfprrate+"%";
+   var cssClass = "treegrid-"+key;
+   var subclass = "treegrid-parent-"+key;
+   zones[key] = new Array();
+   zones[key]['states'] = new Array();
+   //alert(cssClass);
+   if(key==0){
+     var htmlData = '<tr class="'+cssClass+'">\n\
+                <td id="bold" style="color:green !important;">'+name+'</td>\n\
+                <td id="rightalign">'+allfac+'</td>\n\
+                <td id="rightalign">'+facrep+'</td>\n\
+                <td id="rightalign">'+allfacrrate+'</td>\n\
+                <td id="rightalign">'+allfacprovfp+'</td>\n\
+                <td id="rightalign">'+facprovfprep+'</td>\n\
+                <td id="rightalign">'+facprovfprrate+'</td>\n\
+                </tr>';  
+   }else{
+   var htmlData = '<tr class="'+cssClass+'" onclick="showStates('+key+',this)">\n\
+                <td id="bold">'+name+'</td>\n\
+                <td id="rightalign">'+allfac+'</td>\n\
+                <td id="rightalign">'+facrep+'</td>\n\
+                <td id="rightalign">'+allfacrrate+'</td>\n\
+                <td id="rightalign">'+allfacprovfp+'</td>\n\
+                <td id="rightalign">'+facprovfprep+'</td>\n\
+                <td id="rightalign">'+facprovfprrate+'</td>\n\
+                </tr><tr class="treegrid-#1 '+subclass+'"></tr>';
+                }
+////                    alert(htmlData);
+     htmlAppend += htmlData;
+               
+   
+});
+        $('.tree').append(htmlAppend);
+        $('.tree').treegrid({'initialState':'collapsed'});
+
+
+
+
+    //alert(jsonData[2].states[1].lga[1].facilities[0].name);
+   // alert(data[1]);
+                
+               
+            });
+
 </script>
 
   
 	</head>
     
         
-	<body class="yui-skin-sam" onload="toggle_it();" >
+	<body class="yui-skin-sam"  >
+            <div id="dialog-certification-message" title="" >
+ 
+           <p style="text-align:center;v-align:middle;padding:10px !important" id="data"></p>
+          </div>
 		<div id="pageHolder">
 			<div id="header"><?php require_once('views/scripts/header.phtml');?></div>
 			
 				<div id="subcontent">
 					<div id="contentheader">
-						 <h2 algin="">Reporting Rates <?php echo $this->date_format; ?></h2>  <br/>
+						 <h2 algin="">DHIS-2 Reporting Rates <?php echo $this->date_format; ?></h2>  <br/>
 					</div>
                                    </div>
                   
 				
-			   
-			
-							
+                       <div class="row">
+                        <div class="col-md-10">
+			   <table class="tree">
+                <thead>
+                    <tr id="headertree">
+                        <th></th>
+                        <th colspan="3">All Facilities</th>
+                        <th colspan="3">Facilities Providing FP</th>
+                    </tr>
+                    <tr id="headertree">
+                        <th></th>
+                        <th>All Facilities</th>
+                        <th>Facilities that Reported</th>
+                        <th>Reporting Rate, All Facilities</th>
+                        <th>Facilities Providing</th>
+                        <th>Facilities Providing FP that Reported</th>
+                        <th>Reporting Rate, Facilities Providing FP</th>
+
+                    </tr>
+
+                </thead>
+              
+            </table>  
+                        
+                        </div>	
+                        <div class="col-md-1">
+                            <form name="dashboardForm" id="dashboardForm" method="post" s> 
+
+    <select name="lastPullDate" id="lastPullDate" style="margin-bottom:5px !important" size="7">
+        <?php 
+        for($i=0;$i<sizeof($this->monthDate); $i++){
+            $selected = ($this->monthDate[$i]==$this->selectedDate)?"selected":"";
+            echo "<option value='".$this->monthDate[$i]."' $selected>".$this->monthName[$i]."</option>";
+        }
+        ?>
+    </select>
+   
+
+
+<p3>
+
+    
+    <br/>
+    
+    <div>
+            <input type="submit" value="Preview" class="dbbutton dbbutton_leftmenu" />
+    </div>
+
+</p3>
+
+
+ </form>
+                        </div>
+                       </div>
 	
 			
 			
 		</div>
-                <?php echo $this->reporting_rate; ?>
+                <?php //echo $this->reporting_rate; ?>
             <div id="pageHolder">
                 <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
             </div>
+<!--             <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+       
+        <script type="text/javascript">
+            $('.tree').treegrid({'initialState':'collapsed'});
+            // $('.tier-1').on('expand', function(){
+            //  alert(this.);
+            //  });
+          
+        </script>    
+        <style>
+
+</style>
+
+<div id="loader" class="text-xs-center" style="display:none; vertical-align: middle">
+  <i class="fa fa-spinner fa-2x fa-spin" style="color: #008C00"></i>
+</div>	
 	</body>
 </html>
 

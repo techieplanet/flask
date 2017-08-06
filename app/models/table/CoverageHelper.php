@@ -187,9 +187,55 @@ class CoverageHelper {
                 return $output;
         }
        
+        public function getFacProvidingAllMethodCount($longWhereClause,$geoList,$tierText,$tierFieldName,$latestDate){
+            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+            $helper = new Helper2();
+            
+            $selectData = "(SELECT SUM(consumption) as sumcons,facility_id as facid FROM `commodity` AS `cc` INNER JOIN commodity_name_option as cnpo WHERE cnpo.commodity_type='fp' OR cnpo.commodity_type='larc' AND cc.date = '$latestDate' GROUP BY facid)";
+//            $subselect = $db->select()
+//                            ->from(array('cc'=>'commodity'),
+//                                    array('SUM(consumption) as sumcons, facility_id as facid' ))
+//                            ->joinInner(array('cnpo'=>'commodity_name_option'), 'cnpo.id = cc.name_id', array())
+//                             ->where('cnpo.commodity_type="fp" OR cnpo.commodity_type = "larc" AND cc.date="'.$latestDate.'"')
+//                             ->group('cc.facility_id');
+                
+            $selectQuery = "SELECT COUNT(DISTINCT(c.facility_id)) AS `fid_count`, `flv`.`lga`, `flv`.`state`, `flv`.`geo_zone`, `flv`.`location_id`, `csum`.* FROM `commodity` AS `c` "
+                    . "INNER JOIN `commodity_name_option` AS `cno` ON cno.id = c.name_id "
+                    . "INNER JOIN `facility_location_view` AS `flv` ON flv.id = c.facility_id "
+                    . "LEFT JOIN $selectData AS `csum` ON csum.facid = c.facility_id WHERE $longWhereClause GROUP BY $tierFieldName ORDER BY $tierText ASC";
+            //echo $selectQuery;exit;
+//             $select = $db->select()
+//                            ->from(array('c' => 'commodity'),
+//                              array('COUNT(DISTINCT(c.facility_id)) AS fid_count'))
+//                            ->joinInner(array('cno' => 'commodity_name_option'), 'cno.id = c.name_id', array())
+//                            ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = c.facility_id', array('lga', 'state',  'geo_zone','location_id'))
+//                            ->joinLeft(array('csum'=>($selectData)), 'csum.facid = c.facility_id')
+//                            ->where($longWhereClause)
+//                            ->group($tierFieldName)
+//                            ->order(array($tierText));   
+
+             // echo 'Providing: ' . $select->__toString() . '<br/>'; exit;
+
+               $result = $db->fetchAll($selectQuery);
+//               if($tierText=="lga"){
+//                   $geoList = implode(",",$helper->fetchlocwithparentid($geoList));
+//                   //print_r($geoList);exit;
+//               }
+             
+              //filter for only valid values
+              $locationNames = $helper->getLocationNames($geoList);
+              $locationDataArray = $this->filterLocations($locationNames, $result, $tierText);
+               
+            //var_dump($locationDataArray); exit;
+            return $locationDataArray;
+            
+        }
+        
+        
        public function getFacProvidingCount($longWhereClause, $geoList, $tierText, $tierFieldName){
                 $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
                 $helper = new Helper2();
+                
                 
                 $select = $db->select()
                             ->from(array('c' => 'commodity'),
@@ -470,6 +516,47 @@ class CoverageHelper {
              // echo 'Providing: ' . $select->__toString() . '<br/>'; 
                 
               $result = $db->fetchAll($select);
+              
+              //$locationNames = $helper->getLocationNames($geoList);
+              //$locationDataArray = $this->filterLocations($locationNames, $result, $tierText);
+              
+            //var_dump($locationDataArray); exit;
+            return $result;
+       }
+       
+       
+       public function getFacProvidingOverTimeAllMethods($longWhereClause, $geoList, $tierText, $tierFieldName,$lastPullDatemultiple=array()){
+                $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+                $helper = new Helper2();
+                
+                 if(empty($lastPullDatemultiple)){
+                    
+                $dateWhere = '(cc.date <= (SELECT MAX(date) FROM facility_report_rate) AND cc.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
+                }else{
+                   
+                    $dateWhere = 'cc.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+                }
+                 $selectData = "(SELECT SUM(cc.consumption) as sumcons,SUM(cc.consumption) as countsum,SUM(consumption),facility_id as facid FROM `commodity` AS `cc` INNER JOIN commodity_name_option as cnpo WHERE cnpo.commodity_type='fp' OR cnpo.commodity_type='larc' AND $dateWhere GROUP BY facid)";
+
+                 
+                 $selectQuery = "SELECT COUNT(DISTINCT(c.facility_id)) AS `fid_count`,MONTHNAME(date) as month_name,YEAR(date) as year,csum.countsum, `flv`.`lga`, `flv`.`state`, `flv`.`geo_zone`, `flv`.`location_id`, `csum`.* FROM `commodity` AS `c` "
+                    . "INNER JOIN `commodity_name_option` AS `cno` ON cno.id = c.name_id "
+                    . "INNER JOIN `facility_location_view` AS `flv` ON flv.id = c.facility_id "
+                    . "LEFT JOIN $selectData AS `csum` ON csum.facid = c.facility_id WHERE $longWhereClause AND csum.countsum >=3 GROUP BY $tierFieldName,date ORDER BY $tierText,date ASC";
+            
+                 
+//                $select = $db->select()
+//                            ->from(array('c' => 'commodity'),
+//                              array('COUNT(DISTINCT(c.facility_id)) AS fid_count', 'MONTHNAME(date) as month_name', 'YEAR(date) as year'))
+//                            ->joinInner(array('cno' => 'commodity_name_option'), 'cno.id = c.name_id', array())
+//                            ->joinRight(array('flv' => 'facility_location_view'), 'flv.id = c.facility_id', array('lga', 'state',  'geo_zone'))
+//                            ->where($longWhereClause)
+//                            ->group(array($tierFieldName, 'date'))
+//                            ->order(array($tierText, 'date'));   
+//                
+             // echo 'Providing: ' . $select->__toString() . '<br/>'; 
+               // echo $selectQuery;exit;
+              $result = $db->fetchAll($selectQuery);
               
               //$locationNames = $helper->getLocationNames($geoList);
               //$locationDataArray = $this->filterLocations($locationNames, $result, $tierText);

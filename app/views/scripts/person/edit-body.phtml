@@ -21,7 +21,7 @@ function clearDisabledField()
 }
 function disableRetiredField2()
 {
-    
+   var data = <?php echo $this->person['person_status_id']; ?>;
 }
 
 function disableRetiredField()
@@ -41,7 +41,7 @@ function disableRetiredField()
          "<?php
          if(isset($this->inactive))
           {
-            echo ($this->inactive == "inactive") ? 1 : 0 ;
+            echo ($this->person['person_status_id'] != 1 && $this->person['person_status_id'] != "" && $this->person['person_status_id'] != 0 ) ? 1 : 0 ;
           }
          ?>";
     
@@ -592,10 +592,10 @@ YAHOO.util.Event.onDOMReady(function() {
 
 <!-- This hidden field is used to check if the form has being disabled so as not to submit the form  -->
 <input type="hidden" id="isActive" name="isActive" value="" />
-<?php if($this->inactive == 'active') { ?>
-<Script> $("#isActive").val("1");</script>
-<?php } else { ?>
+<?php if($this->person['person_status_id'] == 1 || $this->person['person_status_id'] == "" || $this->person['person_status_id'] == 0 ) { ?>
 <Script> $("#isActive").val("0");</script>
+<?php } else { ?>
+<Script> $("#isActive").val("1");</script>
 <?php } ?>
 
 
@@ -647,8 +647,8 @@ All other designations including Retired Provider, National Official, State Offi
         
       function showHiddenForm()
       {
-        var chkbox = document.getElementsByName("person_status_id");
-        if(chkbox[1].checked)
+        var selectedStatus = document.getElementsByName("person_status_id");
+        if(selectedStatus == 1 ||  selectedStatus == "" || selectedStatus == 0)
         {
                
                 

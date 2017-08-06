@@ -139,7 +139,7 @@ print ScriptContainer::$instance->renderJSHead();
 
 				<div id="allCharts" class="container">
 				<div id="toprow" class="container">
-						<div id="homecontent" class="container">
+						<div id="homecontent" class="container" style="width: 650px !important; margin-left: 10px !important">
 							<div id="homecontent-mid" class="row rounded">
 								<div id="homebanner" class="rounded">
 								<div class="sliderdiv">
@@ -155,6 +155,21 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                     </div>
                                                                                 </div>
 									<div id="chart11_div" style="width: 600px; height: 350px;margin-left: 20px;"></div>
+									</div>
+                                                                    <br/>
+                                                                    <div class="main-search" style="margin-top: 50px; ">
+                                                                                <div id="infobutton" class="infobutton hidden">
+                                                                                    <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                    <div id="" class="infodiv" >
+                                                                                        The percentage of  facilities providing FP shows the proportion of facilities
+                                                                                        reporting in the most recent month that provided any FP commodities in that 
+                                                                                        month. It may be higher than the percentage of facilities with an FP trained 
+                                                                                        health worker because some health workers may have learned to provide FP in 
+                                                                                        their pre-service training, on the job, and/or were not reported as having 
+                                                                                        received in-service training for other reasons.
+                                                                                    </div>
+                                                                                </div>
+									<div id="chart14_div" style="width: 600px; height: 350px;margin-left: 20px;"></div>
 									</div>
                                                                     
                                                                         <div class="main-search" style="margin-top: 50px; ">
@@ -223,6 +238,7 @@ print ScriptContainer::$instance->renderJSHead();
 	drawChart11();
 	drawChart12();
 	drawChart13();
+        drawChart14();
 		
 	var currentLevel;
 	currentLevel = <?php echo '\'' . $this->location_data[0]['name'] . '\''; ?>;
@@ -263,11 +279,115 @@ print ScriptContainer::$instance->renderJSHead();
         $valuesString = substr($valuesString, 0 , -1);
     ?>
         
-        var titleText = '<?php echo  "Percent of facilities providing FP as of $this->date"; ?>';
+        var titleText = '<?php echo  "Percent of facilities providing at least 1 modern method as of $this->date"; ?>';
         var subtitleText = '(<?php echo  "as of $this->date"; ?>)';
 
 	  <?php //echo  " var title_data = 'Percent of facilities providing FP, $this->date ' " ?>;
         $('#chart11_div').highcharts({
+                chart: {
+                    type: 'column',
+                    reflow: true,
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    events: {
+                        load:function(){
+                            $("text:contains(Highcharts.com)").css("display","none");
+                            $("#chart11_div").siblings("#infobutton").removeClass("hidden");
+                        }
+                    },
+                    height: 350
+                },
+                title: {
+                    text: titleText,
+                    x: -40,
+                    style: {
+                        fontWeight: 'bold',
+                        fontFamily: 'Arial',
+                        fontSize: '16px'
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                     title:{
+                        text:'Geography',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    categories: [<?php echo $locationsString; ?>]
+                },
+                yAxis: {
+                    title: {
+                        text: '%Facilities',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    labels: {
+                        format: '{value}%'
+                    },
+                    //max:100
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x]);
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true
+                    },
+                    column: {
+                        dataLabels: {
+                            enabled: true,
+                            format: '{y}%'
+                        }
+                    }
+                },
+                credits: {enabled: false},
+                series: [{
+                    data: [<?php echo $valuesString; ?>]
+                }]
+            });
+         
+    }
+    
+  //  TA:17:18 Coverage Fac Providing at least 3 commodities in
+  function drawChart14() {
+       var jNumData = new Array();
+       var jDenomData = new Array();
+       
+    <?php
+        reset($this->modern_method_data); 
+        $firstKey = key($this->modern_method_data); 
+        $locationsString = ""; $valuesString = "";
+	foreach ($this->modern_method_data as $key=>$row){ 
+            $locationsString .= "'" . $row['location'] . "',";
+            $location = $row['location'];
+            
+            $numerator = $this->modern_method_numerator[''.$location.''];
+            $denominator = $this->modern_method_denominator[''.$location.''];
+                    
+            if($firstKey == $key)
+                $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
+            else
+                $valuesString .= round($row['percent']*100, 1) . ",";  
+            
+            
+             ?>
+                   jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
+                   jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
+        <?php
+	}
+        
+        $locationsString = substr($locationsString, 0 , -1);
+        $valuesString = substr($valuesString, 0 , -1);
+    ?>
+        
+        var titleText = '<?php echo  "Percent of facilities providing at least 3 modern methods as of $this->date"; ?>';
+        var subtitleText = '(<?php echo  "as of $this->date"; ?>)';
+
+	  <?php //echo  " var title_data = 'Percent of facilities providing FP, $this->date ' " ?>;
+        $('#chart14_div').highcharts({
                 chart: {
                     type: 'column',
                     reflow: true,
@@ -551,7 +671,7 @@ print ScriptContainer::$instance->renderJSHead();
 <script src="../js/highcharts/modules/exporting.js"></script>
     
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
-
+<script src="../js/tp/functions.js"></script>
 
 
 </body>

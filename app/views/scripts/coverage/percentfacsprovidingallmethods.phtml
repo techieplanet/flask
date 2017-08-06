@@ -51,21 +51,21 @@ require_once('views/helpers/ScriptContainer.php');
 print ScriptContainer::$instance->renderCSSHead();
 print ScriptContainer::$instance->renderJSHead();
 ?>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+
 
       <!--<link rel="stylesheet" type="text/css" href="https://google-developers.appspot.---com/_static/f7a896e076/css/screen-docs.css" />-->
-<!--<link rel="stylesheet" href="//www.google.com/cse/style/look/default.css" type="text/css" />-->
+    <!--<link rel="stylesheet" href="//www.google.com/cse/style/look/default.css" type="text/css" />-->
 <!--<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400" type="text/css">-->
     
-
-
-<style>
     
+<style>
+
     .infobutton {
-        padding-right: 13px;
+        padding-right: 13px !important;
+        padding-bottom : 6px;
     }
 
-</style>
+</style>    
     
 
 <!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/prettify-bundle.js"></script>-->
@@ -77,17 +77,21 @@ print ScriptContainer::$instance->renderJSHead();
 <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
 <!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/framebox.js"></script>-->
 
 <script>
   $(function() {
-    $( "#accordion" ).accordion({header: "h3", collapsible: true,active: 2,animated:1000, animated:"slide"});
+    $( "#accordion" ).accordion({header: "h3", collapsible: true,active: 0});
     
     //set high charts global color scheme for all high charts instances on this page
     Highcharts.setOptions({
             colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#AAAA11', '#B77322']
         });
+    
   });
+  
+  
   </script>
 
 </head>
@@ -113,8 +117,6 @@ print ScriptContainer::$instance->renderJSHead();
 					
 			</div>
 
-
-
 			<!-------   /////////////////////////// make left buttons ////////////////////// -->
 
 			<div class="nav-buttons">
@@ -123,7 +125,6 @@ print ScriptContainer::$instance->renderJSHead();
                                     $fileID = $fileInfo['filename'];
                                     require_once('views/scripts/dashboard/left_buttons.phtml');
                                 ?>
-				
 			</div>
 			
 			<!-------   /////////////////////////// load scripts ////////////////////// -->
@@ -141,74 +142,64 @@ print ScriptContainer::$instance->renderJSHead();
 						<div id="homecontent" class="container">
 							<div id="homecontent-mid" class="row rounded">
 								<div id="homebanner" class="rounded">
-								<div class="sliderdiv" style="margin-left: 20px;" >
-                                                                        <div id="infobutton" class="infobutton hidden">
-                                                                            <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                            <div id="" class="infodiv" >
-                                                                                This chart shows the percentage of reporting facilities that have a 
-                                                                                health worker trained in FP that report being stocked out of FP commodities for 
-                                                                                seven consecutive days in the most recent month. <br/><br/>
-                                                                                
-                                                                                The chart helps to understand whether stock outs are a barrier to 
-                                                                                FP service provision at facilities that should be providing FP because they 
-                                                                                have a trained health worker. <br/><br/>
-                                                                                
-                                                                                FP training includes Contraceptive Technology Update, FP Technology, Injectable 
-                                                                                Contraceptives for CHEWs, LARC, and Post Partum IUCD in-service trainings.<br/><br/>
-                                                                            </div>
-                                                                        </div>
-									<div id="chart11_div" style="width: 600px; height: 350px;"></div>
-									</div>
-									<div class="main-search" style="margin-left: 20px; margin-top: 30px;">
+								<div class="sliderdiv">
                                                                                 <div id="infobutton" class="infobutton hidden">
                                                                                     <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                     <div id="" class="infodiv" >
-                                                                                        This chart shows the percentage of reporting facilities that have a 
-                                                                                        health worker trained in LARC that report being stocked out of implants 
-                                                                                        in the most recent month. <br/><br/>
-                                                                                        
-                                                                                        The chart helps to understand whether stock outs are a barrier to LARC 
-                                                                                        service provision at facilities that should be providing LARC because they 
-                                                                                        have a trained health worker. <br/><br/>
-                                                                                        
-                                                                                        LARC training includes LARC and Post Partum IUCD in-service trainings.
+                                                                                        The percentage of  facilities providing FP shows the proportion of facilities
+                                                                                        reporting in the most recent month that provided any FP commodities in that 
+                                                                                        month. It may be higher than the percentage of facilities with an FP trained 
+                                                                                        health worker because some health workers may have learned to provide FP in 
+                                                                                        their pre-service training, on the job, and/or were not reported as having 
+                                                                                        received in-service training for other reasons.
                                                                                     </div>
                                                                                 </div>
-										<div id="chart12_div" style="width: 600px; height: 350px;"></div>
+									<div id="chart11_div" style="width: 600px; height: 350px;margin-left: 20px;"></div>
+									</div>
+                                                                    
+                                                                        <div class="main-search" style="margin-top: 50px; ">
+                                                                                <div id="infobutton" class="infobutton hidden">
+                                                                                    <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                    <div id="" class="infodiv" >
+                                                                                        The percentage of  facilities providing LARC shows the proportion of facilities 
+                                                                                        reporting in the most recent month that provided implants and/or IUDs in 
+                                                                                        that month. It may be higher than the percentage of facilities with a LARC 
+                                                                                        trained health worker because some health workers may have learned to 
+                                                                                        provide LARC in their pre-service training, on the job, and/or were not 
+                                                                                        reported as having received in-service training for other reasons.
+                                                                                    </div>
+                                                                                </div>
+										<div id="chart12_div" style="width: 600px; height: 350px;margin-left: 20px;"></div>
 									</div>
 								</div>
 							</div>
 						</div>			
 					</div>
-
-				<div class="clear"></div>
-				<div class="hrGrey"></div>
-				<div class="clear"></div>
-
-				
-
 								<!-------   /////////////////////////// chart 2,1 ////////////////////// -->
-								
-<!--					<div id="bottomrow" class="container">
+					<div id="bottomrow" class="container">
 						<div id="homecontent" class="container">
 							<div id="homecontent-mid" class="row rounded">
 								<div id="homebanner" class="rounded">
-								<div class="sliderdiv">
-									<div id="chart13_div" style="width: 800px; height: 300px;"></div>
+                                                                    <div class="sliderdiv" style="margin-top: 50px;">
+                                                                        <div id="infobutton" class="infobutton hidden">
+                                                                            <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                            <div id="" class="infodiv" >
+                                                                                The percentage of  facilities providing injectables shows the proportion of 
+                                                                                facilities reporting in the most recent month that provided injectables in 
+                                                                                that month.
+                                                                            </div>
+                                                                        </div>
+									<div id="chart13_div" style="width: 600px; height: 350px; margin-left: 20px;"></div>
 									</div>
 									<div class="main-search">
-										<div id="chart14_div" style="width: 500px; height: 300px;"></div>
+										<div id="chart14_div" style="width: 600px; height: 350px;"></div>
 									</div>
 								</div>
 							</div>
 						</div>
-								
-								-----   /////////////////////////// chart 2,2 ////////////////////// 
-								
-								
+								<!-------   /////////////////////////// chart 2,2 ////////////////////// -->
 								<div class="main-search"></div>
-
-					</div>-->
+					</div>
 				</div>
 		
 	</div>
@@ -219,7 +210,7 @@ print ScriptContainer::$instance->renderJSHead();
 		
 		<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
 
-		<!-------   /////////////////////////// main gnr ////////////////////// -->
+		<!-------   /////////////////////////// main  ////////////////////// -->
 
 		<script type="text/javascript">
 		
@@ -228,56 +219,55 @@ print ScriptContainer::$instance->renderJSHead();
 //  google.setOnLoadCallback(apiLoaded);
 
   $(function() {
-	  document.getElementById("allCharts").style.marginLeft="130px";
-
+	document.getElementById("allCharts").style.marginLeft="130px";
 	drawChart11();
 	drawChart12();
+	drawChart13();
 		
 	var currentLevel;
 	currentLevel = <?php echo '\'' . $this->location_data[0]['name'] . '\''; ?>;
-
-<?php  //file_put_contents('c:\wamp\logs\php_debug.log', 'dash3 193 >'.PHP_EOL, FILE_APPEND | LOCK_EX);	ob_start();
-	   //var_dump("location_data=", $this->location_data[0],"END");
-	   //var_dump("facility_data=",$this->facility_data[0],"END");
-	   //$result = ob_get_clean(); file_put_contents('c:\wamp\logs\php_debug.log', $result .PHP_EOL, FILE_APPEND | LOCK_EX); 
-?>
 		 
   });
 
   <!-------   /////////////////////////// script 1,1 ////////////////////// -->
-  //TA:17:18 Out of stock chart
+
+//TA:17:18 Coverage Fac Providing FP chart
   function drawChart11() {
-      var jNumData = new Array();
-      var jDenomData = new Array();
+       var jNumData = new Array();
+       var jDenomData = new Array();
+       
     <?php
         reset($this->fp_data); 
         $firstKey = key($this->fp_data); 
         $locationsString = ""; $valuesString = "";
-	foreach ($this->fp_data as $key=>$row){
-           $locationsString .= "'" . $row['location'] . "',";
-           $location = $row['location'];
-           $numerator = $this->fp_numerator[''.$location.''];
-           $denominator = $this->fp_denominator[''.$location.''];
+	foreach ($this->fp_data as $key=>$row){ 
+            $locationsString .= "'" . $row['location'] . "',";
+            $location = $row['location'];
+            
+            $numerator = $this->fp_numerator[''.$location.''];
+            $denominator = $this->fp_denominator[''.$location.''];
+                    
             if($firstKey == $key)
                 $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
             else
-                $valuesString .= round($row['percent']*100, 1) . ",";
+                $valuesString .= round($row['percent']*100, 1) . ",";  
             
-              
-                    ?>
+            
+             ?>
                    jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
                    jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
-                    <?php
+        <?php
 	}
+        
         $locationsString = substr($locationsString, 0 , -1);
         $valuesString = substr($valuesString, 0 , -1);
     ?>
+        
+        var titleText = '<?php echo  "Percent of facilities providing FP as of $this->date"; ?>';
+        var subtitleText = '(<?php echo  "as of $this->date"; ?>)';
 
-		    
-          var titleText = '<?php echo  "Percent of facilities with an FP trained HW stocked out of any FP commodity, $this->date"; ?>';
-          var subtitleText = '(<?php echo  $this->date; ?>)';
-
-	  $('#chart11_div').highcharts({
+	  <?php //echo  " var title_data = 'Percent of facilities providing FP, $this->date ' " ?>;
+        $('#chart11_div').highcharts({
                 chart: {
                     type: 'column',
                     reflow: true,
@@ -305,10 +295,10 @@ print ScriptContainer::$instance->renderJSHead();
                     enabled: false
                 },
                 xAxis: {
-                    title:{
-                     text:'Geography',
-                     style:{ "fontWeight": "bold" }
-                   },
+                     title:{
+                        text:'Geography',
+                        style:{ "fontWeight": "bold" }
+                    },
                     categories: [<?php echo $locationsString; ?>]
                 },
                 yAxis: {
@@ -319,6 +309,7 @@ print ScriptContainer::$instance->renderJSHead();
                     labels: {
                         format: '{value}%'
                     },
+                    //max:100
                 },
                 tooltip: {
                     formatter: function () {
@@ -341,43 +332,46 @@ print ScriptContainer::$instance->renderJSHead();
                     data: [<?php echo $valuesString; ?>]
                 }]
             });
-  }
+         
+    }
 
- <!-------   /////////////////////////// script 1,2 ////////////////////// -->
-
-//TA:17:18 Out of stock chart
+//TA:17:18 Coverage Fac Providing LARC chart
  function drawChart12() {
- var jNumData = new Array();
- var jDenomData = new Array();
+ 
+       var jNumData = new Array();
+       var jDenomData = new Array();
 	                                                           
     <?php
-            reset($this->fp_data); 
-            $firstKey = key($this->fp_data); 
-            $locationsString = ""; $valuesString = "";
-            foreach ($this->larc_data as $key=>$row){
-                $locationsString .= "'" . $row['location'] . "',";
-                $location = $row['location'];
-                $numerator = $this->larc_numerator[''.$location.''];
-                $denominator = $this->larc_denominator[''.$location.''];
-                    
-                if($firstKey == $key)
-                    $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
-                else
-                    $valuesString .= round($row['percent']*100, 1) . ",";
-               ?>
+        reset($this->larc_data); 
+        $firstKey = key($this->larc_data); 
+        $locationsString = ""; $valuesString = "";
+	foreach ($this->larc_data as $key=>$row){ 
+            $locationsString .= "'" . $row['location'] . "',";
+            $location = $row['location'];
+            
+            $numerator = $this->larc_numerator[''.$location.''];
+            $denominator = $this->larc_denominator[''.$location.''];
+            
+            if($firstKey == $key)
+                $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
+            else
+                $valuesString .= round($row['percent']*100, 1) . ",";  
+            
+             ?>
                    jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
                    jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
-                            <?php
-            }
-            $locationsString = substr($locationsString, 0 , -1);
-            $valuesString = substr($valuesString, 0 , -1);
+          <?php
+            
+        }
+        
+        $locationsString = substr($locationsString, 0 , -1);
+        $valuesString = substr($valuesString, 0 , -1);
     ?>
-
-
-          var titleText = '<?php echo  "Percent of facilities with a LARC trained HW stocked out of implants, $this->date"; ?>';
-          var subtitleText = '(<?php echo  $this->date; ?>)';
-	  
-	  $('#chart12_div').highcharts({
+        
+        var titleText = '<?php echo  "Percent of facilities providing LARC as of $this->date"; ?>';
+        var subtitleText = '(<?php echo  "as of $this->date"; ?>)';
+        
+	 $('#chart12_div').highcharts({
                 chart: {
                     type: 'column',
                     reflow: true,
@@ -405,10 +399,10 @@ print ScriptContainer::$instance->renderJSHead();
                     enabled: false
                 },
                 xAxis: {
-                    title:{
-                     text:'Geography',
-                     style:{ "fontWeight": "bold" }
-                   },
+                     title:{
+                        text:'Geography',
+                        style:{ "fontWeight": "bold" }
+                    },
                     categories: [<?php echo $locationsString; ?>]
                 },
                 yAxis: {
@@ -419,6 +413,7 @@ print ScriptContainer::$instance->renderJSHead();
                     labels: {
                         format: '{value}%'
                     },
+                    //max:100
                 },
                 tooltip: {
                     formatter: function () {
@@ -441,24 +436,108 @@ print ScriptContainer::$instance->renderJSHead();
                     data: [<?php echo $valuesString; ?>]
                 }]
             });
-  }
+      
+ }
 
-  <!-------   /////////////////////////// 2,1 script gnr  ////////////////////// -->
+ function drawChart13() {
+ 
+       var jNumData = new Array();
+       var jDenomData = new Array();
 
-	
-
-  <!-------   /////////////////////////// 2,1 end script ////////////////////// -->
-
-
-  <!-------   /////////////////////////// 2,2 script ////////////////////// -->
-
-	
-
-
-  <!-------   /////////////////////////// 2,2 end script ////////////////////// -->
-  
-
-  
+    <?php
+            reset($this->inj_data); 
+            $firstKey = key($this->inj_data); 
+            $locationsString = ""; $valuesString = "";
+            foreach ($this->inj_data as $key=>$row){
+                $locationsString .= "'" . $row['location'] . "',";
+                $location = $row['location'];
+                $numerator = $this->inj_numerator[''.$location.''];
+                $denominator = $this->inj_denominator[''.$location.''];
+                if($firstKey == $key)
+                    $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
+                else
+                    $valuesString .= round($row['percent']*100, 1) . ",";  
+                
+                 
+                     ?>
+                   jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
+                   jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
+                            <?php
+            }
+            
+            $locationsString = substr($locationsString, 0 , -1);
+            $valuesString = substr($valuesString, 0 , -1);
+    ?>
+	  
+            var titleText = '<?php echo  "Percent of facilities providing injectables as of $this->date"; ?>';
+            var subtitleText = '(<?php echo  "as of $this->date"; ?>)';
+        
+          $('#chart13_div').highcharts({
+                chart: {
+                    type: 'column',
+                    reflow: true,
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    events: {
+                        load:function(){
+                            $("text:contains(Highcharts.com)").css("display","none");
+                            $("#chart13_div").siblings("#infobutton").removeClass("hidden");
+                        }
+                    },
+                    height: 350
+                },
+                title: {
+                    text: titleText,
+                    x: -40,
+                    style: {
+                        fontWeight: 'bold',
+                        fontFamily: 'Arial',
+                        fontSize: '16px'
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                     title:{
+                        text:'Geography',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    categories: [<?php echo $locationsString; ?>]
+                },
+                yAxis: {
+                    title: {
+                       text: '%Facilities',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    labels: {
+                        format: '{value}%'
+                    },
+                    //max:100
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x]);
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true
+                    },
+                    column: {
+                        dataLabels: {
+                            enabled: true,
+                            format: '{y}%'
+                        }
+                    }
+                },
+                credits: {enabled: false},
+                series: [{
+                    data: [<?php echo $valuesString; ?>]
+                }]
+            });
+ }
 
 </script>
 
@@ -467,13 +546,13 @@ print ScriptContainer::$instance->renderJSHead();
   devsite.github.Link.convertAnchors();
   window.prettyPrint();
 </script>	
-                
-  <script src="../js/highcharts/highcharts.js"></script>
+
+<script src="../js/highcharts/highcharts.js"></script>
 <script src="../js/highcharts/modules/exporting.js"></script>
-
+    
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
-
 <script src="../js/tp/functions.js"></script>
+
 
 </body>
 
