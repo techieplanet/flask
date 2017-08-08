@@ -48,11 +48,17 @@ class Person extends ITechTable
 
 	public function getPersonName($person_id) {
 		$select = $this->select()
-		->from($this->_name, array('first_name', 'middle_name','last_name','facility_id','is_deleted','active','inactive_reason','inactive_description','timestamp_created','timestamp_updated','created_by','modified_by'))
+		->from($this->_name, array('first_name', 'middle_name','last_name','facility_id','is_deleted','person_status_id','active','inactive_reason','inactive_description','timestamp_created','timestamp_updated','created_by','modified_by'))
 		->where("id = $person_id");
 		return $this->fetchRow($select);
 	}
 
+        public function getAllPersonStatus(){
+            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+            $select = $db->select()
+                    ->from('person_status', array('id','title'));
+            return $db->fetchAll($select);
+        }
 	//TA:17:16:1 where should use 'and' for all parameters:
 	//find person by first and middle and last name 
         

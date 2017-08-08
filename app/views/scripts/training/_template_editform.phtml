@@ -45,30 +45,52 @@ echo '<link rel="stylesheet" href="http://cdn.datatables.net/1.10.12/css/jquery.
     
     
     $(document).ready(function (){
-        
+        //This is a dataTable API for filtering rows based on content of the active field
         $.fn.dataTable.ext.search.push(
         function( settings, data, dataIndex ) {
        
-        var status = document.getElementById("activeStatusText").value
+        // Get the value of the user status search value set by onchange of the status select element
+        var filter = document.getElementById("activeStatusText").value;
+        
+        var active = data[9]  || 7 ; // use data for the age column
         
         var myRowClasses = settings.aoData[dataIndex].nTr.className.split(" ");
+        console.log(myRowClasses);
         
-        console.log("status : " + status + ", class + " + myRowClasses);
-        if(status == "all")
+        //alert(filter);
+        if(filter == active || filter == "" || filter == "all")
         {
             return true;
         }
-        if(myRowClasses.indexOf('gray-inactive') > -1 && status == 'inactive')
-        {
-            return true;
-        }
-        if(myRowClasses.indexOf('gray-inactive') < 0 && status == 'active')
-        {
-            return true;
-        }
+        
+        
         return false;
      }
     );
+//    
+//        $.fn.dataTable.ext.search.push(
+//        function( settings, data, dataIndex ) {
+//       
+//        var status = document.getElementById("activeStatusText").value
+//        
+//        var myRowClasses = settings.aoData[dataIndex].nTr.className.split(" ");
+//        
+//        console.log("status : " + status + ", class + " + myRowClasses);
+//        if(status == "all")
+//        {
+//            return true;
+//        }
+//        if(myRowClasses.indexOf('gray-inactive') > -1 && status != 'active' && status.toString().toLowerCase() != 'active provider')
+//        {
+//            return true;
+//        }
+//        if(myRowClasses.indexOf('gray-inactive') < 0 && status == 'active')
+//        {
+//            return true;
+//        }
+//        return false;
+//     }
+//    );
         
         dataTableObj = $("#participantTable2").DataTable(
           {
@@ -667,6 +689,7 @@ $(function() {
               */
             },
             success: function(data) {
+               // alert(data);
                 var els = YAHOO.util.Dom.getElementsByClassName('errorText');
         if ( els.length )
           YAHOO.util.Dom.setStyle(els, 'display', 'none');
@@ -1527,8 +1550,18 @@ if ( $this->row['has_known_participants']) :
       <span style="font-size: 11px;font-weight: bold; color:#696969;font-family: Arial, Helvetica, sans-serif;">Filter By Active status</span> 
         <select id="activeStatus" onchange="filterByActiveStatus()">
             <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <?php 
+                                            //print_r($this->person_status);
+                                          
+                                            foreach($this->person_status as $pstatus){
+                                                $titleShow = $pstatus['title'];
+                                                $titleValue = strtolower(trim($pstatus['title']));
+                                                echo '<option value="'.$titleShow.'">'.$titleShow.'</option>';
+                                                if($pstatus['id']==1){
+                                                 //   echo '<option value="inactive">All Inactive Providers</option>';
+                                                }
+                                            }
+                                            ?>
         </select>
         <br /><br />
         
@@ -1549,6 +1582,7 @@ if ( $this->row['has_known_participants']) :
                             {
                                 $output .= '<th>'. $val .'</th>';
                             }
+                            $output .='<th>Status</th>';
                             $output .= '<th></th>';
                             echo $output;
                         }
@@ -1570,7 +1604,7 @@ if ( $this->row['has_known_participants']) :
                            $rowid = 'row' . $rowCounter;
                           if(isset($tableRow['active']))
                           {
-                              if($tableRow['active'] == "inactive")
+                              if($tableRow['active'] != "active" && strtolower($tableRow['active']) != "active provider" )
                               {
                                   if($tableRow['facility_name'] == null || $tableRow['region_c_name'] == 'unknown'
                                           || $tableRow['district_name'] == 'unknown' || $tableRow['region_c_name'] == null
@@ -1621,6 +1655,7 @@ if ( $this->row['has_known_participants']) :
                            $row.= "<td>" .$tableRow['qualification']. "</td>";
 //                           $row.= "<td>" .$tableRow['Inactive']. "</td>";
                            $row.= "<td id=$cert_colId><div class='yui-dt-col-certification'>" .$tableRow['certification']. "</div></td>";
+                           $row.="<td>".$tableRow['active']."</td>";
                            $row.= "<td  id=$remove_colId><a href='#' onclick=$removeFunc><div class='yui-dt-col-edit'>Remove</div></a></td>";
                            
                           $row .= "</tr>";
@@ -1906,7 +1941,9 @@ if ( $this->row['has_known_participants']) :
            row += "<td>" + lga + "</td>";
            row += "<td>" + facility + "</td>";
            row += "<td>" + qualification + "</td>";
+           
            row += "<td id=" + cert_colId +  "><div class='yui-dt-col-certification'>" + certification + " &nbsp;&nbsp;" + anchor2 +  "</div></td>";
+           row +="<td></td>";
            row += "<td  id=" + remove_colId + "><a href='#' onclick=" + removeFunc + "><div class='yui-dt-col-edit'>Remove</div></a></td>";
 
            row += "</tr>";

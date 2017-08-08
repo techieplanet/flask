@@ -16,12 +16,21 @@
 <link href="../js/datepicker/jquery.datepick.css" rel="stylesheet"/>
 <script src="../js/datepicker/jquery.plugin.js"></script>
 <script src="../js/datepicker/jquery.datepick.js"></script>
+
 </head>
     <script>
  $(function() {
 	    
-        $('#trainingEndDateStart').datepick();
-        $('#trainingEndDateEnd').datepick();
+        $('#trainingEndDateStart').datepick({
+                showOtherMonths: true,
+                selectOtherMonths: true
+            }
+                );
+        $('#trainingEndDateEnd').datepick({
+                showOtherMonths: true,
+                selectOtherMonths: true
+            }
+                );
 	
 });
 </script>
@@ -51,6 +60,55 @@
 					window.location = '<?php echo $this->base_url;?>' + reportSelector[reportSelector.selectedIndex].value + '?<?php echo $_SERVER['QUERY_STRING'];?>';
 				}
 			}
+ 
+function init() {
+
+	   YAHOO.util.Event.addListener("end-day", "change", dateCalc);
+	   YAHOO.util.Event.addListener("end-month", "change", dateCalc);
+	   YAHOO.util.Event.addListener("end-year", "change", dateCalc);
+
+	   YAHOO.util.Event.addListener("training_length_value", "change", dateConfirm);
+}
+YAHOO.util.Event.onDOMReady(init);
+                        
+                        //add end date handler
+function dateCalc() {
+    var elSD = YAHOO.util.Dom.get("start-day").value;
+    var elSM = YAHOO.util.Dom.get("start-month").value;
+    var elSY = YAHOO.util.Dom.get("start-year").value;
+    var elED = YAHOO.util.Dom.get("end-day").value;
+    var elEM = YAHOO.util.Dom.get("end-month").value;
+    var elEY = YAHOO.util.Dom.get("end-year").value;
+    if (elSM > 0) elSM--;
+    if (elEM > 0) elEM--;
+    var startTime = new Date(elSY, elSM, elSD,1).getTime();
+    var endTime = new Date(elEY, elEM, elED,1).getTime();
+    var day = 1000*60*60*24;
+    var duration = (endTime - startTime)/day;
+    if ( duration >= 0 && duration < 1200) {
+      YAHOO.util.Dom.get("training_length_value").value = Math.round(duration) + 1;
+        YAHOO.util.Dom.get("interval2").checked = 'checked';
+
+    }
+  }
+
+function dateConfirm() {
+    var elSD = YAHOO.util.Dom.get("start-day").value;
+    var elSM = YAHOO.util.Dom.get("start-month").value;
+    var elSY = YAHOO.util.Dom.get("start-year").value;
+    var elED = YAHOO.util.Dom.get("end-day").value;
+    var elEM = YAHOO.util.Dom.get("end-month").value;
+    var elEY = YAHOO.util.Dom.get("end-year").value;
+    if (elSM > 0) elSM--;
+    if (elEM > 0) elEM--;
+    var startTime = new Date(elSY, elSM, elSD,1).getTime();
+    var endTime = new Date(elEY, elEM, elED,1).getTime();
+    var day = 1000*60*60*24;
+    var duration = (endTime - startTime)/day;
+      if ( YAHOO.util.Dom.get("training_length_value").value != (Math.round(duration) + 1) )
+      alert("<?php echo t('It looks like the').' '.t('training').' '.t('dates do not match the length. Please double check these fields.');?>");
+
+  }
 		</script>
 
 	</head>
@@ -386,11 +444,46 @@ echo DropDown::render_report_filter('training_primary_language_option', 'showPri
 															<?php } ?>
 
 															</div>
-												
-			
+		<?php if($this->setting['display_end_date']){?>										
+			<div class="clear"></div><br/><br/>
+  <div class="fieldLabel"><?php echo t('Date Range:    From');?></div>
+  <div class="fieldInput" id="startdate">
+    <?php tp('Day');?> <input id="start-day" class="dayfield" type="text" name="start-day" maxlength="2" value="<?php echo $this->criteria['start-day']; ?>"<?php echo $this->viewonly; ?>>
+    / <?php tp('Month');?> <input id="start-month" class="monthfield" type="text" name="start-month" maxlength="2" value="<?php echo $this->criteria['start-month']; ?>" <?php echo $this->viewonly; ?>>
+    / <?php tp('Year');?> <input id="start-year" class="yearfield" type="text" name="start-year" maxlength="4" value="<?php if(!empty($this->criteria['start-year']) && $this->criteria['start-year'] != '0000') echo $this->criteria['start-year'];  ?>" <?php echo $this->viewonly; ?>>
+
+    
+      <script  type="text/javascript">
+  		    YAHOO.util.Event.onDOMReady(function () {
+  		    	makeCalendar("startdate","start-day", "start-month", "start-year",dateCalc);
+  		    });
+  		</script>
+   
+  </div><br/>
+                <?php } ?>
+
+   <?php if($this->setting['display_end_date']){?>
+
+ <div class="fieldLabel"><?php tp(' to ');?></div>
+ <div class="fieldInput" id="enddate">
+    <?php tp('Day');?> <input id="end-day" class="dayfield" type="text" name="end-day" maxlength="2" value="<?php echo $this->criteria['end-day']; ?>"  <?php echo $this->viewonly; ?> >
+    / <?php tp('Month');?> <input id="end-month" class="monthfield" type="text" name="end-month" maxlength="2" value="<?php echo $this->criteria['end-month']; ?>"  <?php echo $this->viewonly; ?>  >
+    / <?php tp('Year');?> <input id="end-year" class="yearfield" type="text" name="end-year"  maxlength="4" value="<?php if(!empty($this->criteria['end-year']) && $this->criteria['end-year'] != '0000') echo $this->criteria['end-year']; else echo date('Y'); ?>"  <?php echo $this->viewonly; ?>>
+
+    
+      <script  type="text/javascript">
+  		    YAHOO.util.Event.onDOMReady(function () {
+  		    	makeAdditionalCalendar("enddate","end-day", "end-month", "end-year",dateCalc);
+  		    });
+  		</script>
+    
+  </div><br/>
+   <?php } ?>
+  
+  
 															<!-- TA:17: 9/3/2014  START -->
 															<?php if($this->setting['display_end_date']){?>
-															<div class="clear"></div><br/><br/>
+<!--															<div class="clear"></div><br/><br/>
 															<div class="fieldLabel"><?php tp('Date Range:    From');?></div>
                                                                                                                         <p align="center"></p>
 							
@@ -398,17 +491,17 @@ echo DropDown::render_report_filter('training_primary_language_option', 'showPri
                                                                     
 															<div class="fieldInput" id="startdate">
 																<input type="text" id="trainingEndDateStart"  value="<?php echo $this->criteria['trainingEndDateStart']; ?>" name="trainingEndDateStart" />
-															</div>
+															</div>-->
 															<?php }?>
 															<!-- TA:17: 9/3/2014  END -->
 															
 															<!-- TA:17: 09/09/2014 fixed bug to on/off end date -->
 			
 															<?php if ( $this->setting['display_end_date']){?>
-															<div class="fieldLabel" style="padding-top:1em;"><?php tp(' to ');?></div>
+<!--															<div class="fieldLabel" style="padding-top:1em;"><?php tp(' to ');?></div>
 															<div class="fieldInput" id="enddate" style="margin-top:1em;">
 															<input type="text" id="trainingEndDateEnd"  value="<?php echo $this->criteria['trainingEndDateEnd'];  ?>" name="trainingEndDateEnd"  />
-															</div>
+															</div>-->
 															<?php }?>
 															<!-- TA:17: 09/12/2014 -->
 															<?php if ( $this->mode == 'search' && $this->setting['module_unknown_participants_enabled']) {?>
@@ -425,7 +518,7 @@ echo DropDown::render_report_filter('training_primary_language_option', 'showPri
 													</form>
 													<?php if ( $this->criteria['go'] ) { ?>
 													<div class="hrGrey"></div>
-													<div class="fieldIndentNoMargin"><?php tp('Trainings');?> <span class="total"><?php echo $this->count;?> <?php if ( $this->mode == 'count' ) echo t('Participants'); else echo '';?></span><?php echo $this->printAndExport();?><span class="datadownload" style="float:right;"><?php if(count($this->results)) { ?><a href="<?php echo $this->base_url; ?>/data/trainings/outputType/csv/<?php echo implode_ids($this->results); ?>"><?php tp('Download Complete Excel Data for these trainings'); ?></a><?php } ?></span></div>
+													<div class="fieldIndentNoMargin"><?php tp('Trainings');?> <span class="total"><?php echo $this->count;?> <?php if ( $this->mode == 'count' ) echo t('Participants'); else echo '';?></span><span class="datadownload" style="float:right;"><?php if(count($this->results)) { ?><a href="<?php echo $this->base_url; ?>/data/trainings/outputType/csv/<?php echo implode_ids($this->results); ?>"><?php tp('Download Complete Excel Data for these trainings'); ?></a><?php } ?></span></div>
 														<?php if ($this->mode == 'search' ) { ?>
 														<a href="<?php echo $this->base_url;?>/training/add"><?php echo t('Add').' '.t('New').' '.t('Training');?></a><br/><br/>
 														<?php } ?>
@@ -453,8 +546,10 @@ echo DropDown::render_report_filter('training_primary_language_option', 'showPri
 																	echo ((array_key_exists('cnt', $row) !== false )? ','.$row['id']: $row['id']);
 
 																	// print_r($row); 
+                                                                                                                                        $trainEndDate = strtotime($row['training_end_date']);
+                                                                                                                                        $training_end_date = date("d-m-Y",$trainEndDate);
 																	
-																	echo ',"'.$row['training_end_date'].'"';
+																	echo ',"'.$training_end_date.'"';
                                                                                                                                         
 
 																	if ( $this->criteria['showProvince'] )

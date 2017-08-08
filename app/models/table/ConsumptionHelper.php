@@ -417,7 +417,7 @@ class ConsumptionHelper {
        }
        
        
-    public function getNewAcceptorsAndCurrentUsers($commNames, $commodityWhere, $locationWhere, $locationNames, $dateWhere, $tierText, $groupArray, $orderArray){
+    public function getNewAcceptorsAndCurrentUsers($commNames, $commodityWhere, $locationWhere, $locationNames, $dateWhere, $tierText, $groupArray, $orderArray,$lastPullDatemultiple=array()){
         $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
         $helper = new Helper2(); $output = array();
         
@@ -447,9 +447,14 @@ class ConsumptionHelper {
         
         $monthNames = array();  $i =0;
         $dates = $helper->getPreviousMonthDates(12);
+        if(!empty($lastPullDatemultiple)){
+            $dates = $lastPullDatemultiple;
+        }
         foreach($dates as $key=>$date){
             $monthNames[] = date('F', strtotime($date));
         }
+        //print_r($dates);
+       // print_r($lastPullDatemultiple);
         $monthNames = array_reverse($monthNames);
         //var_dump($monthNames); exit;
 

@@ -344,11 +344,16 @@ function drawChart11() {
                     enabled: false
                 },
                 xAxis: {
+                    title:{
+                        text:'FP Commodity',
+                        style:{ "fontWeight": "bold" }
+                    },
                     categories: [<?php echo $methodString; ?>]
                 },
                 yAxis: {
                     title: {
-                        text: null
+                        text: '#Commodities Consumed',
+                        style:{ "fontWeight": "bold" }
                     }
                 },
                 tooltip: {
@@ -438,10 +443,17 @@ function drawChart13() {
                         }//end commodity
                 ?>
                         
-                        
+                        <?php 
+               if(!empty($this->selectedDatemultiple)){
+                   
+                   $titleText = (sizeof($this->selectedDatemultiple)>1) ?"across selected dates" : "across selected date";
+               }else{
+                  $titleText = $this->start_date." to ".$this->end_date;
+               }
+               ?>
                        
-                        var title_data = <?php echo "'Consumption of FP commodities, $this->start_date to $this->end_date'"; ?>; 
-                        var subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>
+                        var title_data = <?php echo "'Consumption of FP commodities, $titleText'"; ?>; 
+                        var subtitleText = <?php echo "'($titleText)'"; ?>
                             
                         $('#chart13_div').highcharts({
                             chart: {
@@ -478,11 +490,16 @@ function drawChart13() {
                                 borderWidth: 1
                             },
                             xAxis: {
+                                title:{
+                                    text:'Month',
+                                    style:{ "fontWeight": "bold" }
+                                },
                                 categories: <?php echo json_encode($monthNames); ?>
                             },
                             yAxis: {
                                 title: {
-                                    text: null
+                                     text: '#Commodities Consumed',
+                                     style:{ "fontWeight": "bold" }
                                 },
                                 plotLines: [{
                                     value: 0,
@@ -570,12 +587,19 @@ function drawChart13() {
                 <?php
                         }//end commodity
                 ?>
-        
+           <?php 
+               if(!empty($this->selectedDatemultiple)){
+                   
+                   $titleText = (sizeof($this->selectedDatemultiple)>1) ?"across selected dates" : "across selected date";
+               }else{
+                  $titleText = $this->start_date." to ".$this->end_date;
+               }
+               ?>
         
          var title_data = '';
           <?php if(isset($this->single_location)){ ?>
-              title_data = <?php echo "'Consumption of FP commodities in selected geographies, $this->start_date to $this->end_date'"; ?>; 
-              subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>
+              title_data = <?php echo "'Consumption of FP commodities in selected geographies, $titleText'"; ?>; 
+              subtitleText = <?php echo "'($titleText)'"; ?>
           <?php } ?>
         
         $('#chart13_div').highcharts({
@@ -612,11 +636,16 @@ function drawChart13() {
                     borderWidth: 1
                 },
                 xAxis: {
+                    title:{
+                      text:'Month',
+                      style:{ "fontWeight": "bold" }
+                       },
                     categories: <?php echo json_encode($monthNames); ?>
                 },
                 yAxis: {
                     title: {
-                        text: null
+                       text: '#Commodities Consumed',
+                       style:{ "fontWeight": "bold" }
                     },
                     plotLines: [{
                         value: 0,
@@ -823,7 +852,7 @@ function drawChart13() {
                   }
                 },
                 title: { 
-                    text: 'Consumption by method <br/>for selected commodities and geographies, <?php echo isset($this->latestPullDate)?$this->latestPullDate:""; ?>' ,  
+                    text: 'Consumption by method <br/>for selected commodities and geographies in <?php echo date("F Y",strtotime($this->selectedDate)); ?>' ,  
                     style: {
                         fontWeight: 'bold',
                         fontFamily: 'Arial',
@@ -843,14 +872,16 @@ function drawChart13() {
 //                    }
                 },
                 xAxis: { categories: selectedCommoditites,  //array of x-axis categories
-                    title: {
-                        text: null
-                    }
+                    title:{
+                        text:'FP Commodity',
+                        style:{ "fontWeight": "bold" }
+                    },
                 },
                 yAxis: {
                     min: 0,
                     title: {
-                        text: '',
+                        text: '#Commodities Consumed',
+                        style:{ "fontWeight": "bold" },
                         align: 'high'
                     },
                     labels: {
@@ -978,12 +1009,17 @@ function drawChart13() {
                                     x: -20 //center
                                 },
                                 xAxis: {
+                                    title:{
+                                    text:'Month',
+                                    style:{ "fontWeight": "bold" }
+                                },
                                     categories: <?php echo json_encode($monthNames); ?>
                                 },
                                 yAxis: {
-                                    title: {
-                                        text: null
-                                    },
+                                     title: {
+                                     text: '#Commodities Consumed',
+                                     style:{ "fontWeight": "bold" }
+                                      },
 //                                    labels: {
 //                                        format: '{value}%'
 //                                    },
@@ -1082,9 +1118,17 @@ function drawChart13() {
                 ?>
         
                 //console.log(dataArray);
+               <?php 
+               if(!empty($this->selectedDatemultiple)){
+                   
+                   $titleText = (sizeof($this->selectedDatemultiple)>1) ?"across selected dates" : "across selected date";
+               }else{
+                  $titleText = $this->start_date." to ".$this->end_date;
+               }
+               ?>
                 
-              var title_data = <?php echo "'Consumption of FP commodities in selected geographies, $this->start_date to $this->end_date'"; ?>;
-              var subtitleText = <?php echo "'($this->start_date to $this->end_date)'"; ?>
+              var title_data = <?php echo "'Consumption of FP commodities in selected geographies, $titleText'"; ?>;
+              var subtitleText = <?php echo "'($titleText)'"; ?>
         
         $('#chart13_div').highcharts({
                 chart: {
@@ -1120,12 +1164,17 @@ function drawChart13() {
                     borderWidth: 1
                 },
                 xAxis: {
+                    title:{
+                     text:'Month',
+                     style:{ "fontWeight": "bold" }
+                                },
                     categories: <?php echo json_encode($monthNames); ?>
                 },
                 yAxis: {
                     title: {
-                        text: null
-                    },
+                      text: '#Commodities Consumed',
+                      style:{ "fontWeight": "bold" }
+                                },
                     plotLines: [{
                         value: 0,
                         width: 1,
@@ -1167,7 +1216,7 @@ function drawChart13() {
         <script src="../js/highcharts/modules/exporting.js"></script>   
                 
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
-
+<script src="../js/tp/functions.js"></script>
 
 
 </body>

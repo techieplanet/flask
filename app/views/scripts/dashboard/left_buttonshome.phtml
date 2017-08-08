@@ -1,19 +1,19 @@
 <div class="bs-example">
-    <div class="panel-group" id="accordion">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+    <div class="panel-group p-group" id="accordion">
+        <div class="panel panel-default p p-default">
+            <div class="panel-heading p-heading">
                 
-                <h4 class="panel-title">
+                <h4 class="panel-title p-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Coverage</a>
                 </h4>
             </div>
             <div id="collapseOne" class="panel-collapse collapse <?php echo (isset($activationBar) && $activationBar =='coverage')?'in':'';?>">
-                <div class="panel-body">
+                <div class="panel-body p-body">
                  <div>
       <ul>
           <li> <a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/coverage/cummhwtrained'; ?>" 
          id="cummhwtrained"
-         class="<?php echo $fileID == 'cummhwtrained' ? 'active': ''?>">
+         class="<?php echo $fileID == 'cummhwtrained' || $fileID == 'cummhwtraineddemo' ? 'active': ''?>">
           Trained HWs
       </a>
           </li>
@@ -33,7 +33,7 @@
       <li>
       <a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/coverage/providingovertime'; ?>"
          id="providingovertime"
-         class="<?php echo $fileID == 'providingovertime' ? 'active': ''?>">
+         class="<?php echo $fileID == 'providingovertime' || $fileID == 'providingovertimedemo' ? 'active': ''?>">
           Facilities Providing FP Over Time
       </a>
       </li>
@@ -57,20 +57,20 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
+        <div class="panel panel-default p p-default">
+            <div class="panel-heading p-heading">
+                <h4 class="panel-title p-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Consumption</a>
                 </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse <?php echo (isset($activationBar) && $activationBar =='consumption')?'in':'';?>">
-                <div class="panel-body">
+                <div class="panel-body p-body">
                      <div>
       <ul>
           <li><a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/consumption/consumption'; ?>"
          id="consumption"
-         class="<?php echo $fileID == 'consumption' ? 'active': ''?>">
-              Commodity Consumptions
+         class="<?php echo $fileID == 'consumption' || $fileID == 'consumptiondemo' ? 'active': ''?>">
+              Commodity Consumption
       </a></li>
             <li><a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/consumption/newandcurrentfpusers'; ?>"
                id="newandcurrentfpusers"
@@ -83,14 +83,14 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
+        <div class="panel panel-default p p-default">
+            <div class="panel-heading p-heading">
+                <h4 class="panel-title p-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Stock Outs</a>
                 </h4>
             </div>
             <div id="collapseThree" class="panel-collapse collapse <?php echo (isset($activationBar) && $activationBar =='stockout')?'in':'';?>"">
-                <div class="panel-body">
+                <div class="panel-body p-body">
                     <div>
       <ul>
           <li><a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/stockout/percentstockoutwithtrainedhw'; ?>"
@@ -125,51 +125,59 @@
     .active{
         background: #eeeeee; text-decoration: none;
     }
-    .panel-title h4:active{
+    .p-title h4:active{
         text-decoration:none !important;
     }
     #accordion{width:100% !important;}
 
-    .panel-title h4{
+    .p-title h4{
         width:100% !important;
     }
     
-    .panel-title h4 a{
+    .p-title h4 a{
         width:100% !important;
     }
     
-    .panel-title h4:hover{
+    .p-title h4:hover{
         cursor:pointer !important;
     }
-    .panel .panel-default,.panel-heading{
-        padding: 5px 10px !important;
+    
+    .p-title a {
+        text-decoration: none;
+    }
+    .p-title a:hover {
+        text-decoration: none;
+    }
+    .p .p-default,.p-heading{
+        /*padding: 5px 10px !important;*/
         background: #008C00 !important;
         color:#fff !important;
-         font: 16px/1.231 arial,helvetica,clean,sans-serif !important;
+         /*font: 16px/1.231 arial,helvetica,clean,sans-serif !important;*/
         
     }
-    .panel{
-        margin-bottom:-5px !important;
+    .p{
+        /*margin-bottom:-4px !important;*/
     }
-    .panel-body ul{
+    .p-body ul{
         margin:0 !important;
          font-size: 13px !important;
            font: 13px/1.231 arial,helvetica,clean,sans-serif !important;
     }
-    .panel-body ul li{
+    .p-body ul li{
           font:  arial,helvetica,clean,sans-serif !important;
        border-bottom: 1px dotted white;
         
     }
-    .panel-body ul li a{
+    .p-body ul li a{
          color:black !important;
+         text-align: left;
         
     }
-    .panel-body ul li a:hover{
+    .p-body ul li a:hover{
          color:#fff !important;
         
     }
-    .panel-body a{
+    .p-body a{
         display: block; 
         padding-bottom:5px;
         padding:1px 5px 1px 10px !important;
@@ -179,14 +187,14 @@
         
         /*border-bottom: 1px solid #222222;*/
     }
-    .panel-body a:hover{
+    .p-body a:hover{
         color:#fff !important;  background: #2AA92A; text-decoration: none;
         
     }
-    .panel-title .ui-accordion-header .ui-helper-reset .ui-state-default .ui-corner-all .ui-accordion-icons{display: none !important;}
+    .p-title .ui-accordion-header .ui-helper-reset .ui-state-default .ui-corner-all .ui-accordion-icons{display: none !important;}
     
-    .panel-title .ui-accordion-header .ui-helper-reset .ui-state-default .ui-corner-all .ui-accordion-icons :hover{display: none !important;}
-    .panel-body {
+    .p-title .ui-accordion-header .ui-helper-reset .ui-state-default .ui-corner-all .ui-accordion-icons :hover{display: none !important;}
+    .p-body {
         padding: 1em 0 !important; 
         border: 0 !important; 
         height: 100% !important;
@@ -203,6 +211,6 @@
         height: 100% !important;
         background:#fed636;
     }
-    .panel-title .ui-accordion-header .ui-helper-reset .ui-state-default .ui-corner-all .ui-accordion-icons{display: none;}
+    .p-title .ui-accordion-header .ui-helper-reset .ui-state-default .ui-corner-all .ui-accordion-icons{display: none;}
     
 </style>

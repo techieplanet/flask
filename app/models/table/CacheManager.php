@@ -30,11 +30,14 @@ class CacheManager {
     const PERCENT_FACS_PROVIDING_LARC = 'percent_facs_providing_larc';
     const PERCENT_FACS_PROVIDING_INJECTABLES = 'percent_facs_providing_inj';
     
+    const PERCENT_FACS_PROVIDING_ALL_METHODS = 'percent_facs_providing_all_methods';
+    
     const PERCENT_FACS_HW_PROVIDING_FP = 'percent_facs_hw_providing_fp';
     const PERCENT_FACS_HW_PROVIDING_LARC = 'percent_facs_hw_providing_larc';
     
     const PERCENT_COVERAGE_OVERTIME_FP = 'percent_coverage_overtime_fp';
     const PERCENT_COVERAGE_OVERTIME_LARC = 'percent_coverage_overtime_larc';
+    const PERCENT_PROVIDING_OVERTIME_ALL_METHODS = 'percent_coverage_overtime_all_methods';
     
     const PERCENT_PROVIDING_OVERTIME_FP = 'percent_providing_overtime_fp';
     const PERCENT_PROVIDING_OVERTIME_LARC = 'percent_providing_overtime_larc';
@@ -47,6 +50,12 @@ class CacheManager {
     
     const STOCK_OUTS_OVERTIME_FP = 'stock_outs_overtime_fp';
     const STOCK_OUTS_OVERTIME_LARC = 'stock_outs_overtime_larc';
+    
+    const STOCK_OUTS_OVERTIME_FP_NUMERATOR = 'stock_outs_overtime_larc_numerator';
+    const STOCK_OUTS_OVERTIME_FP_DENOMINATOR = 'stock_outs_overtime_larc_denominator';
+    
+    const STOCK_OUTS_OVERTIME_LARC_NUMERATOR = 'stock_outs_overtime_larc_numerator';
+    const STOCK_OUTS_OVERTIME_LARC_DENOMINATOR = 'stock_outs_overtime_larc_denominator';
     
     const USERINDICATORS = 'user_indicators';
     

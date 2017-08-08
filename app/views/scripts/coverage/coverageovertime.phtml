@@ -246,18 +246,70 @@ print ScriptContainer::$instance->renderJSHead();
   <!-------   /////////////////////////// script 1,1 ////////////////////// -->
   //TA:17:17: Coverage HW Trained chart
   function drawFPChart() {
+      var jNumData = new Array();
+      var jDenomData = new Array();
+      jNumData['% of facilities with FP-trained HW'] = [];
+      jNumData['% of FP-trained facilities providing FP'] = [];
+      jNumData['% of FP-trained facilities stocked out of FP'] = [];
+      
+      jDenomData['% of facilities with FP-trained HW'] = [];
+      jDenomData['% of FP-trained facilities providing FP'] = [];
+      jDenomData['% of FP-trained facilities stocked out of FP'] = [];
       
       <?php
         $hwCoverage = $this->fp_overtime[0]; 
         $providingCoverage = $this->fp_overtime[1]; 
         $soCoverage = $this->fp_overtime[2]; 
+        
+        $hwNumDenom = $this->fp_numerator_denominator[0];
+        $providingNumDenom = $this->fp_numerator_denominator[1];
+        $soNumDenom = $this->fp_numerator_denominator[2];
       ?>
           
-       var facTrainedObject = {name:'% of facilities with FP-trained HW', data: []};
-       var facProvObject = {name:'% of FP-trained facilities providing FP', data: []};
-       var facSOObject = {name:'% of FP-trained facilities stocked out of FP', data: []};
+       var facTrainedObject = {name:'% of facilities with FP-trained HW', data: [],alias:'factrained'};
+       var facProvObject = {name:'% of FP-trained facilities providing FP', data: [],alisa:'facprov'};
+       var facSOObject = {name:'% of FP-trained facilities stocked out of FP', data: [],alias:'facSO'};
        
         <?php
+        
+        foreach($hwNumDenom as $i => $det) {
+            $month = $det['month'];
+             
+             $numerator = $det['numerator'];   
+             $denominator = $det['denominator'];
+            ?>
+           jNumData['% of facilities with FP-trained HW']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
+           jDenomData['% of facilities with FP-trained HW']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
+            <?php
+             
+        }
+        
+        
+         foreach($providingNumDenom as $i => $det) {
+            $month = $det['month'];
+             
+             $numerator = $det['numerator'];   
+             $denominator = $det['denominator'];
+            ?>
+           jNumData['% of FP-trained facilities providing FP']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
+           jDenomData['% of FP-trained facilities providing FP']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
+            <?php
+             
+        }
+        
+        foreach($soNumDenom as $i => $det) {
+            $month = $det['month'];
+             
+             $numerator = $det['numerator'];   
+             $denominator = $det['denominator'];
+            ?>
+           jNumData['% of FP-trained facilities stocked out of FP']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
+           jDenomData['% of FP-trained facilities stocked out of FP']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
+            <?php
+             
+        }
+        
+        
                     $monthNames = array();
                     foreach($hwCoverage as $i => $details) {
                         $monthNames[] = $details['month'];
@@ -274,10 +326,15 @@ print ScriptContainer::$instance->renderJSHead();
         ?>                                        
 
       <?php 
+      if(empty($this->selectedDatemultiple)){
+           $titleText = $this->end_date." to ".$this->start_date;
+       }else{
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+       }
             $title = ($this->freshvisit) 
                         ? "Percent of facilities with a trained HW providing FP, " 
                         : "Percent of facilities with a trained HW providing FP in selected geographies, ";
-            $title .= "$this->start_date to $this->end_date";    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
+            $title .= $titleText;    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
       ?>;
           
           
@@ -303,11 +360,16 @@ print ScriptContainer::$instance->renderJSHead();
                     x: -20 //center
                 },
                 xAxis: {
+                     title:{
+                        text:'Month',
+                        style:{ "fontWeight": "bold" }
+                    },
                     categories: <?php echo json_encode($monthNames); ?>
                 },
                 yAxis: {
                     title: {
-                        text: null
+                        text: '%Facilities',
+                        style:{ "fontWeight": "bold" }
                     },
                     labels: {
                         format: '{value}%'
@@ -322,7 +384,7 @@ print ScriptContainer::$instance->renderJSHead();
                 tooltip: {
                     formatter: function () {
                         return '<b>' + this.x + '</b><br/>' +
-                            '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>';
+                            '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
                     }
                 },
                 plotOptions: {
@@ -348,11 +410,23 @@ print ScriptContainer::$instance->renderJSHead();
     
     
     function drawLARCChart() {
+       var jNumData = new Array();
+      var jDenomData = new Array();
+      jNumData['% of facilities with LARC-trained HW'] = [];
+      jNumData['% of LARC-trained facilities providing LARC'] = [];
+      jNumData['% of LARC-trained facilities stocked out of LARC'] = [];
       
+      jDenomData['% of facilities with LARC-trained HW'] = [];
+      jDenomData['% of LARC-trained facilities providing LARC'] = [];
+      jDenomData['% of LARC-trained facilities stocked out of LARC'] = [];
       <?php
         $hwCoverage = $this->larc_overtime[0]; 
         $providingCoverage = $this->larc_overtime[1]; 
         $soCoverage = $this->larc_overtime[2]; 
+        
+         $hwNumDenom = $this->larc_numerator_denominator[0];
+        $providingNumDenom = $this->larc_numerator_denominator[1];
+        $soNumDenom = $this->larc_numerator_denominator[2];
       ?>
               
        var facTrainedObject = {name:'% of facilities with LARC-trained HW', data: []};
@@ -360,6 +434,45 @@ print ScriptContainer::$instance->renderJSHead();
        var facSOObject = {name:'% of LARC-trained facilities stocked out of LARC', data: []};
           
         <?php
+        
+         foreach($hwNumDenom as $i => $det) {
+            $month = $det['month'];
+             
+             $numerator = $det['numerator'];   
+             $denominator = $det['denominator'];
+            ?>
+           jNumData['% of facilities with LARC-trained HW']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
+           jDenomData['% of facilities with LARC-trained HW']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
+            <?php
+             
+        }
+        
+        
+         foreach($providingNumDenom as $i => $det) {
+            $month = $det['month'];
+             
+             $numerator = $det['numerator'];   
+             $denominator = $det['denominator'];
+            ?>
+           jNumData['% of LARC-trained facilities providing LARC']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
+           jDenomData['% of LARC-trained facilities providing LARC']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
+            <?php
+             
+        }
+        
+        foreach($soNumDenom as $i => $det) {
+            $month = $det['month'];
+             
+             $numerator = $det['numerator'];   
+             $denominator = $det['denominator'];
+            ?>
+           jNumData['% of LARC-trained facilities stocked out of LARC']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
+           jDenomData['% of LARC-trained facilities stocked out of LARC']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
+            <?php
+             
+        }
+        
+        
                     $monthNames = array();
                      foreach($hwCoverage as $i => $details) {
                          $monthNames[] = $details['month'];
@@ -376,10 +489,15 @@ print ScriptContainer::$instance->renderJSHead();
         ?>                                        
       
       <?php 
+        if(empty($this->selectedDatemultiple)){
+           $titleText = $this->end_date." to ".$this->start_date;
+       }else{
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+       }
             $title = ($this->freshvisit) 
                         ? "Percent of facilities with a trained HW providing LARC, " 
                         : "Percent of facilities with a trained HW providing LARC in selected geographies, ";
-            $title .= "$this->start_date to $this->end_date";    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
+            $title .= $titleText;    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
       ?>;
           
           
@@ -405,11 +523,16 @@ print ScriptContainer::$instance->renderJSHead();
                     x: -20 //center
                 },
                 xAxis: {
+                     title:{
+                        text:'Month',
+                        style:{ "fontWeight": "bold" }
+                    },
                     categories: <?php echo json_encode($monthNames); ?>
                 },
                 yAxis: {
                     title: {
-                        text: null
+                       text: '%Facilities',
+                       style:{ "fontWeight": "bold" }
                     },
                     labels: {
                         format: '{value}%'
@@ -424,7 +547,7 @@ print ScriptContainer::$instance->renderJSHead();
                 tooltip: {
                     formatter: function () {
                         return '<b>' + this.x + '</b><br/>' +
-                            '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>';
+                            '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
                     }
                 },
                 plotOptions: {
@@ -462,7 +585,7 @@ print ScriptContainer::$instance->renderJSHead();
 
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
 
-
+<script src="../js/tp/functions.js"></script>
 
 </body>
 

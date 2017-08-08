@@ -16,6 +16,7 @@ require_once ('models/table/Helper.php');
 require_once ('models/table/Helper2.php');
 require_once ('models/table/User.php');
 require_once ('models/table/Report.php');
+require_once ('models/table/Person.php');
 require_once ('models/table/Training.php');
 
 class ReportsController extends ReportFilterHelpers {
@@ -1272,9 +1273,9 @@ echo $sql . "<br>";
 		$rowArray = $db->fetchAll ( $sql );
 		$start_default = $rowArray [0] ['start'];
 		$parts = explode ( '-', $start_default );
-		//$criteria ['start-year'] = @$parts [0];
-		//$criteria ['start-month'] = @$parts [1];
-		//$criteria ['start-day'] = @$parts [2];
+		$criteria ['start-year'] = @$parts [0];
+		$criteria ['start-month'] = @$parts [1];
+		$criteria ['start-day'] = @$parts [2];
 
                 
                 $minimum_year = $parts [0];
@@ -1285,9 +1286,9 @@ echo $sql . "<br>";
 			$rowArray = $db->fetchAll ( $sql );
 			$end_default = $rowArray [0] ['start'];
 			$parts = explode ( '-', $end_default );
-			//$criteria ['end-year'] = @$parts [0];
-			//$criteria ['end-month'] = @$parts [1];
-			//$criteria ['end-day'] = @$parts [2];
+			$criteria ['end-year'] = @$parts [0];
+			$criteria ['end-month'] = @$parts [1];
+			$criteria ['end-day'] = @$parts [2];
                         
                         
                 $maximum_year = $parts[0];
@@ -1297,6 +1298,10 @@ echo $sql . "<br>";
                  
                 $defaultTrainingEndDateStart = $minimum_month."/".$minimum_day."/".$minimum_year;
                 $defaultTrainingEndDateEnd = $maximum_month."/".$maximum_day."/".$maximum_year;
+                
+                
+               
+                
 		if ($this->getSanParam ( 'start-year' ))
 		$criteria ['start-year'] = $this->getSanParam ( 'start-year' );
 		if ($this->getSanParam ( 'start-month' ))
@@ -1308,6 +1313,10 @@ echo $sql . "<br>";
                 
                 $defaultTrainingEndDateStart = $minimum_month."/".$minimum_day."/".$minimum_year;
                 $defaultTrainingEndDateEnd = $maximum_month."/".$maximum_day."/".$maximum_year;
+                
+               
+                
+                
 		} else {
 			$criteria ['end-year'] = date ( 'Y' );
 			$criteria ['end-month'] = date ( 'm' );
@@ -1317,38 +1326,46 @@ echo $sql . "<br>";
                 $criteria['trainingEndDateStart'] = $defaultTrainingEndDateStart;
                 $criteria['trainingEndDateEnd'] = $defaultTrainingEndDateEnd;
                 
-                if($this->getSanParam('trainingEndDateStart')){
-                $trainingEndDateStartValue = $this->getSanParam('trainingEndDateStart');
-                $criteria['trainingEndDateStart'] = $trainingEndDateStartValue;
-                $trainingEndDatesStart = array();
-                $trainingEndDatesStart = explode("/",$trainingEndDateStartValue);
-                
-                
-                $criteria ['start-day'] = $this->check_length_add_one($trainingEndDatesStart[1]);
-                $criteria ['start-month'] = $this->check_length_add_one($trainingEndDatesStart[0]);
-                $criteria ['start-year'] = $trainingEndDatesStart[2];
-                
-               
-                }
+//                if($this->getSanParam('trainingEndDateStart')){
+//                $trainingEndDateStartValue = $this->getSanParam('trainingEndDateStart');
+//                $criteria['trainingEndDateStart'] = $trainingEndDateStartValue;
+//                $trainingEndDatesStart = array();
+//                $trainingEndDatesStart = explode("/",$trainingEndDateStartValue);
+//                
+//                
+//                $criteria ['start-day'] = $this->check_length_add_one($trainingEndDatesStart[1]);
+//                $criteria ['start-month'] = $this->check_length_add_one($trainingEndDatesStart[0]);
+//                $criteria ['start-year'] = $trainingEndDatesStart[2];
+//                
+//               
+//                }
                 //echo $this->getSanParam('trainingEndDateEnd');exit;
-                if($this->getSanParam('trainingEndDateEnd')){
-                     $trainingEndDateEndValue = $this->getSanParam('trainingEndDateEnd');
-                     $criteria['trainingEndDateEnd'] = $trainingEndDateEndValue;
-                      $trainingEndDatesEnd = array();
-                      $trainingEndDatesEnd = explode("/",$trainingEndDateEndValue);
-                    
-                      $criteria ['end-day'] = $this->check_length_add_one($trainingEndDatesEnd[1]);
-                      $criteria ['end-month'] = $this->check_length_add_one($trainingEndDatesEnd[0]);
-                      $criteria ['end-year'] = $trainingEndDatesEnd[2];
-                }
+//                if($this->getSanParam('trainingEndDateEnd')){
+//                     $trainingEndDateEndValue = $this->getSanParam('trainingEndDateEnd');
+//                     $criteria['trainingEndDateEnd'] = $trainingEndDateEndValue;
+//                      $trainingEndDatesEnd = array();
+//                      $trainingEndDatesEnd = explode("/",$trainingEndDateEndValue);
+//                    
+//                      $criteria ['end-day'] = $this->check_length_add_one($trainingEndDatesEnd[1]);
+//                      $criteria ['end-month'] = $this->check_length_add_one($trainingEndDatesEnd[0]);
+//                      $criteria ['end-year'] = $trainingEndDatesEnd[2];
+//                }
+                
+                if ($this->getSanParam ( 'start-year' ))
+		$criteria ['start-year'] = $this->getSanParam ( 'start-year' );
+		if ($this->getSanParam ( 'start-month' ))
+		$criteria ['start-month'] = $this->getSanParam ( 'start-month' );
+		if ($this->getSanParam ( 'start-day' ))
+		$criteria ['start-day'] = $this->getSanParam ( 'start-day' );
+                
                
-		/*if ($this->getSanParam ( 'end-year' ))
+		if ($this->getSanParam ( 'end-year' ))
 		$criteria ['end-year'] = $this->getSanParam ( 'end-year' );
 		if ($this->getSanParam ( 'end-month' ))
 		$criteria ['end-month'] = $this->getSanParam ( 'end-month' );
 		if ($this->getSanParam ( 'end-day' ))
 		$criteria ['end-day'] = $this->getSanParam ( 'end-day' );
-*/
+
 		list($criteria, $location_tier, $location_id) = $this->getLocationCriteriaValues($criteria);
 
 		// find training name from new category/title format: categoryid_titleid
@@ -9985,7 +10002,11 @@ $data['error'] = "Please select a facility";
 $csql = "SELECT * FROM commodity_name_option WHERE commodity_type='fp' OR commodity_type='larc' ORDER BY commodity_name ASC";
                 $commodity_name = $db->fetchAll($csql);
                // $this->viewAssignEscaped ( 'commodity_name_option', $commodity_name );
-               
+
+$clientSql = "SELECT * FROM commodity_name_option WHERE commodity_alias='new_acceptors' OR commodity_alias='current_users' ORDER BY commodity_name ASC";
+$clientsDataArray = $db->fetchAll($clientSql);
+//$clientsDataArray[] = array('id'=>36,'commodity_name'=>'New family planning acceptors');
+//$clientsDataArray[] = array('id'=>37,'commodity_name'=>'Current FP Users');
 
 
    // print_r($title_value); echo '<br/><br/>';
@@ -9993,6 +10014,7 @@ $csql = "SELECT * FROM commodity_name_option WHERE commodity_type='fp' OR commod
     
     $month = strtotime($lastpulled_date);
 $headers[] = "FP Commodity"; 
+$clientHeaders[] = "Clients";
 $output = array();
 $details_facility = $details;
 $heading = array("Health Worker Name","Type of Training","Training Organizer");
@@ -10050,10 +10072,46 @@ for ($i = 1; $i <= 12; $i++) {
 $heading_date = array_reverse($heading_date);
 foreach($heading_date as $head_date){
   $headers[] = $head_date;
+  $clientHeaders[] = $head_date;
     
 }
 
+//this is for the client
 
+$clientData = array();
+foreach($clientsDataArray as $client){
+    $outputs = array();
+    $sum_first = array();
+    
+    $outputs[] = $client['commodity_name'];
+    $id = $client['id'];
+    
+    $month = strtotime($lastpulled_date);
+ //$month = strtotime('last month', $month);
+$month = strtotime('next month', $month);
+for ($i = 1; $i <= 12; $i++) {
+   $month = strtotime('last month', $month);
+    $dates = date("Y-m",$month);
+    $start = $dates."-01";
+    $end = $dates."-31";
+   // $outputs[] = $start;
+  $sum = $this->get_commodity_consumptionSum($start,$end,$facility_id,$id);
+  
+     //$outputs[]  = $sum;
+     $sum_first[] = $sum;
+}
+$sum_first = array_reverse($sum_first);
+
+foreach($sum_first as $sum_first_date){
+    
+    $outputs[] = $sum_first_date;
+}
+array_push($clientData,$outputs);
+
+
+}
+
+//this is for the consumption
 foreach($commodity_name as $row){
     $outputs = array();
     $sum_first = array();
@@ -10081,6 +10139,7 @@ foreach($sum_first as $sum_first_date){
 }
 array_push($output,$outputs);
 }
+
 
 $outputs = array();
 //$name_ids_array = array("32","38","","31");
@@ -10143,6 +10202,8 @@ $criteria['details_facility'] = json_encode($details_facility);
  $data['criteria'] = json_encode($criteria);
  $data['outdetails'] = json_encode($outdetails);
  $data['heading'] = $heading;
+ $data['clientHeaders'] = $clientHeaders;
+ $data['clientData'] = json_encode($clientData);
  $data['summary'] = json_encode($title_array);
  $data['summary_details'] = json_encode($title_value);
  $data['error'] = $error;
@@ -10243,6 +10304,7 @@ if($this->getSanParam('go')){
                 $facility[] = $facility_location[3];
                 }
                 * */
+               
                 $facility = array();
                 $details = array();
                 $details_facility = array();
@@ -10263,6 +10325,8 @@ if($this->getSanParam('go')){
     $headers = array();
     $heading = array();
     $outdetails = array();
+    $clientData = array();
+    $clientHeaders = array();
     //$summary_details = array();
     $title_array = array();
 $title_value = array();
@@ -10277,11 +10341,16 @@ $error [] = "Please select a facility";
                 //$summary_details = array($larc_trained,$fp_trained);
 $csql = "SELECT * FROM commodity_name_option WHERE commodity_type='fp' OR commodity_type='larc' ORDER BY commodity_name ASC";
                 $commodity_name = $db->fetchAll($csql);
+
+                
+$clientSql = "SELECT * FROM commodity_name_option WHERE commodity_alias='new_acceptors' OR commodity_alias='current_users' ORDER BY commodity_name ASC";
+$clientsDataArray = $db->fetchAll($clientSql);
                // $this->viewAssignEscaped ( 'commodity_name_option', $commodity_name );
                
 
 $month = strtotime($lastpulled_date);
 $headers[] = "FP Commodity"; 
+$clientHeaders[] = "Clients";
 $output = array();
 $details_facility = $details;
 $heading = array("Health Worker Name","Type of Training","Training Organizer");
@@ -10333,10 +10402,45 @@ for ($i = 1; $i <= 12; $i++) {
 $heading_date = array_reverse($heading_date);
 foreach($heading_date as $head_date){
   $headers[] = $head_date;
+  $clientHeaders[] = $head_date;
     
 }
 
+//this is for the client
+$clientData = array();
+foreach($clientsDataArray as $client){
+    $outputs = array();
+    $sum_first = array();
+    
+    $outputs[] = $client['commodity_name'];
+    $id = $client['id'];
+    
+    $month = strtotime($lastpulled_date);
+ //$month = strtotime('last month', $month);
+$month = strtotime('next month', $month);
+for ($i = 1; $i <= 12; $i++) {
+   $month = strtotime('last month', $month);
+    $dates = date("Y-m",$month);
+    $start = $dates."-01";
+    $end = $dates."-31";
+   // $outputs[] = $start;
+  $sum = $this->get_commodity_consumptionSum($start,$end,$facility_id,$id);
+  
+     //$outputs[]  = $sum;
+     $sum_first[] = $sum;
+}
+$sum_first = array_reverse($sum_first);
 
+foreach($sum_first as $sum_first_date){
+    
+    $outputs[] = $sum_first_date;
+}
+array_push($clientData,$outputs);
+
+
+}
+
+//this is for the consumption
 foreach($commodity_name as $row){
     $outputs = array();
     $sum_first = array();
@@ -10430,6 +10534,8 @@ $criteria['details_facility'] = $details_facility;
  $this->viewAssignEscaped ('heading',$heading);
  $this->viewAssignEscaped ('summary',$title_array);
  $this->viewAssignEscaped ('summary_details',$title_value);
+ $this->viewAssignEscaped ('clientHeaders',$clientHeaders);
+ $this->viewAssignEscaped ('clientData',$clientData);
  $this->view->assign('base_url', $this->baseUrl);
 }
 public function facilitysummardemoyAction(){
@@ -10849,6 +10955,11 @@ public function allqueriesresultAction(){
         $stockOut = array();
         $stockOut = $this->getSanParam('stock_out');
         
+        $client = array();
+        $client = $this->getSanParam('client');
+       
+       
+        
         //time period display data catch
         $period = $this->getSanParam('period');
         
@@ -10881,7 +10992,18 @@ public function allqueriesresultAction(){
         $consumption = $reports->formatSelection($consumption);
         $providing = $reports->formatSelection($providing);
         $stockOut = $reports->formatSelection($stockOut);
-        
+        $client = $reports->formatSelection($client);
+        if(!empty($client) && !empty($consumption)){
+        $consumption = array_merge($consumption,$client);
+        }else if(empty($consumption) && !empty($client)){
+            $consumption = $client;
+        }
+       
+        //$consumption = $reports->formatSelection($consumption);
+        Helper2::jLog("This is the consumptin value");
+        Helper2::jLog(print_r($consumption,true));
+        Helper2::jLog("This is the client");
+        Helper2::jLog(print_r($client,true));
         
         
         if(!empty($startMonth)){
@@ -11336,6 +11458,7 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                 $criteria['region_c_id'] = "";
                 $criteria['facility_id'] = "";
                 $criteria['consumption'] = array();
+                $criteria['client'] = array();
                 $quickLocation = new Location();
                 $lastPullDate = $helper->getLatestPullDate();
                // echo $lastPullDate;exit;
@@ -11400,6 +11523,10 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                 $commodity_name = $db->fetchAll($csql);
                 $this->viewAssignEscaped ( 'commodity_name_option', $commodity_name );
                 
+                $clientSql = "SELECT * FROM commodity_name_option WHERE commodity_alias='new_acceptors' OR commodity_alias='current_users' ORDER BY commodity_name ASC";
+                $clientsDataArray = $db->fetchAll($clientSql);
+                $this->viewAssignEscaped('clientDataArray', $clientsDataArray);
+
                 $imploded = "31,32,38,39";
                 $commodityStockOut = $this->selectStockOutsCommodity($imploded);
                 $this->viewAssignEscaped('stock_out_commodity_name_option',$commodityStockOut);
@@ -11470,6 +11597,14 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
         $stockOut = array();
         $stockOut = $this->getSanParam('stock_out');
         
+        $client = array();
+        $client = $this->getSanParam('client');
+        
+        if(!empty($client)){
+        $criteria['client'] = $client;
+        }
+        
+        
         //time period display data catch
         $period = $this->getSanParam('period');
         
@@ -11501,8 +11636,13 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
         $consumption = $reports->formatSelection($consumption);
         $providing = $reports->formatSelection($providing);
         $stockOut = $reports->formatSelection($stockOut);
-        
-        
+        $client = $reports->formatSelection($client);
+       
+       if(!empty($client) && !empty($consumption)){
+        $consumption = array_merge($consumption,$client);
+        }else if(empty($consumption) && !empty($client)){
+            $consumption = $client;
+        }
         
         if(!empty($startMonth)){
         $startMonthName = $this->return_the_month_name($startMonth);
@@ -11917,8 +12057,8 @@ public function trainingresultAction(){
                  $maximum_month = $maximum_end_date[1];
                  $maximum_day = $maximum_end_date[2];
                  
-                 $defaultTrainingEndDateStart = $minimum_month."/".$minimum_day."/".$minimum_year;
-                 $defaultTrainingEndDateEnd = $maximum_month."/".$maximum_day."/".$maximum_year;
+                 $defaultTrainingEndDateStart = $minimum_day."/".$minimum_month."/".$minimum_year;
+                 $defaultTrainingEndDateEnd = $maximum_day."/".$maximum_month."/".$maximum_year;
                  
 		$criteria = array ();
 		$where = array ();
@@ -12019,7 +12159,14 @@ public function trainingresultAction(){
                 //$LGA = $localgovernment;
                // print_r($localgovernment);
                
+                $person_status_id = array();
+                $person_status_id = $this->getSanParam('person_status_id');
+                $person_status_id = $reports->formatSelection($person_status_id);
                 
+//                Helper2::jLog(print_r($this->getSanParam('person_status_id'),true));
+//                Helper2::jLog("This is the middle line between the two both of them");
+//                Helper2::jLog(print_r($person_status_id,true));
+               
                 
                 //print_r($localgovernment);exit;
                 //print_r($LGA);exit;
@@ -12192,11 +12339,11 @@ if(!empty($locations)){
                 $start_year = "";
                 
                
-                if(isset($trainingEndDatesStart[1])){
-                    $start_day = $this->check_length_add_one($trainingEndDatesStart[1]);
-                }
                 if(isset($trainingEndDatesStart[0])){
-                    $start_month = $this->check_length_add_one($trainingEndDatesStart[0]);
+                    $start_day = $this->check_length_add_one($trainingEndDatesStart[0]);
+                }
+                if(isset($trainingEndDatesStart[1])){
+                    $start_month = $this->check_length_add_one($trainingEndDatesStart[1]);
                 }
                 if(isset($trainingEndDatesStart[2])){
                     $start_year = $trainingEndDatesStart[2];
@@ -12206,11 +12353,11 @@ if(!empty($locations)){
                 $end_day = "";
                 $end_month = "";
                 $end_year = "";
-                 if(isset($trainingEndDatesEnd[1])){
-                   $end_day = $this->check_length_add_one($trainingEndDatesEnd[1]);
+                 if(isset($trainingEndDatesEnd[0])){
+                   $end_day = $this->check_length_add_one($trainingEndDatesEnd[0]);
                 }
-                if(isset($trainingEndDatesEnd[0])){
-                    $end_month = $this->check_length_add_one($trainingEndDatesEnd[0]);
+                if(isset($trainingEndDatesEnd[1])){
+                    $end_month = $this->check_length_add_one($trainingEndDatesEnd[1]);
                 }
                 if(isset($trainingEndDatesEnd[2])){
                     $end_year = $trainingEndDatesEnd[2];
@@ -12233,11 +12380,11 @@ if(!empty($locations)){
                 $dob_start_month = "";
                 $dob_start_year = "";
                 
-                if(isset($dobStartDatesValue[1])){
-                    $dob_start_day = $this->check_length_add_one($dobStartDatesValue[1]);
-                }
                 if(isset($dobStartDatesValue[0])){
-                    $dob_start_month = $this->check_length_add_one($dobStartDatesValue[0]);
+                    $dob_start_day = $this->check_length_add_one($dobStartDatesValue[0]);
+                }
+                if(isset($dobStartDatesValue[1])){
+                    $dob_start_month = $this->check_length_add_one($dobStartDatesValue[1]);
                 }
                 if(isset($dobStartDatesValue[2])){
                     $dob_start_year = $dobStartDatesValue[2];
@@ -12249,11 +12396,11 @@ if(!empty($locations)){
                 $dob_end_day  = "";
                 $dob_end_month = "";
                 $dob_end_year = "";
-                if(isset($dobEndDatesValue[1])){
-                   $dob_end_day = $this->check_length_add_one($dobEndDatesValue[1]);
-                }
                 if(isset($dobEndDatesValue[0])){
-                    $dob_end_month = $this->check_length_add_one($dobEndDatesValue[0]);
+                   $dob_end_day = $this->check_length_add_one($dobEndDatesValue[0]);
+                }
+                if(isset($dobEndDatesValue[1])){
+                    $dob_end_month = $this->check_length_add_one($dobEndDatesValue[1]);
                 }
                 if(isset($dobEndDatesValue[2])){
                     $dob_end_year = $dobEndDatesValue[2];
@@ -12360,6 +12507,13 @@ if(!empty($locations)){
                   
                   $trainingtypequery = "AND training_title_option_id IN (".$trainingtypes.")";
               }
+              
+             if(!empty($person_status_id)){
+                 $personStatusList =  implode(",",$person_status_id);
+                $pstatusq = "AND person.person_status_id IN ($personStatusList)" ; 
+              }else{
+                  $pstatusq = "";
+              }
              // echo $start_date;exit;
               $records = $this->get_training_records_from_db( $trainingorganizerquery,$trainingtypequery,$start_date,$end_date,$locationQuery);
              $start_month_name = $this->return_the_month_name($start_month);
@@ -12379,10 +12533,10 @@ if(!empty($locations)){
                  $training_organizer = $record['training_organizer_phrase'];
                  $training_organizer = str_replace(",", "@", $training_organizer);
                  $trainStartDate = strtotime($record['training_start_date']);
-                 $training_start_date = date("m-d-Y",$trainStartDate);
+                 $training_start_date = date("d-m-Y",$trainStartDate);
                  $trainEndDate = strtotime($record['training_end_date']);
-                 $training_end_date = date("m-d-Y",$trainEndDate);
-                 $participants = $this->get_counter_person_trainings($training_id,$facilityq);
+                 $training_end_date = date("d-m-Y",$trainEndDate);
+                 $participants = $this->get_counter_person_trainings($training_id,$facilityq,$pstatusq);
                  $data_collector = array($link,$trainingtitle,$training_organizer,$training_start_date,$training_end_date,$participants);
              
                  array_push($output,$data_collector);
@@ -12742,9 +12896,16 @@ if(!empty($locations)){
               else{
                $genderq = " AND p.gender='".$gender."'";   
               }
+              
+              if(!empty($person_status_id)){
+                 $personStatusList =  implode(",",$person_status_id);
+                $pstatusq = "AND p.person_status_id IN ($personStatusList)" ; 
+              }else{
+                  $pstatusq = "";
+              }
             $locator = $location_id;
               $locationquery = "(flv.geo_zone_id IN ($locator) OR flv.lga_id IN ($locator) OR flv.state_id IN ($locator))";
-              $all_participants = $this->get_all_participants_with_all_conditions($locationquery,$cadrequery,$trainingorganizerquery,$trainingtypequery,$training_end_date,$genderq,$certificationq,$facilityq,$dob_query);
+              $all_participants = $this->get_all_participants_with_all_conditions($locationquery,$cadrequery,$trainingorganizerquery,$trainingtypequery,$training_end_date,$genderq,$certificationq,$facilityq,$dob_query,$pstatusq);
        
                      $participants = 0;
                     
@@ -12786,7 +12947,7 @@ else if($agrregate_method=="view_part_names"){
            if(!isset($locations) || empty($locations)){
             $locations = $this->get_all_locations();
          }
-              $headers = array("ID","First Name","Middle Name","Surname","State","LGA","Facility","Professional Qualification","Training Type","Training Organizer","Training Start Date","Training End Date","Gender","Certification");
+              $headers = array("ID","First Name","Middle Name","Surname","State","LGA","Facility","Professional Qualification","Training Type","Training Organizer","Training Start Date","Training End Date","Gender","Certification","Status");
                
               if($trainingorganizer=="" || empty($trainingorganizer)){
 		$trainingorganizer = array();
@@ -12870,9 +13031,16 @@ else if($agrregate_method=="view_part_names"){
               else{
                $genderq = " AND p.gender='".$gender."'";   
               }
+              
+              if(!empty($person_status_id)){
+                 $personStatusList =  implode(",",$person_status_id);
+                $pstatusq = "AND p.person_status_id IN ($personStatusList)" ; 
+              }else{
+                  $pstatusq = "";
+              }
               $locator = implode(',',$locations);
               $locationquery = "(flv.geo_zone_id IN ($locator) OR flv.lga_id IN ($locator) OR flv.state_id IN ($locator))";
-              $all_participants = $this->get_all_participants_with_all_conditions($locationquery,$cadrequery,$trainingorganizerquery,$trainingtypequery,$training_end_date,$genderq,$certificationq,$facilityq,$dob_query);
+              $all_participants = $this->get_all_participants_with_all_conditions($locationquery,$cadrequery,$trainingorganizerquery,$trainingtypequery,$training_end_date,$genderq,$certificationq,$facilityq,$dob_query,$pstatusq);
         //print_r($all_participants);exit;
               $output = array();
               $outSideLocationPart = 0;
@@ -12903,13 +13071,14 @@ else if($agrregate_method=="view_part_names"){
               $training_types = $persons['training_title_phrase'];
               $training_title_phrase = $persons['training_organizer_phrase'];
               $training_title_phrase = str_replace(",", "@", $training_title_phrase);
+              $person_status_title  = $persons['person_status_title'];
 //            $training_start_date = $persons['training_start_date'];
 //            $training_end_date = $persons['training_end_date'];
               
               $trainStartDate = strtotime($persons['training_start_date']);
-              $training_start_date = date("m-d-Y",$trainStartDate);
+              $training_start_date = date("d-m-Y",$trainStartDate);
               $trainEndDate = strtotime($persons['training_end_date']);
-              $training_end_date = date("m-d-Y",$trainEndDate);
+              $training_end_date = date("d-m-Y",$trainEndDate);
               
               $certification = $persons['certification'];
               $genders = $persons['gender'];
@@ -12926,7 +13095,7 @@ else if($agrregate_method=="view_part_names"){
               }
             
               //echo $perLocation;
-              $data_collector = array($Link,$first_name,$middle_name,$last_name,$state,$lga,$facility_name,$cadre,$training_types,$training_title_phrase,$training_start_date,$training_end_date,$genders,$certification);
+              $data_collector = array($Link,$first_name,$middle_name,$last_name,$state,$lga,$facility_name,$cadre,$training_types,$training_title_phrase,$training_start_date,$training_end_date,$genders,$certification,$person_status_title);
         // print_r($data_collector);echo '<br/><br/>';
               array_push($output,$data_collector);
               }
@@ -13028,6 +13197,7 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
 		require_once ('models/table/TrainingLocation.php');
 		require_once('views/helpers/TrainingViewHelper.php');
                  $training = new Training();
+                 $personObj = new Person();
                 // echo $training->trainingEndDateLimit("min");
                  //exit;
                  $minimum_end_date = explode("-",$training->trainingEndDateLimit("min"));
@@ -13053,8 +13223,8 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                  $maximum_month = $maximum_end_date[1];
                  $maximum_day = $maximum_end_date[2];
                  
-                 $defaultTrainingEndDateStart = $minimum_month."/".$minimum_day."/".$minimum_year;
-                 $defaultTrainingEndDateEnd = $maximum_month."/".$maximum_day."/".$maximum_year;
+                 $defaultTrainingEndDateStart = $minimum_day."/".$minimum_month."/".$minimum_year;
+                 $defaultTrainingEndDateEnd = $maximum_day."/".$maximum_month."/".$maximum_year;
                  
 		$criteria = array ();
 		$where = array ();
@@ -13120,7 +13290,9 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                 $commodity_name = $db->fetchAll($csql);
                 $this->viewAssignEscaped ( 'commodity_name_option', $commodity_name );
                 
-                
+                $allPersonStatus = $personObj->getAllPersonStatus();
+                $this->viewAssignEscaped('person_status',$allPersonStatus);
+                   
 		$courseArray = TrainingTitleOption::suggestionList ( false, 10000 );
 		$this->viewAssignEscaped ( 'courses', $courseArray );
 		//location
@@ -13154,6 +13326,9 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                 //$LGA = $localgovernment;
                // print_r($localgovernment);
                
+                $person_status_id = array();
+                $person_status_id = $this->getSanParam('person_status_id');
+                $person_status_id = $reports->formatSelection($person_status_id);
                 
                 
                 //print_r($localgovernment);exit;
@@ -13319,11 +13494,11 @@ if(isset($locations)){
                 $start_year = "";
                 
                
-                if(isset($trainingEndDatesStart[1])){
-                    $start_day = $this->check_length_add_one($trainingEndDatesStart[1]);
-                }
                 if(isset($trainingEndDatesStart[0])){
-                    $start_month = $this->check_length_add_one($trainingEndDatesStart[0]);
+                    $start_day = $this->check_length_add_one($trainingEndDatesStart[0]);
+                }
+                if(isset($trainingEndDatesStart[1])){
+                    $start_month = $this->check_length_add_one($trainingEndDatesStart[1]);
                 }
                 if(isset($trainingEndDatesStart[2])){
                     $start_year = $trainingEndDatesStart[2];
@@ -13333,11 +13508,11 @@ if(isset($locations)){
                 $end_day = "";
                 $end_month = "";
                 $end_year = "";
-                 if(isset($trainingEndDatesEnd[1])){
-                   $end_day = $this->check_length_add_one($trainingEndDatesEnd[1]);
+                 if(isset($trainingEndDatesEnd[0])){
+                   $end_day = $this->check_length_add_one($trainingEndDatesEnd[0]);
                 }
-                if(isset($trainingEndDatesEnd[0])){
-                    $end_month = $this->check_length_add_one($trainingEndDatesEnd[0]);
+                if(isset($trainingEndDatesEnd[1])){
+                    $end_month = $this->check_length_add_one($trainingEndDatesEnd[1]);
                 }
                 if(isset($trainingEndDatesEnd[2])){
                     $end_year = $trainingEndDatesEnd[2];
@@ -13362,11 +13537,11 @@ if(isset($locations)){
                 $dob_start_month = "";
                 $dob_start_year = "";
                 
-                if(isset($dobStartDatesValue[1])){
-                    $dob_start_day = $this->check_length_add_one($dobStartDatesValue[1]);
-                }
                 if(isset($dobStartDatesValue[0])){
-                    $dob_start_month = $this->check_length_add_one($dobStartDatesValue[0]);
+                    $dob_start_day = $this->check_length_add_one($dobStartDatesValue[0]);
+                }
+                if(isset($dobStartDatesValue[1])){
+                    $dob_start_month = $this->check_length_add_one($dobStartDatesValue[1]);
                 }
                 if(isset($dobStartDatesValue[2])){
                     $dob_start_year = $dobStartDatesValue[2];
@@ -13378,11 +13553,11 @@ if(isset($locations)){
                 $dob_end_day  = "";
                 $dob_end_month = "";
                 $dob_end_year = "";
-                if(isset($dobEndDatesValue[1])){
-                   $dob_end_day = $this->check_length_add_one($dobEndDatesValue[1]);
-                }
                 if(isset($dobEndDatesValue[0])){
-                    $dob_end_month = $this->check_length_add_one($dobEndDatesValue[0]);
+                   $dob_end_day = $this->check_length_add_one($dobEndDatesValue[0]);
+                }
+                if(isset($dobEndDatesValue[1])){
+                    $dob_end_month = $this->check_length_add_one($dobEndDatesValue[1]);
                 }
                 if(isset($dobEndDatesValue[2])){
                     $dob_end_year = $dobEndDatesValue[2];
@@ -13460,8 +13635,20 @@ if(isset($locations)){
               
               
     if($agrregate_method=="view_individual_train"){
-              $training_organizer = implode(",",$trainingorganizer);
-                 $trainingtypes = implode(",",$training_type);
+               if(!empty($trainingorganizer)){
+                  $training_organizer = implode(",",$trainingorganizer);
+               }else{
+                   $training_organizer = "";
+               }
+               
+               if(!empty($training_type)){
+                  $trainingtypes = implode(",",$training_type);
+               }else{
+                   $trainingtypes = "";
+               }
+               
+              
+                 //$trainingtypes = implode(",",$training_type);
            
               
               if($training_organizer=="" || empty($trainingorganizer)){
@@ -13491,6 +13678,13 @@ if(isset($locations)){
                   
                   $trainingtypequery = "AND training_title_option_id IN (".$trainingtypes.")";
               }
+              
+              if(!empty($person_status_id)){
+                 $personStatusList =  implode(",",$person_status_id);
+                $pstatusq = "AND person.person_status_id IN ($personStatusList)" ; 
+              }else{
+                  $pstatusq = "";
+              }
              // echo $start_date;exit;
               $records = $this->get_training_records_from_db( $trainingorganizerquery,$trainingtypequery,$start_date,$end_date,$locationQuery);
              $start_month_name = $this->return_the_month_name($start_month);
@@ -13508,10 +13702,10 @@ if(isset($locations)){
                  $trainingtitle = $record['training_title_phrase'];
                  $training_organizer = $record['training_organizer_phrase'];
                  $trainStartDate = strtotime($record['training_start_date']);
-                 $training_start_date = date("m-d-Y",$trainStartDate);
+                 $training_start_date = date("d-m-Y",$trainStartDate);
                  $trainEndDate = strtotime($record['training_end_date']);
-                 $training_end_date = date("m-d-Y",$trainEndDate);
-                 $participants = $this->get_counter_person_trainings($training_id,$facilityq);
+                 $training_end_date = date("d-m-Y",$trainEndDate);
+                 $participants = $this->get_counter_person_trainings($training_id,$facilityq,$pstatusq);
                  $data_collector = array($link,$trainingtitle,$training_organizer,$training_start_date,$training_end_date,$participants);
              
                  array_push($output,$data_collector);
@@ -13689,9 +13883,15 @@ else if($agrregate_method=="view_aggregate_part"){
               else{
                $genderq = " AND p.gender='".$gender."'";   
               }
+              if(!empty($person_status_id)){
+                 $personStatusList =  implode(",",$person_status_id);
+                $pstatusq = "AND p.person_status_id IN ($personStatusList)" ; 
+              }else{
+                  $pstatusq = "";
+              }
             $locator = $location_id;
               $locationquery = "(flv.geo_zone_id IN ($locator) OR flv.lga_id IN ($locator) OR flv.state_id IN ($locator))";
-              $all_participants = $this->get_all_participants_with_all_conditions($locationquery,$cadrequery,$trainingorganizerquery,$trainingtypequery,$training_end_date,$genderq,$certificationq,$facilityq,$dob_query);
+              $all_participants = $this->get_all_participants_with_all_conditions($locationquery,$cadrequery,$trainingorganizerquery,$trainingtypequery,$training_end_date,$genderq,$certificationq,$facilityq,$dob_query,$pstatusq);
        
                      $participants = 0;
                     
@@ -13732,7 +13932,7 @@ else if($agrregate_method=="view_part_names"){
            if(!isset($locations) || empty($locations)){
          $locations = $this->get_all_locations();
          }
-              $headers = array("ID","First Name","Middle Name","Surname","State","LGA","Facility","Professional Qualification","Training Type","Training Organizer","Training Start Date","Training End Date","Gender","Certification");
+              $headers = array("ID","First Name","Middle Name","Surname","State","LGA","Facility","Professional Qualification","Training Type","Training Organizer","Training Start Date","Training End Date","Gender","Certification","Status");
                
               if($trainingorganizer=="" || empty($trainingorganizer)){
 		$trainingorganizer = array();
@@ -13815,9 +14015,17 @@ else if($agrregate_method=="view_part_names"){
               else{
                $genderq = " AND p.gender='".$gender."'";   
               }
+              
+              
+              if(!empty($person_status_id)){
+                 $personStatusList =  implode(",",$person_status_id);
+                $pstatusq = "AND p.person_status_id IN ($personStatusList)" ; 
+              }else{
+                  $pstatusq = "";
+              }
               $locator = implode(',',$locations);
               $locationquery = "(flv.geo_zone_id IN ($locator) OR flv.lga_id IN ($locator) OR flv.state_id IN ($locator))";
-              $all_participants = $this->get_all_participants_with_all_conditions($locationquery,$cadrequery,$trainingorganizerquery,$trainingtypequery,$training_end_date,$genderq,$certificationq,$facilityq,$dob_query);
+              $all_participants = $this->get_all_participants_with_all_conditions($locationquery,$cadrequery,$trainingorganizerquery,$trainingtypequery,$training_end_date,$genderq,$certificationq,$facilityq,$dob_query,$pstatusq);
         //print_r($all_participants);exit;
               $output = array();
               $outSideLocationPart = 0;
@@ -13841,13 +14049,14 @@ else if($agrregate_method=="view_part_names"){
               $cadre = $persons['qualification_phrase'];
               $training_types = $persons['training_title_phrase'];
               $training_title_phrase = $persons['training_organizer_phrase'];
+              $person_status_title =  $persons['person_status_title'];
 //              $training_start_date = $persons['training_start_date'];
 //              $training_end_date = $persons['training_end_date'];
               
               $trainStartDate = strtotime($persons['training_start_date']);
-              $training_start_date = date("m-d-Y",$trainStartDate);
+              $training_start_date = date("d-m-Y",$trainStartDate);
               $trainEndDate = strtotime($persons['training_end_date']);
-              $training_end_date = date("m-d-Y",$trainEndDate);
+              $training_end_date = date("d-m-Y",$trainEndDate);
               $certification = $persons['certification'];
               $genders = $persons['gender'];
               $location_id = $persons['location_id'];
@@ -13864,7 +14073,7 @@ else if($agrregate_method=="view_part_names"){
               }
             
               
-              $data_collector = array($Link,$first_name,$middle_name,$last_name,$state,$lga,$facility_name,$cadre,$training_types,$training_title_phrase,$training_start_date,$training_end_date,$genders,$certification);
+              $data_collector = array($Link,$first_name,$middle_name,$last_name,$state,$lga,$facility_name,$cadre,$training_types,$training_title_phrase,$training_start_date,$training_end_date,$genders,$certification,$person_status_title);
         // print_r($data_collector);echo '<br/><br/>';
               array_push($output,$data_collector);
               }
@@ -13901,6 +14110,7 @@ else if($agrregate_method=="view_part_names"){
   $criteria['gender'] = $this->getSanParam('gender');
   $criteria['training_type'] = $this->getSanParam('training_type') ;
  $criteria['cumu'] = $this->getSanParam('cumu') ;
+ $criteria['person_status_id'] = $this->getSanParam('person_status_id');
  
  if($agrregate_method=="view_part_names"){
                 $criteria['province_id'] = $this->getSanParam('province_id');
@@ -14978,9 +15188,9 @@ $this->viewAssignEscaped('criteria',$criteria);
           $res = $db->fetchAll($sql);
                                     return $res;
       }
-      public function get_counter_person_trainings($training_id,$facilityq=""){
+      public function get_counter_person_trainings($training_id,$facilityq="",$personstatusq=""){
           $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
-          $sql = "SELECT count(*) as count FROM person_to_training left join person on person_to_training.person_id=person.id WHERE training_id='".$training_id."' ".$facilityq." ";
+          $sql = "SELECT count(*) as count FROM person_to_training left join person on person_to_training.person_id=person.id WHERE training_id='".$training_id."' ".$facilityq." ".$personstatusq;
    $res = $db->fetchAll($sql);
                               //print_r($consump_sum_sql); exit;
                               return $res[0]['count'];
@@ -15088,15 +15298,15 @@ $this->viewAssignEscaped('criteria',$criteria);
                               return $sum = $res[0]['count(*)'];
            
        }
-       public function get_all_participants_with_all_conditions($locationquery,$cadrequery,$trainingorganizerquery,$trainingtypequery,$training_end_date,$genderq,$certificationq,$facilityq="",$dob_query=""){
+       public function get_all_participants_with_all_conditions($locationquery,$cadrequery,$trainingorganizerquery,$trainingtypequery,$training_end_date,$genderq,$certificationq,$facilityq="",$dob_query="",$pstatusq=""){
            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
       // $sql = "SELECT facility_summary_person_view.*,person.birthdate FROM facility_summary_person_view inner join person on person.id=person_id WHERE (parent_id IN (".$locator.") OR geo_zone_id IN (".$locator.") OR facility_location_id IN (".$locator.")) ".$cadrequery." ".$trainingorganizerquery." ".$trainingtypequery." ".$training_end_date." ".$genderq." ".$certificationq." ".$facilityq." ".$dob_query;    
  
        
-       $sql = "SELECT p.id as person_id,p.first_name,p.middle_name,p.last_name,flv.state,flv.lga,flv.facility_name,pqual.qualification_phrase,tto.training_title_phrase,torg.training_organizer_phrase,t.training_start_date,t.training_end_date,ptt.certification,p.gender,flv.location_id FROM  person_to_training as ptt left join person as p on p.id = ptt.person_id left join person_qualification_option as pqual on pqual.id=p.primary_qualification_option_id  left join training as t on t.id=ptt.training_id  left join training_title_option as tto on tto.id=t.training_title_option_id left join training_organizer_option as torg on torg.id = t.training_organizer_option_id left join facility_location_view as flv on flv.id=p.facility_id WHERE ".$locationquery." ".$cadrequery." ".$trainingorganizerquery." ".$trainingtypequery." ".$training_end_date." ".$genderq." ".$certificationq." ".$facilityq." ".$dob_query." AND p.is_deleted='0' AND t.is_deleted='0' AND tto.is_deleted='0' ";
+       $sql = "SELECT p.id as person_id,p.first_name,p.middle_name,p.last_name,p.person_status_id,ps.title as person_status_title,flv.state,flv.lga,flv.facility_name,pqual.qualification_phrase,tto.training_title_phrase,torg.training_organizer_phrase,t.training_start_date,t.training_end_date,ptt.certification,p.gender,flv.location_id FROM  person_to_training as ptt left join person as p on p.id = ptt.person_id LEFT JOIN person_status as ps on ps.id = p.person_status_id left join person_qualification_option as pqual on pqual.id=p.primary_qualification_option_id  left join training as t on t.id=ptt.training_id  left join training_title_option as tto on tto.id=t.training_title_option_id left join training_organizer_option as torg on torg.id = t.training_organizer_option_id left join facility_location_view as flv on flv.id=p.facility_id WHERE ".$locationquery." ".$cadrequery." ".$trainingorganizerquery." ".$trainingtypequery." ".$training_end_date." ".$genderq." ".$certificationq." ".$facilityq." ".$dob_query." ".$pstatusq." AND p.is_deleted='0' AND t.is_deleted='0' AND tto.is_deleted='0' ";
       //echo $sql;exit;
       $helper2 = new Helper2();
-      Helper2::jLog($sql);
+     // Helper2::jLog($sql);
 //echo $sql;
        //echo '<br/><br/>';
        $res = $db->fetchAll($sql);

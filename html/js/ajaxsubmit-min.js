@@ -20,8 +20,10 @@ function addAjaxSubmit(buttonId,formId,postUrl) {
                                
                                
 				var response = o.responseText;
+                                //alert(response);
                                // alert(response);
 				var responseObj = YAHOO.lang.JSON.parse(response);
+                                
 				displayStatus(responseObj.status);
                                 //console.log(responseObj.status);
 				var allGood = true;
@@ -57,6 +59,7 @@ function addAjaxSubmit(buttonId,formId,postUrl) {
                                 
 			}
 			catch (x) {
+                           // alert(responseObj);
                                 stopPageLoader(buttonId);
 				//alert("ajaxmin TP ITech script error: " + x);
                                 console.log("Error - " + x);

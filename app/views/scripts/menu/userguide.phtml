@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title><?php echo $this->translation['Application Name'];?> | <?php echo $this->pageTitle; ?></title>
+<?php
+require_once('views/helpers/ScriptContainer.php');
+print ScriptContainer::$instance->renderCSSHead();
+print ScriptContainer::$instance->renderJSHead();
+?>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+  <style>
+      
+/*      #content h2 {
+          color: #00529B !important;
+          background-color: #BDE5F8 !important;
+          font-size: 14px !important;
+          padding: 10px 10px 10px 10px !important;
+          border-radius: 5px 5px 0 0;
+          display: block !important;
+          font-family:  Arial, Helvetica, sans-serif;
+      }
+      */
+      #content h2 .fa {
+          color: #ffd51d;  
+      }
+      
+      #statusBox {
+/*          border: 1px solid #FEEFB3 !important
+          border-radius: 5px 5px 0 0 !important;
+          color: #9F6000 !important;
+          background-color: #FEEFB3 !important;
+          padding: 10px 5px 10px 5px !important;*/
+          display: none !important;
+      }
+      
+      #status {
+          color: #4F8A10 !important;
+          background-color: #DFF2BF !important;
+      }
+      
+      @media (max-width:499px)
+      {
+          
+          #download-section 
+          {
+              
+              padding: 10px 23px 38px 20px;
+              width: 100%;
+              margin-bottom: 10px;
+              background: #fff !important;
+              
+          }
+        
+          #upload-section 
+          {
+              width:100%;
+             
+            
+          }
+      }
+      
+      @media (min-width:499px) {
+          
+      #download-section {
+          background: #fff !important;
+          width: 98%;
+          padding: 10px 23px 38px 20px;
+          float: left;
+      }
+      
+      #upload-section {
+          float: right;
+          width: 50%;
+          
+      }
+      
+      }
+      
+      .btnContinue {
+          
+          background-color: #89c46b;
+          padding: 8px 15px 8px 15px;
+          color: #fff;
+          border: none;
+          cursor: pointer;
+      }
+      
+      #download-section a {
+          text-decoration: none !important;
+      }
+      #tpSuccessBox .success-msg {
+          background-color: greenyellow;
+          text-align:center;
+          color: #fff;
+          margin-bottom: 5px;
+          padding: 5px 10px 5px 10px
+      }
+      
+      #tpErrorBox .warning {
+          background-color: red;
+          text-align:center;
+          color: #fff;
+          margin-bottom: 5px;
+          padding: 5px 10px 5px 10px
+      }
+      
+      #tpErrorBox .error {
+          background-color: red;
+          text-align:center;
+          color: #fff;
+          margin-bottom: 5px;
+          padding: 5px 10px 5px 10px;
+          font-family: Arial;    
+      }
+      
+      #tpErrorBox .error p{
+          text-align: left;
+      }      
+      #tpErrorBox .error h4{
+          
+          font-size: 16px !important;
+          font-weight: bold;
+      }
+      
+      #tpErrorBox h3 {
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          margin-bottom: 5px;
+      }
+      
+      #tpErrorBox p {
+          text-align:left;
+          margin-bottom: 3px;
+      }
+      
+      
+      .ui-dialog-titlebar-close{
+          display : none;
+      }
+  </style>
+</head>
+<body class="yui-skin-sam">
+  <div id="pageHolder">
+    <div id="header"><?php require_once('views/scripts/header.phtml');?></div>
+   
+    <div id="content">
+        
+      <h1>User Guide</h1>
+      
+      <div id="download-section">
+      
+      
+<!--      <p>&nbsp;</p>
+      <p><a href="<?php echo $this->base_url; ?>/training/import/download/template/outputType/ImportTrainingTemplate.xlsx"><?php tp('Download User Guide'); ?></a></p>
+     
+      <p>&nbsp;</p>-->
+      <br/>
+      <h3>Click the download button to download the user guide</h3><br/><br/>
+      <p>&nbsp;</p>
+      <a type="submit"  href="<?php echo $this->base_url; ?>/menu/downloaduserguide" class="btnContinue" name="go">Download User Guide <i class="fa fa-download" style="color:#fff"></i></a>
+      &nbsp; 
+      
+      
+      <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
+<!--  
+      </div> <!-- End of download section -->
+    
+      <span style="display:block; clear: both;"></span>
+      
+      
+    </div>
+    <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
+  </div>
+  
+</body>
+</html>

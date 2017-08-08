@@ -6,6 +6,7 @@
  *  Fuse IQ -- todd@fuseiq.com
  *
  */
+date_default_timezone_set('Africa/Lagos');
 echo 
     '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" >';
 function no_soft_space_str($v){
@@ -154,7 +155,7 @@ $navMain['reports']['archivedreports']				= t('Archived PDF Reports');
                 $navMain['menu']['definitionspage'] = t('Definitions');
              
               $navMain['menu']['rrate'] = t('Reporting Rates');
-               $navMain['menu']['info'] = t('DHS Result');
+               $navMain['menu']['info'] = t('DHS 2013');
              $user = new User();
               //TP checking if the user is a user with an ADMIN ROLE
                 if($user->is_user_an_admin()){
@@ -166,7 +167,7 @@ $navMain['reports']['archivedreports']				= t('Archived PDF Reports');
                      $navMain['analytics'] = array('index'=>'Analytics');
                     
                 }
-                
+                $navMain['menu']['userguide'] = t('User Guide');
 		if ( $this->setting['module_evaluation_enabled']) {
 			$navMain['evaluation'] = array(
 			'index' => t('Evaluations')

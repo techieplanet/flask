@@ -80,10 +80,17 @@ class IndexController extends ReportFilterHelpers  {
             $fp_facsProviding = $dashboard->fetchFacsProviding('fp');
             $larc_facsProviding = $dashboard->fetchFacsProviding('larc');
             
+            list($fp_numeratorfacsprov,$fp_denominatorfacsprov) = $dashboard->fetchFacsProvidingNumeratorDenominator('fp');
+            list($larc_numeratorfacsprov,$larc_denominatorfacsprov) = $dashboard->fetchFacsProvidingNumeratorDenominator('larc');
+            
             
             //$facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedout($geoList, $tierValue, true);
             $fp_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('fp', $geoList, $tierValue, true);
             $larc_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('larc', $geoList, $tierValue, true);
+            
+            list($fp_numeratorStockedOut,$fp_denominatorStockedOut) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true);
+            list($larc_numeratorStockedOut,$larc_denominatorStockedOut) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true);
+            
             
             //var_dump($coverageSummary); exit;
             
@@ -94,6 +101,20 @@ class IndexController extends ReportFilterHelpers  {
             //$this->view->assign('facs_providing_stockedout', $facsProvidingStockedout);
             $this->view->assign('fp_facs_providing_stockedout', $fp_facsProvidingStockedout);
             $this->view->assign('larc_facs_providing_stockedout', $larc_facsProvidingStockedout);
+            
+            
+            
+            $this->view->assign('fp_numerator_stockout',$fp_numeratorStockedOut);
+            $this->view->assign('fp_denominator_stockout',$fp_denominatorStockedOut);
+            
+            $this->view->assign('larc_numerator_stockout',$larc_numeratorStockedOut);
+            $this->view->assign('larc_denominator_stockout',$larc_denominatorStockedOut);
+            
+            $this->view->assign('fp_numerator_facsprov',$fp_numeratorfacsprov);
+            $this->view->assign('fp_denominator_facsprov',$fp_denominatorfacsprov);
+            
+            $this->view->assign('larc_numerator_facsprov',$larc_numeratorfacsprov);
+            $this->view->assign('larc_denominator_facsprov',$larc_denominatorfacsprov);
             
             
             $title_date = $this->helper->fetchTitleDate();
