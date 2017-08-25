@@ -128,12 +128,13 @@ print ScriptContainer::$instance->renderJSHead();
             var report_id = document.getElementById("report_id").value;
             var larc_difference = document.getElementById("larc_difference").value;
             var methodmixValuesId = document.getElementById("methodmixValuesId").value;
+            var report_rate = document.getElementById("report_rate").value;
             
             $.ajax({
                 type: 'POST',
                 url: url,
                 data: {generate:true,tw_hidden:tw_hidden,mm_hidden:mm_hidden,mc_hidden:mc_hidden,
-                        fptps_hidden:fptps_hidden,larctps_hidden:larctps_hidden,
+                        fptps_hidden:fptps_hidden,report_rate:report_rate,larctps_hidden:larctps_hidden,
                         fpprov_hidden:fpprov_hidden, larcprov_hidden:larcprov_hidden,
                         larcso_hidden:larcso_hidden, fpso_hidden:fpso_hidden,folder_name:folder_name,
                         report_id:report_id,methodmixValuesId:methodmixValuesId,larc_difference:larc_difference},
@@ -224,6 +225,7 @@ print ScriptContainer::$instance->renderJSHead();
                     $folder_name = $this->folder_name;
                     $reportId = $this->report_id;
                     $info = $this->info;
+                    $report_rate = $this->report_rate;
                     if($info!="" && !empty($info)){
                         echo '<h3>'.$info.'</h3>';
                     }
@@ -270,6 +272,7 @@ print_r($consumptionPercent);
                                                                     <input type="hidden" id="report_id" value="<?php echo $reportId; ?>" name="report_id" />
                                                                     <input type="hidden" id="methodmixValuesId" name="methodMix" value =" <?php echo $consumptionPercentValues; ?>"/> 
                                                                     <input type="hidden" id="larc_difference" name="larc_difference" value="<?php echo number_format($this->larc_diff); ?>" />
+                                                                    <input type="hidden" id="report_rate" name="report_rate" value="<?php echo $report_rate; ?>" />
                                                                     <!--1 $ 2-->
                                                                         <div class="sliderdiv">
                                                                                 <!--1-->

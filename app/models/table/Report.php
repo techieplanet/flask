@@ -1050,7 +1050,7 @@ class Report {
            return $whereClause;
         }
         
-        public function createWheretrainingArrayFromParameters($implodeTrainingType,$implodeTrainingOrganizer,$tempStartDate,$tempEndDate){
+        public function createWheretrainingArrayFromParameters($implodeTrainingType,$implodeTrainingOrganizer,$tempStartDate,$tempEndDate,$person_status_id){
             $whereTraining = array();
             if($implodeTrainingType!=""){
                $whereTraining[] = "t.training_title_option_id IN ($implodeTrainingType)";
@@ -1060,6 +1060,11 @@ class Report {
                $whereTraining[] = "t.training_organizer_option_id IN ($implodeTrainingOrganizer)";
            }
            
+           if(!empty($person_status_id)){
+                 $personStatusList =  implode(",",$person_status_id);
+                $whereTraining[] = "p.person_status_id IN ($personStatusList)" ; 
+              }
+              
            $whereTraining[] = "t.training_end_date>='$tempStartDate' AND t.training_end_date<='$tempEndDate'";
            return $whereTraining;
         }

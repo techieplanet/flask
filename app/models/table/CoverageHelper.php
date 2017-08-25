@@ -303,7 +303,7 @@ class CoverageHelper {
                         ->order(array($tierText)); 
 
 
-                //echo $sql = $select->__toString(); exit;
+              //  echo $sql = $select->__toString(); //exit;
                 
                $result = $db->fetchAll($select);
                

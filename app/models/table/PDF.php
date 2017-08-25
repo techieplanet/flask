@@ -320,6 +320,45 @@ class PDF {
         }
     }
     
+    public function getAllFacilitiesWithLocation($category,$id){
+            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+            if($category=="zone"){
+                $needle = "geo_parent_id";
+                $whereClause = "WHERE `$needle`='$id'";
+            }else if($category=="state"){
+                $needle = "state_id";
+                $whereClause = "WHERE `$needle`='$id'";
+            }else if($category=="lga"){
+                $needle = "lga_id";
+                $whereClause = "WHERE `$needle`='$id'  ";
+            }
+            else{
+               $whereClause = "";
+            }
+
+            $sql  = "SELECT COUNT(DISTINCT(id)) as countfac FROM facility_location_view ".$whereClause."";
+            $result = $db->fetchAll($sql);
+            return $result[0]['countfac'];
+        }
+    
+    public function getAllFacilitiesReportRate($tierValue,$geoList,$date_format){
+            $helper = new Helper2();
+            $tierText = $helper->getLocationTierText($tierValue);
+            $tierFieldName = $helper->getTierFieldName($tierText);
+            
+            
+            if($geoList!=''){
+                $locationWhere = ' AND '.$tierFieldName . ' IN (' . $geoList . ')';
+            }
+            $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+            $sql = "SELECT COUNT(*) as counter FROM facility_report_rate as frr LEFT JOIN facility_location_view  as flv ON flv.id = frr.facility_id WHERE  frr.date ='$date_format' $locationWhere";
+            
+            $result = $db->fetchAll($sql);
+            //print_r($result);exit;
+            return $result[0]['counter'];
+            
+            }
+    
     public function getNextLocationDetails(){
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
         $helper = new Helper2();
@@ -473,6 +512,7 @@ class PDF {
                     
                     $longWhereClause = $endDateWhere . ' AND ' . $trainingTypeWhere . ' AND ' . 
                                        $trainingWhere . ' AND ' . $personWhere . ' AND ' . $locationWhere;
+                   // Helper2::jLog("long where:=>".$longWhereClause);
              /*   
                 //needed variables
                 $tierText = $helper->getLocationTierText($tierValue);
@@ -669,7 +709,7 @@ class PDF {
             $cacheValue = json_decode($cacheValue, true);
             if($cacheValue)
                 $output[0]['percent'] = $cacheValue[0]['percent'];
-            
+          //  print_r($sortedArray);
             $sortedArray = $helper->addlocationnames($sortedArray);
             $output = array_merge($output, $sortedArray);
 
@@ -705,9 +745,9 @@ public function fetchFacilitiesWithHWNotProviding($commodity_type, $training_typ
 
                     //commodity type where
                     if($commodity_type == 'fp')
-                        $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+                        $ct_where = "(commodity_type != 'fp' AND commodity_type != 'larc')";
                     else if($commodity_type == 'larc')
-                        $ct_where = "commodity_type = 'larc'";
+                        $ct_where = "commodity_type != 'larc'";
 
                     //training type where
                     if($training_type == 'fp')
@@ -725,7 +765,7 @@ public function fetchFacilitiesWithHWNotProviding($commodity_type, $training_typ
                                        $dateWhere;
                     $facilities = $coverageHelper->getCoverageDataFacWithHWNotProviding($longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName);
                     $facilitiesByLocation = $facility->getFacilityByLocation($locationWhere);
-                    
+                  
                     $facilitiesByLocationNames = array();
                     $facilities_names = array();
                     foreach($facilitiesByLocation as $facility_Location){
@@ -769,9 +809,9 @@ public function fetchFacilitiesWithHWNotProviding($commodity_type, $training_typ
 
                     //commodity type where
                     if($commodity_type == 'fp')
-                        $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+                        $ct_where = "(commodity_type != 'fp' AND commodity_type != 'larc')";
                     else if($commodity_type == 'larc')
-                        $ct_where = "commodity_type = 'larc'";
+                        $ct_where = "commodity_type != 'larc'";
 
                     //training type where
                     if($training_type == 'fp')
@@ -788,7 +828,7 @@ public function fetchFacilitiesWithHWNotProviding($commodity_type, $training_typ
                                        $ct_where . ' AND ' . $tt_where . ' AND ' . $locationWhere . ' AND ' .
                                        $dateWhere;
                     $numerators = $coverageHelper->getCoverageCountFacWithHWProviding($longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName);
-
+                    
                     //concatenate conditions for denominators
                     $dateWhere = "frr.date = '$latestDate'";
                     $longWhereClause = $tt_where . ' AND ' . $dateWhere . ' AND ' . $locationWhere;
@@ -796,8 +836,10 @@ public function fetchFacilitiesWithHWNotProviding($commodity_type, $training_typ
                     //send only one month date range. 
                     $denominators = $helper->getReportingFacsWithTrainedHWOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
                    $counter = $facility->getAllFacilityCountByLocation($locationWhere);
-                  
+                   
+                 
                     $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
+                  
                    
                     foreach($numerators as $num){
                         $numerator[] = $num; 

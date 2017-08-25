@@ -281,7 +281,8 @@ print ScriptContainer::$instance->renderJSHead();
             var percent_lga_stock_out_larc_hidden = document.getElementById('percent_lga_stock_out_larc_hidden').value;
 
             var facilities_stocked_out_larc_hidden = document.getElementById("facilities_stocked_out_larc_hidden").value;
-
+            
+            var report_rate = document.getElementById("report_rate").value;
            
 
            //alert(lga_name+report_hidden+facilitysum_hidden+chart13_hidden+folder_name);
@@ -296,7 +297,7 @@ print ScriptContainer::$instance->renderJSHead();
 
                 data: {generate:true,state_name:state_name,report_hidden:report_hidden,facilitysum_hidden:facilitysum_hidden,chart13_hidden:chart13_hidden,
 
-                folder_name:folder_name,lga_name_hidden:lga_name_hidden,facilities_list_fp_prov_hidden:facilities_list_fp_prov_hidden,percent_facilities_list_fp_prov_hidden:percent_facilities_list_fp_prov_hidden,
+                folder_name:folder_name,lga_name_hidden:lga_name_hidden,report_rate:report_rate,facilities_list_fp_prov_hidden:facilities_list_fp_prov_hidden,percent_facilities_list_fp_prov_hidden:percent_facilities_list_fp_prov_hidden,
 
             percent_facilities_larc_prov:percent_facilities_larc_prov,facilities_list_larc_prov_hidden:facilities_list_larc_prov_hidden,
 
@@ -493,6 +494,8 @@ print ScriptContainer::$instance->renderJSHead();
                     $lga_name = $this->lga_name;
 
                     $folder_name = $this->folder_name;
+                    
+                    $report_rate = $this->report_rate;
 
                     $percent_facilities_with_fphw_not_prov_fp = $this->percent_fp_trained_not_providing_for_this_LGA;
 
@@ -586,7 +589,8 @@ print ScriptContainer::$instance->renderJSHead();
 				<div id="allCharts" class="container">
 
                                     <input type="hidden" id="state_name" value="<?php echo $state_name; ?>" name="state_name"/>
-
+                                    
+                                    <input type="hidden" id="report_rate" value="<?php echo $report_rate; ?>" name="report_rate" />
                                     <input type="hidden" id="lga_name" value="<?php echo $lga_name; ?>" name="lga_name"/>
 
                                     <input type="hidden" id="lga_name_hidden" value="<?php echo $lga_name; ?>" name="lga_name_hidden"/>
