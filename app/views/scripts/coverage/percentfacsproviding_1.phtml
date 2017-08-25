@@ -170,7 +170,6 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                     </div>
                                                                                 </div>
 									<div id="chart14_div" style="width: 600px; height: 350px;margin-left: 20px;"></div>
-                                                                        <div id="chart15_div" style="width: 600px; height: 350px;margin-left: 20px;"></div>
 									</div>
                                                                     
                                                                         <div class="main-search" style="margin-top: 50px; ">
@@ -239,8 +238,7 @@ print ScriptContainer::$instance->renderJSHead();
 	drawChart11();
 	drawChart12();
 	drawChart13();
-        drawChart14('allfacs');
-        drawChart14('fpfacs');
+        drawChart14();
 		
 	var currentLevel;
 	currentLevel = <?php echo '\'' . $this->location_data[0]['name'] . '\''; ?>;
@@ -321,7 +319,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 yAxis: {
                     title: {
-                        text: 'Percent Facilities',
+                        text: '%Facilities',
                         style:{ "fontWeight": "bold" }
                     },
                     labels: {
@@ -354,34 +352,42 @@ print ScriptContainer::$instance->renderJSHead();
     }
     
   //  TA:17:18 Coverage Fac Providing at least 3 commodities in
-  /**
-  * mode is allfacs or fpfacs. 
-  * Selects the denominator we are working with
-  */
-  function drawChart14(mode) {
-  
-       var modernMethodsDataAll = <?php echo json_encode($this->modern_method_data); ?>;
-       var modernMethodsData = modernMethodsDataAll[mode]; //select the mode
+  function drawChart14() {
+       var jNumData = new Array();
+       var jDenomData = new Array();
        
-       //console.log(modernMethodsData);
-   
-        var locationsArray = []; var valuesArray = [];
-        for(var location in modernMethodsData){ //var keyword important. A global with name location exists
-            locationsArray.push(location);
+    <?php
+        reset($this->modern_method_data); 
+        $firstKey = key($this->modern_method_data); 
+        $locationsString = ""; $valuesString = "";
+	foreach ($this->modern_method_data as $key=>$row){ 
+            $locationsString .= "'" . $row['location'] . "',";
+            $location = $row['location'];
             
-            if(location === "National"){
-                valuesArray.push({y:modernMethodsData[location]['percent'], color: '#000000'}); 
-            }
-            else{
-                valuesArray.push(modernMethodsData[location]['percent']);
-            }
-        }
+            $numerator = $this->modern_method_numerator[''.$location.''];
+            $denominator = $this->modern_method_denominator[''.$location.''];
+                    
+            if($firstKey == $key)
+                $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
+            else
+                $valuesString .= round($row['percent']*100, 1) . ",";  
+            
+            
+             ?>
+                   jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
+                   jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
+        <?php
+	}
         
-        var titleText = "Percent of facilities providing at least 3 modern methods as of " + '<?= $this->date; ?>';
-        var subtitleText = "as of " + '<?= $this->date; ?>';
-        divId = mode == 'allfacs' ? 'chart14_div' : 'chart15_div';
+        $locationsString = substr($locationsString, 0 , -1);
+        $valuesString = substr($valuesString, 0 , -1);
+    ?>
         
-        $('#'+divId).highcharts({
+        var titleText = '<?php echo  "Percent of facilities providing at least 3 modern methods as of $this->date"; ?>';
+        var subtitleText = '(<?php echo  "as of $this->date"; ?>)';
+
+	  <?php //echo  " var title_data = 'Percent of facilities providing FP, $this->date ' " ?>;
+        $('#chart14_div').highcharts({
                 chart: {
                     type: 'column',
                     reflow: true,
@@ -413,12 +419,12 @@ print ScriptContainer::$instance->renderJSHead();
                         text:'Geography',
                         style:{ "fontWeight": "bold" }
                     },
-                    categories: locationsArray
+                    categories: [<?php echo $locationsString; ?>]
                 },
                 yAxis: {
                     title: {
-                        text: 'Percent Facilities',
-                        style: { "fontWeight": "bold" }
+                        text: '%Facilities',
+                        style:{ "fontWeight": "bold" }
                     },
                     labels: {
                         format: '{value}%'
@@ -427,10 +433,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 tooltip: {
                     formatter: function () {
-                        return '<b>' + this.x + '</b>:' + 
-                                this.y + '%<br/>' +
-                                '<b>Numerator</b>:' + thousandSeparator(modernMethodsData[this.x]['num']) +
-                                '<br/><b>Denominator</b>:'+thousandSeparator(modernMethodsData[this.x]['denom']);
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x]);
                     }
                 },
                 plotOptions: {
@@ -446,7 +449,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 credits: {enabled: false},
                 series: [{
-                    data: valuesArray
+                    data: [<?php echo $valuesString; ?>]
                 }]
             });
          
@@ -524,7 +527,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 yAxis: {
                     title: {
-                        text: 'Percent Facilities',
+                        text: '%Facilities',
                         style:{ "fontWeight": "bold" }
                     },
                     labels: {
@@ -625,7 +628,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 yAxis: {
                     title: {
-                       text: 'Percent Facilities',
+                       text: '%Facilities',
                         style:{ "fontWeight": "bold" }
                     },
                     labels: {

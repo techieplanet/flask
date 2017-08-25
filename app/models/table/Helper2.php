@@ -49,6 +49,13 @@ class Helper2 {
         return $dates;
     }
     
+    public function getPreviousMonthNames($numberOfMonths){
+        $monthDates = $this->getPreviousMonthDates($numberOfMonths);
+        return array_map(function($value){
+                            return date('F', strtotime($value));
+               }, $monthDates);
+    }
+    
     public function getPreviousMonthDatesPdf($numberOfMonths,$upperDate,$lowerDate){
         $db = $this->getDbAdapter();
         $sql = $db->select()
@@ -251,7 +258,8 @@ class Helper2 {
           $select = $db->select()
                         ->from(array('frr' => 'facility_report_rate'),
                             array('COUNT(DISTINCT(facility_id)) AS fid_count', 'MONTHNAME(date) as month_name', 'YEAR(date) as year'))
-                        ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = facility_id', array('lga', 'state', 'geo_zone'))
+                        //->joinInner(array('flv' => 'facility_location_view'), 'flv.id = facility_id', array('lga', 'state', 'geo_zone'))
+                        ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = facility_id', array($tierText))
                         ->where($longWhereClause)
                         ->group(array($tierFieldName, 'date'))
                         ->order(array($tierText, 'date'));   
@@ -602,37 +610,84 @@ class Helper2 {
            return array($startYears,$monthNames);
             
         }       
+        
+    /**
+     * Calculates the percentages for each location found in numerator
+     *
+     * @param type $numerators
+     * @param type $denominators
+     * @return type array of the percentages per location and the national average percentage
+     */ 
     public function sumNumersAndDenoms($numerators, $denominators){
-        $numerSum = $denomSum = 0; $output = array();
-         $this->jLog(PHP_EOL);
-       $this->jLog(print_r($denominators,true));
-       $this->jLog("---------------------->");
-       $this->jLog(PHP_EOL);
-       $this->jLog(print_r($numerators,true));
-       $this->jLog(PHP_EOL);
+       $numerSum = $denomSum = 0; $output = array();
+       
         foreach ($numerators as $location=>$numer){
             //$nationalNumerator += $numer;
             //$nationalDenominator += $denominators[$location];
-            $this->jLog("The location is ".$numer.PHP_EOL);
+            //$this->jLog("The location is ".$numer.PHP_EOL);
             
             $output[] = array(
-                        'location' => $location,
-                        'percent' => (($numer>0)?($numer / $denominators[$location]):0)
+                'location' => $location,
+                'percent' => (($numer>0 && $denominators[$location])?($numer / $denominators[$location]):0)
             );
 
             $numerSum += $numer;
             $denomSum += $denominators[$location];
-             
-//        $this->jLog(print_r($numer[$location],true));
-        
+                     
         }
         
        
         //divide national avg by length of national zones
-        $nationalAvg = (($numerSum>0)?($numerSum / $denomSum):0);
+        $nationalAvg = (($numerSum>0 && $denomSum>0)?($numerSum / $denomSum):0);
         
         return array('output'=>$output, 'nationalAvg' => $nationalAvg);
     }
+    
+    
+    /**
+     * Calculates the percentages for each location found in numerator
+     * This version adds the denominators and numerators
+     * 
+     * @param type $numerators
+     * @param type $denominators
+     * @return type array of the percentages per location and the national average percentage
+     */ 
+    public function sumNumersAndDenomsWithValues($numerators, $denominators){
+       $numerSum = $denomSum = 0; $output = array();
+       
+        foreach ($numerators as $location=>$numer){
+            //$nationalNumerator += $numer;
+            //$nationalDenominator += $denominators[$location];
+            //$this->jLog("The location is ".$numer.PHP_EOL);
+            
+            $output[$location] = array(
+                'location' => $location,
+                'num' => $numer,
+                'denom' => $denominators[$location],
+                'percent' => round((($numer>0 && $denominators[$location])?($numer / $denominators[$location]):0) * 100, 1)
+            );
+
+            $numerSum += $numer;
+            $denomSum += $denominators[$location];
+                     
+        }
+        
+       
+        //divide national avg by length of national zones
+        $nationalAvg = round((($numerSum>0 && $denomSum>0)?($numerSum / $denomSum):0) * 100, 1);
+        
+        return array(
+            'output'=>$output,
+            'national' => array(       
+                'location' => 'National',
+                'num' => $numerSum,
+                'denom' => $denomSum,
+                'percent' => $nationalAvg
+            )
+        );
+    }
+    
+    
     
     public function addNationalNumersAndDenoms($numerators, $denominators){
         $numerSum = $denomSum = 0; $output = array();
@@ -703,43 +758,6 @@ class Helper2 {
             }
             
             return $locationDataArray;
-       }
-       
-       
-       //add all missing months for each location.
-       public function filterMonths($monthNames, $locationArray, $focusLocation, $tierText, $monthField){
-           $monthDataArray = array(); $monthValue = 0;
-           if(!empty($locationArray)){
-                foreach($monthNames as $key=>$monthName){
-                    $monthValue = '';
-                    foreach($locationArray as $entry){
-                        if($monthName == $entry[$monthField]){                                    
-                            $monthValue = $entry['fid_count']; 
-                            break;
-                        }
-                    }
-
-                    if($monthValue == '')
-                        $monthValue = 0;
-
-                    $monthDataArray[] = array(
-                                'month_name' => $monthName,
-                                $tierText => $focusLocation,
-                                'fid_count' => $monthValue
-                        );
-                }
-            }
-            else{
-                //echo 'empty: ' . $tierText; exit;
-                foreach($monthNames as $key=>$monthName)
-                    $monthDataArray[] = array(
-                                'month_name' => $monthName,
-                                $tierText => $focusLocation,
-                                'fid_count' => $monthValue
-                        );
-            }
-            
-            return $monthDataArray;
        }
        
        
@@ -1027,7 +1045,7 @@ class Helper2 {
         
         static function jLog($logMessage){
             $logMessage = date('Y-m-d H:i:s') . ' ' . $logMessage . "\n";
-            file_put_contents("jlogs.txt", $logMessage, FILE_APPEND);
+            //file_put_contents("jlogs.txt", $logMessage, FILE_APPEND);
         }
 }
 

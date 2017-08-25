@@ -7,7 +7,7 @@
 
 require_once ('ReportFilterHelpers.php');
 require_once ('models/table/OptionList.php');
-//require_once('models/table/Course.php');
+require_once('models/table/Consumption.php');
 require_once ('models/table/CoverageHelper.php');
 require_once ('models/table/Facility.php');
 require_once ('views/helpers/CheckBoxes.php');
@@ -77,29 +77,81 @@ $this->_forward ( 'info' );
             $reportRatesProv = $this->getAllFacilitiesProvFPReportingRates($facilityID,$date_format);
             $facprovReport = ($reportRatesProv>0)?"Yes":"No";
             
-                $rowData = array();
-$rowData['id'] = $facilityID;
-$rowData['parent_id'] = $lga_id;
-$rowData['name'] = $facilityName;
-$rowData['allfac'] = $allFacilities;
-$rowData['facrep'] = $faciityReportingAll;
-$rowData['allfacrrate'] = "";
-$rowData['allfacprovfp'] = $facProv;
-$rowData['facprovfprep'] = $facprovReport;
-$rowData['facprovfprrate'] = "";
+            $rowData = array();
+            $rowData['id'] = $facilityID;
+            $rowData['parent_id'] = $lga_id;
+            $rowData['name'] = $facilityName;
+            $rowData['allfac'] = $allFacilities;
+            $rowData['facrep'] = $faciityReportingAll;
+            $rowData['allfacrrate'] = "";
+            $rowData['allfacprovfp'] = $facProv;
+            $rowData['facprovfprep'] = $facprovReport;
+            $rowData['facprovfprrate'] = "";
 
-$facilityData[] = $rowData;
-       
-                  }
-           
-           
-           echo json_encode($facilityData);
-        }else{
-            return true;
-            
-        }
+            $facilityData[] = $rowData;
+
+                              }
+
+
+                       echo json_encode($facilityData);
+                    }else{
+                        return true;
+
+                    }
     }
-        public function rrateAction(){
+        
+    
+    /**
+     * The two CIP (SC3) charts
+     */
+    function percentfrrAction(){
+            $helper = new Helper2();
+            $consumption = new Consumption();
+            
+	    list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
+            $this->view->assign('monthDatemultiple',$monthDate);
+            $this->view->assign('monthNamemultiple',$monthName);
+            
+            $lastPullDatemultiple = array();
+            if(isset($_POST['lastPullDatemultiple'])){
+                $lastPullDatemultiple = $_POST['lastPullDatemultiple'];
+            }
+            $this->view->assign('selectedDatemultiple',$lastPullDatemultiple);
+            //get the parameters
+            
+            list($geoList, $tierValue) = $this->buildParameters();
+            
+            if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
+                $frr = $consumption->fetchFacsReportingRateOvertime($geoList, $tierValue, true, false,$lastPullDatemultiple);
+                
+            }
+            else {
+                $frr = $consumption->fetchFacsReportingRateOvertime($geoList, $tierValue, false, false,$lastPullDatemultiple);
+            }
+            
+            $monthNameDisplay = $helper->formatMonthName($lastPullDatemultiple);
+            $this->view->assign('frr_data', json_encode($frr));
+                        
+            $this->view->assign('latestPullDatemultipleMonthName',$monthNameDisplay);
+            $sDate = $helper->fetchTitleDate();
+            $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
+
+            $overTimeDates = $helper->getPreviousMonthDates(12);
+            
+//            if(!empty($lastPullDatemultiple)){
+//             $overTimeDates = $lastPullDatemultiple;   
+//            }
+            $this->view->assign('start_date', date('F', strtotime($overTimeDates[0])). ' '. date('Y', strtotime($overTimeDates[0]))); 
+            $this->view->assign('end_date', date('F', strtotime($overTimeDates[11])). ' '. date('Y', strtotime($overTimeDates[11]))); 
+
+            $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
+            $this->viewAssignEscaped ('locations', Location::getAll(1) );
+            
+            $this->view->assign('base_url', $this->baseUrl);
+        }
+        
+    
+    public function rrateAction(){
              $this->_countrySettings = array();
 		$this->_countrySettings = System::getAll();
                 $facility = new Facility();
@@ -107,274 +159,210 @@ $facilityData[] = $rowData;
 		
                 require_once ('models/table/TrainingLocation.php');
 		require_once('views/helpers/TrainingViewHelper.php');
-$db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+                $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
 
-$current_month = "03";
-$current_year = date('Y');
-//$date_format = $current_year.'-'.$current_month.'-'.'01';
-list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
-            $this->view->assign('monthDate',$monthDate);
-            $this->view->assign('monthName',$monthName);
+        $current_month = "03";
+        $current_year = date('Y');
+        //$date_format = $current_year.'-'.$current_month.'-'.'01';
+        list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
+                    $this->view->assign('monthDate',$monthDate);
+                    $this->view->assign('monthName',$monthName);
+
+
+        if(isset($_POST['lastPullDate'])){
+                        $date_format = $_POST['lastPullDate'];
+         }else{
+        $date_format = $helper->getLatestPullDate();
+         }
+
+         $this->view->assign('selectedDate',$date_format);
+        $time = strtotime($date_format);
+        $month = date('F',$time);
+        $year = date('Y',$time);
+        $format = "for $month, $year";
+        list($result,$allFacilitiesNational) = $this->get_all_facilities_with_location("","");
+        list($resultProv,$allFacilitiesNationalProv) = $this->getAllFacilitiesProvidingFPWithLocation("","",$date_format);
+
+        $facility_idsNational = implode(",",$allFacilitiesNational);
+        $reportRatesNational = $this->getAllFacilitiesReportRate("","",$date_format); //$this->get_all_facilities_reporte_rates($facility_idsNational,$date_format);
+        $reportRatesNationalProv = $this->getAllFacilitiesProvFPReportingRates($facility_idsNational,$date_format);
+
+        $totalFacilities = sizeof($allFacilitiesNational);
+        $reportRateNationalPercent = round(($reportRatesNational/$totalFacilities) * 100,2);
+
+        $totalFacilitiesProv = sizeof($allFacilitiesNationalProv);
+         if($totalFacilitiesProv==0){
+                $reportRateProvLGAPercent = 0;
+            }else{
+        $reportRateNationalPercentProv = round(($reportRatesNationalProv/$totalFacilitiesProv) * 100,2);
+            }
+        $rrateArray = array();
+        $rowData = array();
+        $rowData['id'] = 0;
+        $rowData['parent_id'] = 0;
+        $rowData['name'] = 'National';
+        $rowData['allfac'] = number_format($totalFacilities);
+        $rowData['facrep'] = number_format($reportRatesNational);
+        $rowData['allfacrrate'] = $reportRateNationalPercent;
+        $rowData['allfacprovfp'] = number_format($totalFacilitiesProv);
+        $rowData['facprovfprep'] = number_format($reportRatesNationalProv);
+        $rowData['facprovfprrate'] = $reportRateNationalPercentProv;
+        $rrateArray[] = $rowData;
+
+        //echo $totalFacilities." ".$reportRatesNational." ".$reportRateNationalPercent." ".$totalFacilitiesProv." ".$reportRatesNationalProv." ".$reportRateNationalPercentProv;
+
+        //$displayMessage ="";
+        //  $displayMessage.= '<h2 align="left" style="color:green;margin-left:50px;width:80%;font-size:14px !important;min-height:34px !important"><span style="width:50%;">National Reporting Rate:</span><span style="float:right;width:50%;"><div id="resultd">'.$totalFacilities.'</div><div id="resultd">'.$reportRatesNational.'</div><div id="resultd">'.$reportRateNationalPercent.'%</div><div id="resultd">'.$totalFacilitiesProv.'</div><div id="resultd">'.$reportRatesNationalProv.'</div><div id="resultd">'.$reportRateNationalPercentProv.'%</div></span></h2>';
+        ////
+        //$displayMessage.= '<div id="accordion">';
+
+        $zones = $this->get_location_category_unique("zone");
+        //print_r($zones);exit;
+        foreach($zones as $zone){
+            $zoneArray = array();
+            $zone_name = $zone['geo_zone'];
+            $zone_id = $zone['geo_parent_id'];
+
+            list($result,$facilities) = $this->get_all_facilities_with_location("zone",$zone_id);
+          //  list($resultProv,$allFacilitiesProv) = $this->getAllFacilitiesProvidingFPWithLocation("zone",$zone_id,$date_format);
+            list($numerator,$denominator) = $this->getAllFacilitiesProvFPReportingRatesSpecial(1,$zone_id,$date_format);
+                $reportRatesProv = $numerator[$zone_name];
+                $totalFacilitiesProv = $denominator[$zone_name];
+           // print_r($facilities);exit;
+            $facility_ids = implode(",",$facilities);
+
+           $report_rates = $this->getAllFacilitiesReportRate(1,$zone_id,$date_format); //$this->get_all_facilities_reporte_rates($facility_ids,$date_format);
+
+
+           $totalFacilities = sizeof($facilities);
+
+
+            $reportRateZonePercent = round(($report_rates/$totalFacilities) * 100,2);
+             if($totalFacilitiesProv==0){
+                $reportRateProvLGAPercent = 0;
+            }else{
+            $reportRateProvZonePercent = round(($reportRatesProv/$totalFacilitiesProv)* 100, 2);
+            }
+        //    
+        //
+        $zoneArray = array();
+        $zoneArray['id'] = $zone_id;
+        $zoneArray['name'] = $zone_name;
+        $zoneArray['parent_id'] = 0;
+        $zoneArray['allfac'] = number_format($totalFacilities);
+        $zoneArray['facrep'] = number_format($report_rates);
+        $zoneArray['allfacrrate'] = $reportRateZonePercent;
+        $zoneArray['allfacprovfp'] = number_format($totalFacilitiesProv);
+        $zoneArray['facprovfprep'] = number_format($reportRatesProv);
+        $zoneArray['facprovfprrate'] = $reportRateProvZonePercent;
+        $zoneArray['states'] = array();
+
+
+        //$rrateArray[$zone_id]['states'] = array();
+
+        // $displayMessage.=' <h3 align=""><span class="tableft">'.$zone_name.':</span><span class="tabright"><div id="resultd">'.$totalFacilities.'</div><div id="resultd">'.$report_rates.'</div><div id="resultd">'.$reportRateZonePercent.'%</div><div id="resultd">'.$totalFacilitiesProv.'</div><div id="resultd">'.$reportRatesProv.'</div><div id="resultd">'.$reportRateProvZonePercent.'%</div></span>&nbsp;&nbsp;</h3>'
+        //         . '<div class="accordion1">';
+        //  //  echo '<li><a href=#"><span></span>'.$zone_name.'::'.$report_rates.'</a>';
+            $states = $this->get_location_category_unique("state",$zone_id);
+           // echo '<ul>';
+            foreach($states as $state){
+                $state_name = $state['state'];
+                $state_id = $state['state_id'];
+                list($result,$facilities) = $this->get_all_facilities_with_location("state",$state_id);
+                list($numerator,$denominator) = $this->getAllFacilitiesProvFPReportingRatesSpecial(2,$state_id,$date_format);
+                $reportRatesProv = $numerator[$state_name];
+                $totalFacilitiesProv = $denominator[$state_name];
+
+            $facility_ids = implode(",",$facilities);
+
+            $report_rates_state = $this->getAllFacilitiesReportRate(2,$state_id,$date_format); //$this->get_all_facilities_reporte_rates($facility_ids,$date_format);
+
+
+            $totalFacilities = sizeof($facilities);
+
+
+            $reportRateStatePercent = round(($report_rates_state/$totalFacilities) * 100,2);
+             if($totalFacilitiesProv==0){
+                $reportRateProvLGAPercent = 0;
+            }else{
+            $reportRateProvStatePercent = round(($reportRatesProv/$totalFacilitiesProv)* 100, 2);
+            }
+            $stateArray = array();
+            $stateArray['id'] = $state_id;
+            $stateArray['name'] = $state_name;
+            $stateArray['parent_id'] = $zone_id;
+            $stateArray['allfac'] = number_format($totalFacilities);
+            $stateArray['facrep'] = number_format($report_rates_state);
+            $stateArray['allfacrrate'] = $reportRateStatePercent;
+            $stateArray['allfacprovfp'] = number_format($totalFacilitiesProv);
+            $stateArray['facprovfprep'] = number_format($reportRatesProv);
+            $stateArray['facprovfprrate'] = $reportRateProvStatePercent;
+            $stateArray['lga'] = array();
             
+                
+            //   $displayMessage.='<div class="accordion2">';
+                $lgas = $this->get_location_category_unique("lga",$state_id);
+                foreach($lgas as $lga){
 
-if(isset($_POST['lastPullDate'])){
-                $date_format = $_POST['lastPullDate'];
- }else{
-$date_format = $helper->getLatestPullDate();
- }
- 
- $this->view->assign('selectedDate',$date_format);
-$time = strtotime($date_format);
-$month = date('F',$time);
-$year = date('Y',$time);
-$format = "for $month, $year";
-list($result,$allFacilitiesNational) = $this->get_all_facilities_with_location("","");
-list($resultProv,$allFacilitiesNationalProv) = $this->getAllFacilitiesProvidingFPWithLocation("","",$date_format);
+                    $lga_name = $lga['lga'];
+                    $lga_id = $lga['lga_id'];
+                   list($result,$facilities) = $this->get_all_facilities_with_location("lga",$lga_id);
+                   list($numerator,$denominator) = $this->getAllFacilitiesProvFPReportingRatesSpecial(3,$lga_id,$date_format);
+            //       echo $lga_name.'<br/>';
+            //       print_r($numerator);
+            //       print_r($denominator);
+            //    
+                     $reportRatesProv = $numerator[$lga_name];
+                    $totalFacilitiesProv = $denominator[$lga_name];
+            //        echo $reportRatesProv." ".$totalFacilitiesProv;
+            //         echo '<br/><br/><br/>';
+                   list($resultProv,$allFacilitiesProv) = $this->getAllFacilitiesProvidingFPWithLocation("lga",$lga_id,$date_format);
 
-$facility_idsNational = implode(",",$allFacilitiesNational);
-$reportRatesNational = $this->getAllFacilitiesReportRate("","",$date_format); //$this->get_all_facilities_reporte_rates($facility_idsNational,$date_format);
-$reportRatesNationalProv = $this->getAllFacilitiesProvFPReportingRates($facility_idsNational,$date_format);
+                   $totalFacilities = sizeof($facilities);
+                   //$totalFacilitiesProv = sizeof($allFacilitiesProv);
 
-$totalFacilities = sizeof($allFacilitiesNational);
-$reportRateNationalPercent = round(($reportRatesNational/$totalFacilities) * 100,2);
+                $facility_ids = implode(",",$facilities);
 
-$totalFacilitiesProv = sizeof($allFacilitiesNationalProv);
- if($totalFacilitiesProv==0){
-        $reportRateProvLGAPercent = 0;
-    }else{
-$reportRateNationalPercentProv = round(($reportRatesNationalProv/$totalFacilitiesProv) * 100,2);
-    }
-$rrateArray = array();
-$rowData = array();
-$rowData['id'] = 0;
-$rowData['parent_id'] = 0;
-$rowData['name'] = 'National';
-$rowData['allfac'] = number_format($totalFacilities);
-$rowData['facrep'] = number_format($reportRatesNational);
-$rowData['allfacrrate'] = $reportRateNationalPercent;
-$rowData['allfacprovfp'] = number_format($totalFacilitiesProv);
-$rowData['facprovfprep'] = number_format($reportRatesNationalProv);
-$rowData['facprovfprrate'] = $reportRateNationalPercentProv;
-$rrateArray[] = $rowData;
- 
-//echo $totalFacilities." ".$reportRatesNational." ".$reportRateNationalPercent." ".$totalFacilitiesProv." ".$reportRatesNationalProv." ".$reportRateNationalPercentProv;
-
-//$displayMessage ="";
-//  $displayMessage.= '<h2 align="left" style="color:green;margin-left:50px;width:80%;font-size:14px !important;min-height:34px !important"><span style="width:50%;">National Reporting Rate:</span><span style="float:right;width:50%;"><div id="resultd">'.$totalFacilities.'</div><div id="resultd">'.$reportRatesNational.'</div><div id="resultd">'.$reportRateNationalPercent.'%</div><div id="resultd">'.$totalFacilitiesProv.'</div><div id="resultd">'.$reportRatesNationalProv.'</div><div id="resultd">'.$reportRateNationalPercentProv.'%</div></span></h2>';
-////
-//$displayMessage.= '<div id="accordion">';
-
-$zones = $this->get_location_category_unique("zone");
-//print_r($zones);exit;
-foreach($zones as $zone){
-    $zoneArray = array();
-    $zone_name = $zone['geo_zone'];
-    $zone_id = $zone['geo_parent_id'];
-   
-    list($result,$facilities) = $this->get_all_facilities_with_location("zone",$zone_id);
-  //  list($resultProv,$allFacilitiesProv) = $this->getAllFacilitiesProvidingFPWithLocation("zone",$zone_id,$date_format);
-    list($numerator,$denominator) = $this->getAllFacilitiesProvFPReportingRatesSpecial(1,$zone_id,$date_format);
-        $reportRatesProv = $numerator[$zone_name];
-        $totalFacilitiesProv = $denominator[$zone_name];
-   // print_r($facilities);exit;
-    $facility_ids = implode(",",$facilities);
-    
-   $report_rates = $this->getAllFacilitiesReportRate(1,$zone_id,$date_format); //$this->get_all_facilities_reporte_rates($facility_ids,$date_format);
-  
-   
-   $totalFacilities = sizeof($facilities);
-  
-   
-    $reportRateZonePercent = round(($report_rates/$totalFacilities) * 100,2);
-     if($totalFacilitiesProv==0){
-        $reportRateProvLGAPercent = 0;
-    }else{
-    $reportRateProvZonePercent = round(($reportRatesProv/$totalFacilitiesProv)* 100, 2);
-    }
-//    
-//
-$zoneArray = array();
-$zoneArray['id'] = $zone_id;
-$zoneArray['name'] = $zone_name;
-$zoneArray['parent_id'] = 0;
-$zoneArray['allfac'] = number_format($totalFacilities);
-$zoneArray['facrep'] = number_format($report_rates);
-$zoneArray['allfacrrate'] = $reportRateZonePercent;
-$zoneArray['allfacprovfp'] = number_format($totalFacilitiesProv);
-$zoneArray['facprovfprep'] = number_format($reportRatesProv);
-$zoneArray['facprovfprrate'] = $reportRateProvZonePercent;
-$zoneArray['states'] = array();
+                $report_rates_lga = $this->getAllFacilitiesReportRate(3,$lga_id,$date_format); //$this->get_all_facilities_reporte_rates($facility_ids,$date_format);
 
 
-//$rrateArray[$zone_id]['states'] = array();
-    
-// $displayMessage.=' <h3 align=""><span class="tableft">'.$zone_name.':</span><span class="tabright"><div id="resultd">'.$totalFacilities.'</div><div id="resultd">'.$report_rates.'</div><div id="resultd">'.$reportRateZonePercent.'%</div><div id="resultd">'.$totalFacilitiesProv.'</div><div id="resultd">'.$reportRatesProv.'</div><div id="resultd">'.$reportRateProvZonePercent.'%</div></span>&nbsp;&nbsp;</h3>'
-//         . '<div class="accordion1">';
-//  //  echo '<li><a href=#"><span></span>'.$zone_name.'::'.$report_rates.'</a>';
-    $states = $this->get_location_category_unique("state",$zone_id);
-   // echo '<ul>';
-    foreach($states as $state){
-        $state_name = $state['state'];
-        $state_id = $state['state_id'];
-        list($result,$facilities) = $this->get_all_facilities_with_location("state",$state_id);
-        list($numerator,$denominator) = $this->getAllFacilitiesProvFPReportingRatesSpecial(2,$state_id,$date_format);
-        $reportRatesProv = $numerator[$state_name];
-        $totalFacilitiesProv = $denominator[$state_name];
-        
-    $facility_ids = implode(",",$facilities);
-    
-    $report_rates_state = $this->getAllFacilitiesReportRate(2,$state_id,$date_format); //$this->get_all_facilities_reporte_rates($facility_ids,$date_format);
-   
-    
-    $totalFacilities = sizeof($facilities);
-   
-    
-    $reportRateStatePercent = round(($report_rates_state/$totalFacilities) * 100,2);
-     if($totalFacilitiesProv==0){
-        $reportRateProvLGAPercent = 0;
-    }else{
-    $reportRateProvStatePercent = round(($reportRatesProv/$totalFacilitiesProv)* 100, 2);
-    }
-    $stateArray = array();
-$stateArray['id'] = $state_id;
-$stateArray['name'] = $state_name;
-$stateArray['parent_id'] = $zone_id;
-$stateArray['allfac'] = number_format($totalFacilities);
-$stateArray['facrep'] = number_format($report_rates_state);
-$stateArray['allfacrrate'] = $reportRateStatePercent;
-$stateArray['allfacprovfp'] = number_format($totalFacilitiesProv);
-$stateArray['facprovfprep'] = number_format($reportRatesProv);
-$stateArray['facprovfprrate'] = $reportRateProvStatePercent;
-$stateArray['lga'] = array();
-//$rrateArray[$zone_id]['states'][$state_id] =  $rowData;
-////print_r($rrateArray);exit;
-//    
-//    $displayMessage.='<h3 align=""><span class="tabstateleft" >'.$state_name.':</span></span><span class="tabright"><div id="resultd">'.$totalFacilities.'</div><div id="resultd">'.$report_rates_state.'</div><div id="resultd">'.$reportRateStatePercent.'%</div><div id="resultd">'.$totalFacilitiesProv.'</div><div id="resultd">'.$reportRatesProv.'</div><div id="resultd">'.$reportRateProvStatePercent.'%</div></span></h3>';
-//        //echo '<li><a href="#"><span></span>'.$state_name.'::'.$report_rates_state.'</a>';
-//       // echo '<ul>';
-//    
-//   $displayMessage.='<div class="accordion2">';
-    $lgas = $this->get_location_category_unique("lga",$state_id);
-    foreach($lgas as $lga){
-        
-        $lga_name = $lga['lga'];
-        $lga_id = $lga['lga_id'];
-       list($result,$facilities) = $this->get_all_facilities_with_location("lga",$lga_id);
-       list($numerator,$denominator) = $this->getAllFacilitiesProvFPReportingRatesSpecial(3,$lga_id,$date_format);
-//       echo $lga_name.'<br/>';
-//       print_r($numerator);
-//       print_r($denominator);
-//    
-         $reportRatesProv = $numerator[$lga_name];
-        $totalFacilitiesProv = $denominator[$lga_name];
-//        echo $reportRatesProv." ".$totalFacilitiesProv;
-//         echo '<br/><br/><br/>';
-       list($resultProv,$allFacilitiesProv) = $this->getAllFacilitiesProvidingFPWithLocation("lga",$lga_id,$date_format);
-       
-       $totalFacilities = sizeof($facilities);
-       //$totalFacilitiesProv = sizeof($allFacilitiesProv);
-       
-    $facility_ids = implode(",",$facilities);
-    
-    $report_rates_lga = $this->getAllFacilitiesReportRate(3,$lga_id,$date_format); //$this->get_all_facilities_reporte_rates($facility_ids,$date_format);
-  
-     
-    $reportRateLgaPercent = round(($report_rates_lga/$totalFacilities) * 100,2);
-    if($totalFacilitiesProv==0){
-        $reportRateProvLGAPercent = 0;
-    }else{
-    $reportRateProvLGAPercent = round(($reportRatesProv/$totalFacilitiesProv)* 100, 2);
-    }
-    $lgaArray = array();
-$lgaArray['id'] = $lga_id;
-$lgaArray['name'] = $lga_name;
-$lgaArray['parent_id'] = $state_id;
-$lgaArray['allfac'] = number_format($totalFacilities);
-$lgaArray['facrep'] = number_format($report_rates_lga);
-$lgaArray['allfacrrate'] = $reportRateLgaPercent;
-$lgaArray['allfacprovfp'] = number_format($totalFacilitiesProv);
-$lgaArray['facprovfprep'] = number_format($reportRatesProv);
-$lgaArray['facprovfprrate'] = $reportRateProvLGAPercent;
-$lgaArray['facilities'] = array();
-//$rrateArray[] =  $rowData;
-//    print_r($rrateArray);
-//    continue;
-//     $displayMessage.='<h4 align=""><span class="tabstateleft" >'.$lga_name.':</span></span><span class="tabright"><div id="resultd">'.$totalFacilities.'</div><div id="resultd">'.$report_rates_lga.'</div><div id="resultd">'.$reportRateLgaPercent.'%</div><div id="resultd">'.$totalFacilitiesProv.'</div><div id="resultd">'.$reportRatesProv.'</div><div id="resultd">'.$reportRateProvLGAPercent.'%</div></span></h4>';
-//   $displayMessage .= '<div>';
-      //  $displayMessage.= '<p><span class="tableft">'.$lga_name.':</span><span class="tabright">'.$reportRateLgaPercent.'%</span></p>'; 
-//       $counter = 0;
+                $reportRateLgaPercent = round(($report_rates_lga/$totalFacilities) * 100,2);
+                if($totalFacilitiesProv==0){
+                    $reportRateProvLGAPercent = 0;
+                }else{
+                $reportRateProvLGAPercent = round(($reportRatesProv/$totalFacilitiesProv)* 100, 2);
+                }
+                $lgaArray = array();
+            $lgaArray['id'] = $lga_id;
+            $lgaArray['name'] = $lga_name;
+            $lgaArray['parent_id'] = $state_id;
+            $lgaArray['allfac'] = number_format($totalFacilities);
+            $lgaArray['facrep'] = number_format($report_rates_lga);
+            $lgaArray['allfacrrate'] = $reportRateLgaPercent;
+            $lgaArray['allfacprovfp'] = number_format($totalFacilitiesProv);
+            $lgaArray['facprovfprep'] = number_format($reportRatesProv);
+            $lgaArray['facprovfprrate'] = $reportRateProvLGAPercent;
+            $lgaArray['facilities'] = array();
 
 
-//        foreach($result as $facData){
-//           $facilityID = $facData['id'];
-//           $facilityName = $facData['facility_name'];
-//           $counter  = $this->get_all_facilities_reporte_rates($facilityID,$date_format);
-//           $allFacilities = "Yes";
-//           $faciityReportingAll = "";
-//           if($counter<=0){
-//             $faciityReportingAll = "No";
-//           }else{
-//             $faciityReportingAll = "Yes";
-//           }
-//            $facProv = (in_array($facilityID,$allFacilitiesProv))?"Yes":"No";
-//            $reportRatesProv = $this->getAllFacilitiesProvFPReportingRates($facilityID,$date_format);
-//            $facprovReport = ($reportRatesProv>0)?"Yes":"No";
-//            
-//                $rowData = array();
-//$rowData['id'] = $facilityID;
-//$rowData['parent_id'] = $lga_id;
-//$rowData['name'] = $facilityName;
-//$rowData['allfac'] = $allFacilities;
-//$rowData['facrep'] = $faciityReportingAll;
-//$rowData['allfacrrate'] = "";
-//$rowData['allfacprovfp'] = $facProv;
-//$rowData['facprovfprep'] = $facprovReport;
-//$rowData['facprovfprrate'] = "";
-//
-//$lgaArray['facilities'][] = $rowData;
-////         // $displayMessage .= '<p style="width:80% !important; float:left !important"><span class="tableft">'.$facilityName.':</span><span class="tabright"> <b>Yes</b> fac--> <b>'.$faciityReportingAll.'</b></span></p>';
-////          //$displayMessage.= '<p><span class="tableft">'.$facilityName.':</span><span class="tabright">'.$allFacilities.' '.$faciityReportingAll.' &nbsp;&nbsp'.$facProv.' '.$facprovReport.' &nbsp;&nbsp;</span></p>'; 
-////          $displayMessage.= '<h5><span class="tableft">'.$facilityName.':</span><span class="tabright"><div id="resultd">'.$allFacilities.'</div><div id="resultd">'.$faciityReportingAll.'</div><div id="resultd">&nbsp;&nbsp;</div><div id="resultd">'.$facProv.'</div><div id="resultd">'.$facprovReport.'</div><div id="resultd">&nbsp;&nbsp;</div></span></h5>'; 
-////        
-//          
-//           }
-//           
-           
-           $stateArray['lga'][] = $lgaArray;
-       //$displayMessage.= '</div>'; 
-    }
-    $zoneArray['states'][] = $stateArray;
-  //$displayMessage.= '</div>';
-      
-    }
-   $rrateArray[] = $zoneArray;
-   // $displayMessage.= '</div>';
-    
-}
+                       $stateArray['lga'][] = $lgaArray;
+                   //$displayMessage.= '</div>'; 
+                }
+                $zoneArray['states'][] = $stateArray;
+              //$displayMessage.= '</div>';
 
-//
-//for($i=0;$i<sizeof($rrateArray); $i++){
-//    
-//    //this is for the national and zones
-//   $name = $rrateArray[$i]['name'];
-//   $allfac = $rrateArray[$i]['allfac'];
-//   $facrep = $rrateArray[$i]['facrep'];
-//   $allfacrrate = $rrateArray[$i]['allfacrrate'];
-//   $allfacprovfp = $rrateArray[$i]['allfacprovfp'];
-//   $facprovfprep = $rrateArray[$i]['facprovfprep'];
-//   $facprovfprrate = $rrateArray[$i]['facprovfprrate'];
-//   $zones = $rrateArray[$i]['states'];
-//   
-//  
-//    
-//   
-//}
-//$displayMessage.= '</div>';
- 
-//print_r($rrateArray);exit;
-$this->view->assign('reporting_rate',json_encode($rrateArray));
-$this->view->assign('date_format',$format);
+            }
+           $rrateArray[] = $zoneArray;
+
         }
+            //print_r($rrateArray);exit;
+            $this->view->assign('reporting_rate',json_encode($rrateArray));
+            $this->view->assign('date_format',$format);
+    }//end rrate
+        
+        
+        
+        
         public function rratedemoAction(){
              $this->_countrySettings = array();
 		$this->_countrySettings = System::getAll();

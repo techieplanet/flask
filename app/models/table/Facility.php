@@ -229,6 +229,7 @@ class Facility extends ITechTable {
             $result = $db->fetchRow($select);
             return $result['count'];
         }
+        
         public function getAllFacilityCountByLocation($locationWhere){
               $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             
@@ -240,7 +241,7 @@ class Facility extends ITechTable {
         }
         
         /*
-         * Returns the count of all facilities returning for the currrent month
+         * Returns the count of all facilities returning/reporting for the currrent month
          */
         public function getAllCurrentReportingFacilityCount(){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
@@ -267,6 +268,31 @@ class Facility extends ITechTable {
             
         }
         
+        
+        
+        /* TP: 
+        * This method will return number of facilities that are 
+        * reporting in the months covered in the date range and locations provided arg
+        * IT DOES NOT MATTER IF THE FACILITIES DO NOT HAVE TRAINED HW
+        * THIS ONE CONSIDERS LOCATION ONLY
+        */
+        public function getReportingFacsOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName){
+               //$db = $this->getDbAdapter();
+               $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+
+               $select = $db->select()
+                             ->from(array('frr' => 'facility_report_rate'),
+                                 array('COUNT(DISTINCT(facility_id)) AS fid_count', 'MONTHNAME(date) as month_name', 'YEAR(date) as year'))
+                             ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = facility_id', array($tierText))
+                             ->where($longWhereClause)
+                             ->group(array($tierFieldName, 'date'))
+                             ->order(array($tierText, 'date'));   
+
+                //echo $sql = $select->__toString(); exit;
+
+                return $result = $db->fetchAll($select);
+       }
+       
      
         /*
          * Returns the count of all facilities returning for the currrent month
@@ -347,5 +373,122 @@ class Facility extends ITechTable {
        }
        
        
+       
+       /**
+        * Gets count of facilities thart provided up to a number of products in a period
+        * e.g. count of facilities providing at least 3 commodities in a period
+        * 
+        * @param type $longWhereClause
+        * @param type $longWhereClause
+        * @param type $geoList
+        * @param type $tierNameField
+        * @param type $tierIDField
+        * @param type $latestDate
+        * @return type
+        */
+       public function getFacsProvidingNumberOfMethods($numberOfMethods, 
+               $longWhereClause, $geoList, $tierNameField, $tierIDField, $latestDate){
+               $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+               $helper = new Helper2();            
+               
+               $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+               
+               $select = "SELECT COUNT(DISTINCT(c.facility_id)) AS fid_count, $tierNameField, $tierIDField from commodity c "
+                       . "INNER JOIN commodity_name_option cno ON cno.id = c.name_id "
+                       . "INNER JOIN facility_location_view flv ON flv.id = c.facility_id "
+                       . "INNER JOIN (SELECT count(consumption) as cc, facility_id FROM commodity c_sub "
+                       . "             INNER JOIN commodity_name_option cno_sub ON cno_sub.id = c_sub.name_id "
+                       .              "WHERE date = '$latestDate' AND $ct_where AND consumption > 1 " 
+                       .              "GROUP BY facility_id) AS ccount "
+                       . "ON c.facility_id = ccount.facility_id AND ccount.cc >= $numberOfMethods "
+                       . "WHERE $longWhereClause "
+                       . "GROUP BY $tierIDField "
+                       . "ORDER BY $tierNameField";
+
+               //echo $select;exit; 
+
+               return $result = $db->fetchAll($select);
+        }
+        
+        
+         /**
+        * Gets count of facilities thart provided up to a number of products in a period
+        * e.g. count of facilities providing at least 3 commodities in a period
+        * 
+        * @param type $longWhereClause
+        * @param type $longWhereClause
+        * @param type $geoList
+        * @param type $tierNameField
+        * @param type $tierIDField
+        * @param type $latestDate
+        * @return type
+        */
+       public function getFacsProvidingNumberOfMethodsOvertime($numberOfMethods, 
+               $longWhereClause, $geoList, $tierNameField, $tierIDField, $dateWhere, $ct_where){
+               $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+               $helper = new Helper2();            
+                
+                $select = "SELECT "
+                        . "COALESCE(COUNT(DISTINCT(c.facility_id)),0) AS fid_count, "
+                        . "MONTHNAME(c.date) as month_name, c.date, $tierNameField from commodity c "
+                        . "INNER JOIN commodity_name_option cno ON cno.id = c.name_id "
+                        . "INNER JOIN facility_location_view flv ON flv.id = c.facility_id "
+                        . "INNER JOIN (SELECT count(consumption) as cc, facility_id, date "
+                        . "             FROM commodity c_sub"
+                        . "             INNER JOIN commodity_name_option cno_sub ON cno_sub.id = c_sub.name_id "
+                        . "             WHERE $dateWhere AND $ct_where AND consumption > 1 "
+                        . "             GROUP BY facility_id, date) AS ccount "
+                        . "ON c.facility_id = ccount.facility_id AND ccount.date = c.date "
+                        . "AND ccount.cc >= $numberOfMethods "
+                        . "WHERE $longWhereClause "
+                        . "GROUP BY c.date, $tierIDField "
+                        . "ORDER BY c.date";
+
+               //echo $select;exit; 
+
+               return $result = $db->fetchAll($select);
+        }
+        
+        
+        
+        /**
+         * Gets the facilities that have provided at least one FP commodity in the 
+         * past six (6) months
+         * Current month mode: facilites that are reporting in the current month and provided in last 6 months
+         * 12 months mode: facilities that provided in last 6 months and reported in any of the past months grouped by months
+         * 
+         * @param type $longWhereClause
+         * @param type $geoList
+         * @param type $tierNameField
+         * @param type $tierIDField
+         * @param type $latestDate
+         */
+        public function getFPFacilities($longWhereClause, 
+               $geoList, $tierNameField, $tierIDField, $ct_where, $sixMonthsDateWhere){
+               $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+               $helper = new Helper2();            
+
+               //$sixMonthsDateWhere = "(date BETWEEN '" . 
+                 //               date("Y-m-d", strtotime("$latestDate -5 months")) . "' AND '$latestDate')";
+               
+                $select = "SELECT COUNT(DISTINCT(c.facility_id)) AS fid_count, $tierNameField, $tierIDField, "
+                        . "MONTHNAME(c.date) as month_name " 
+                        . "from commodity c "
+                        . "INNER JOIN commodity_name_option cno ON cno.id = c.name_id "
+                        . "INNER JOIN facility_location_view flv ON flv.id = c.facility_id "
+                        . "INNER JOIN ( "
+                        .       "SELECT count(consumption) as cc, facility_id FROM commodity c_sub "
+                        .       "INNER JOIN commodity_name_option cno_sub ON cno_sub.id = c_sub.name_id "
+                        .       "WHERE ($sixMonthsDateWhere) AND $ct_where AND consumption > 1 "
+                        .       "GROUP BY facility_id "
+                        .       ") AS ccount ON c.facility_id = ccount.facility_id AND ccount.cc >= 1 "
+                        . "WHERE ($longWhereClause) "
+                        . "GROUP BY flv.geo_parent_id, date "
+                        . "ORDER BY geo_zone, date";
+
+               //echo $select;exit; 
+
+               return $result = $db->fetchAll($select);
+        }
         
 }

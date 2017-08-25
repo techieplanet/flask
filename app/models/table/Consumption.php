@@ -14,8 +14,9 @@ require_once('Facility.php');
 require_once('Helper2.php');
 require_once('ConsumptionHelper.php');
 require_once 'CacheManager.php';
+require_once 'IndicatorGroup.php';
 
-class Consumption {
+class Consumption extends IndicatorGroup {
     //put your code here
 
   
@@ -370,6 +371,161 @@ class Consumption {
                     
             return $output;
         }
+        
+        
+     /**
+     * Facilities reporting and providing over time
+     * With respect to all reporting facilities and 
+     * 2. To FP facilities
+      * 
+     * @param type $commodity_type
+     * @param type $geoList
+     * @param type $tierValue
+     * @param type $freshVisit
+     * @param type $updateMode
+     * @param type $lastPullDate
+     * @return array of results by month
+     */
+    public function fetchFacsReportingRateOvertime($geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDatemultiple=[]){
+            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+            
+            $helper = new Helper2();
+            $latestDate = $helper->getLatestPullDate();
+                    
+            $cacheManager = new CacheManager();
+            $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_REPORTING_RATE_OVERTIME, $latestDate);
+
+            if($cacheValue && $freshVisit){
+                $output = json_decode($cacheValue, true);
+            }
+            else{
+                    $tierNameField = $helper->getLocationTierText($tierValue);
+                    $tierIDField = $helper->getTierFieldName($tierNameField);
+
+                    //where clauses
+                    $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+                    $dateWhere = '';
+                    if(empty($lastPullDatemultiple)){  
+                        $dateWhere = "c.date BETWEEN '" . 
+                                date("Y-m-d", strtotime("$latestDate -11 months")) . "' AND '$latestDate'";
+                        $subDateWhere = str_replace('c.', 'c_sub.', $dateWhere);
+                    }else{
+                        $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+                        $subDateWhere = str_replace('c.', 'c_sub.', $dateWhere);
+                    }
+                    
+                    $sixMonthsDateWhere = "(date BETWEEN '" . 
+                                date("Y-m-d", strtotime("$latestDate -5 months")) . "' AND '$latestDate')";
+                    
+                    $reportingWhere = 'facility_reporting_status = 1';
+                    $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
+                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
+                                       $ct_where . ' AND ' . $locationWhere;
+                    
+                    $facility = new Facility();
+                    
+                    $numerators = $facility->getFPFacilities(
+                            $longWhereClause, 
+                            $geoList, 
+                            $tierNameField, 
+                            $tierIDField, 
+                            $ct_where, 
+                            $sixMonthsDateWhere
+                    );
+                    
+                    $locationNames = $helper->getLocationNames($geoList); 
+                    $monthNames = !empty($lastPullDatemultiple) ? 
+                                    array_reverse($helper->formatMonthName($lastPullDatemultiple)) : 
+                                    array_reverse($helper->getPreviousMonthNames(12)); 
+                    
+                    //add all missing months for each location in the numerator list
+                    //$numerators = $this->addMissingMonths($numeratorsResult, $monthNames, $locationNames, $tierNameField); 
+                                     
+                    /*********************************************************************************
+                     * denominator for ALL Reporting facilites
+                     ********************************************************************************/
+                    if(empty($lastPullDatemultiple)){  
+                        $FRRDateWhere = "frr.date BETWEEN '" . 
+                                date("Y-m-d", strtotime("$latestDate -11 months")) . "' AND '$latestDate'";
+                    }else{
+                        $FRRDateWhere = 'frr.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+                    }
+                    
+                    $longWhereClause = $FRRDateWhere . ' AND ' . $locationWhere;
+                                        
+                    $denominators = $facility->getReportingFacsOvertimeByLocation(
+                            $longWhereClause, 
+                            $geoList, 
+                            $tierNameField, 
+                            $tierIDField
+                    );
+                    
+                    /*********************************************************************************
+                     * denominator for FP facilites: consumed 1 FP commodity in last 6 months
+                     ********************************************************************************/
+                    $reportingWhere = 'facility_reporting_status = 1';
+                    $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
+                    $longWhereClause = $dateWhere . ' AND ' . 
+                                       $ct_where . ' AND ' . $locationWhere;
+                    
+                    $FPFacsDenominators = $facility->getFPFacilities(
+                            $longWhereClause, 
+                            $geoList, 
+                            $tierNameField, 
+                            $tierIDField, 
+                            $ct_where,
+                            $sixMonthsDateWhere
+                    );
+                    //var_dump($FPFacsDenominators); exit;
+                    $output['allfacs'] = $this->setUpOvertimeOutput($monthNames, $locationNames, $numerators, $denominators);
+                    $output['fpfacs'] = $this->setUpOvertimeOutput($monthNames, $locationNames, $numerators, $FPFacsDenominators);
+                    
+                    //check if to save month national data
+                    $alias = CacheManager::PERCENT_FACS_REPORTING_RATE_OVERTIME;
+                    if(!$cacheValue && $freshVisit){ //fresh in month
+                        //do cache insert                    
+                        $dataArray = array(
+                            'date_cached'=> $latestDate,
+                            'indicator' => 'Percent facilities reporting rate overtime',
+                            'indicator_alias' => $alias,
+                            'value' => json_encode($output)
+                            //'timestamp_created' => date('');
+                        );
+                        $cacheManager->setIndicator($dataArray);
+                    }
+                    else if($updateMode){
+                        $dataArray = array('value' => json_encode($output));
+
+                        $where = "indicator_alias='$alias'";
+
+                        $cacheManager->updateIndicator($dataArray, $where);
+                    }
+                    else{ //inner if
+                        /**
+                         * Helps to get the cached national value for older months. 
+                         * We get the latest DHIS download date as pull date not filter date
+                         * This will help us to get the national values even for months that there are no cached data
+                         * if all the previous 12 months have cached data for this indicator, then we can use the 
+                         * selected filter date for this call
+                         */
+                        $cacheValue = $cacheManager->getIndicator(
+                                CacheManager::PERCENT_FACS_REPORTING_RATE_OVERTIME, 
+                                $helper->getLatestPullDate()
+                        );
+                        $cacheValue = json_decode($cacheValue, true);
+                        for($i=0; $i<count($monthNames); $i++){
+                            $monthName = $monthNames[$i];
+                            $output['allfacs'][$monthName]['National']['percent'] = $cacheValue['allfacs'][$monthName]['National']['percent'];
+                            $output['fpfacs'][$monthName]['National']['percent'] = $cacheValue['fpfacs'][$monthName]['National']['percent'];
+                        }
+                    }
+            }
+
+            //set national ave
+            //var_dump($output); exit;
+            return $output;
+            
+    }
 }
 
 ?>

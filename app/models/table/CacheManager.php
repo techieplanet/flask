@@ -32,6 +32,10 @@ class CacheManager {
     
     const PERCENT_FACS_PROVIDING_ALL_METHODS = 'percent_facs_providing_all_methods';
     
+    const PERCENT_FACS_PROVIDING_3_METHODS = 'percent_facs_providing_3_methods';
+    const PERCENT_FACS_PROVIDING_3_METHODS_OVERTIME = 'percent_facs_providing_3_methods_overtime';
+    const PERCENT_FACS_REPORTING_RATE_OVERTIME = 'percent_facs_reporting_rate_overtime';
+    
     const PERCENT_FACS_HW_PROVIDING_FP = 'percent_facs_hw_providing_fp';
     const PERCENT_FACS_HW_PROVIDING_LARC = 'percent_facs_hw_providing_larc';
     

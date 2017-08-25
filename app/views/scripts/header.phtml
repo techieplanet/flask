@@ -154,10 +154,11 @@ $navMain['reports']['archivedreports']				= t('Archived PDF Reports');
                 
                 $navMain['menu'] = array('index' => t('info'));
                 $navMain['menu']['definitionspage'] = t('Definitions');
-             
-              $navMain['menu']['rrate'] = t('Reporting Rates');
-               $navMain['menu']['info'] = t('DHS 2013');
-             $user = new User();
+                $navMain['menu']['rrate'] = t('Reporting Rates');
+                $navMain['menu']['percentfrr'] = t('Reporting Rates Charts');
+                $navMain['menu']['info'] = t('DHS 2013');
+                
+                $user = new User();
              
               //TP checking if the user is a user with an ADMIN ROLE
             if($user->is_user_an_admin()){
@@ -464,7 +465,7 @@ if(count($this->languages_enabled) > 1) {
          $user = new User();
          
         if($isAdmin){
-            file_put_contents('headertext.txt', $headerText);
+            //file_put_contents('headertext.txt', $headerText);
         }
         
         ?>

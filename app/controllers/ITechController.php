@@ -25,7 +25,7 @@ class ITechController extends Zend_Controller_Action
     const POPULATINGMESSAGE = 'Populating';
     
     public function init(){
-        //return;
+        return;
         if (!$this->isLoggedIn ()) return;
         
         $chartsArray = array('CoverageController','ConsumptionController', 'StockoutController');

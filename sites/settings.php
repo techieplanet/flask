@@ -26,7 +26,7 @@ class Settings {
     //public static $COUNTRY_BASE_URL = 'http://63.139.189.115';
 	public static $COUNTRY_BASE_URL = 'http://localhost/trainsmart/html';
 
-    public static $DB_DATABASE = 'landtrain';
+    public static $DB_DATABASE = 'fpdb';
     public static $DB_USERNAME = 'root';
 
     public static $DB_PWD = 'password';
@@ -35,7 +35,7 @@ class Settings {
 
 
 
-    
+
 
     //public static $EMAIL_NAME = "TP ADMIN";
     public static $EMAIL_NAME = "FP Dashboard Admin";
