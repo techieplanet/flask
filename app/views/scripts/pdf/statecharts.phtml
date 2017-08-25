@@ -130,11 +130,12 @@ print ScriptContainer::$instance->renderJSHead();
             var fpstock_hidden = document.getElementById('fpstock_hidden').value;
             var larc_stock_out_hidden = document.getElementById('larc_stock_out_hidden').value;
             var table_hidden = document.getElementById('table_hidden').value;
+            var report_rate = document.getElementById('report_rate').value;
            
             $.ajax({
                 type: 'POST',
                 url: url,
-                data: {generate:true,fcs_hidden:fcs_hidden,state_hidden:state_hidden,report_hidden:report_hidden,fac_hw_hidden:fac_hw_hidden,
+                data: {generate:true,fcs_hidden:fcs_hidden,report_rate:report_rate,state_hidden:state_hidden,report_hidden:report_hidden,fac_hw_hidden:fac_hw_hidden,
                     chart13_hidden:chart13_hidden,larcprov_hidden:larcprov_hidden,fpprov_hidden:fpprov_hidden,fpstock_hidden:fpstock_hidden,
                     larc_stock_out_hidden:larc_stock_out_hidden,table_hidden:table_hidden,folder_name:folder_name},
                 success: function(response){
@@ -227,6 +228,7 @@ print ScriptContainer::$instance->renderJSHead();
 		<div id="content">
                     <?php 
                     $data = $this->fp_percent_facprov;
+                    $report_rate = $this-->report_rate;
                     //echo print_r($data[])
                     $state_name = $data[1]['location'];
                     if(strtolower($state_name)!="federal capital territory"){
@@ -272,7 +274,8 @@ print ScriptContainer::$instance->renderJSHead();
                                     
                                     <input type="hidden" id="state_name" value="<?php echo $state_name; ?>" name="state_name"/>
 				<input type="hidden" id="report_id" value="<?php echo $report_id; ?>" name="report_id" />
-                                    <div id="toprow" class="container">
+                                <input type="hidden" id="report_rate" value="<?php echo $report_rate; ?>" name="report_rate"  />
+                                     <div id="toprow" class="container">
 						<div id="homecontent" class="container">
 							<div id="homecontent-mid" class="row rounded">
 								<div id="homebanner" class="rounded">

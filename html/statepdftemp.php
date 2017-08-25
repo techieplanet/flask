@@ -2,7 +2,7 @@
     <head>
         <style>
             
-            .header{height: 55px; font-family: Arial, Helvetica, sans-serif;}
+            .header{height: 65px; font-family: Arial, Helvetica, sans-serif;}
             .header-text{width: 350px;font-family: Arial, Helvetica, sans-serif;}
             .logo{width: 105px; position: absolute; top: 0; right: 0;font-family: Arial, Helvetica, sans-serif;}
             
@@ -74,6 +74,7 @@ th {
 					<strong>State: </strong> %6$s<br/>
                     <strong>Month: </strong> %1$s %2$d<br/>
                      <span class="fontsize10">This report has been generated from DHIS2 data as of %35$s</span>
+                     <span class="fontsize10">DHIS2 Report Rate: %37$s%34$s</span>
                 </div>
                 
                 <div class="logo alignright">

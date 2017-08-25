@@ -1,7 +1,7 @@
 <html>
     <head>
         <style>
-            .header{height: 67px;font-family: Arial, Helvetica, sans-serif;}
+            .header{height: 69px;font-family: Arial, Helvetica, sans-serif;}
             .header-text{width: 350px;font-family: Arial, Helvetica, sans-serif;}
             .logo{width: 105px; position: absolute; top: 0; right: 0;font-family: Arial, Helvetica, sans-serif;}
             
@@ -50,6 +50,7 @@
             .fontsize10 {font-size: 10px;font-family: Arial, Helvetica, sans-serif;}
             .keybox {width: 20px; height: 15px; display: inline-block;font-family: Arial, Helvetica, sans-serif;}
             .fontsize5 {font-size: 6px;font-family: Arial, Helvetica, sans-serif;}
+            .fontsize7 {font-size: 8px;font-family: Arial, Helvetica, sans-serif;}
             .borderall{border:1px solid #ccc;font-family: Arial, Helvetica, sans-serif;}
             .blackbg{background-color: #000000;font-family: Arial, Helvetica, sans-serif;}
             .redbg{background-color: #ff0000;font-family: Arial, Helvetica, sans-serif;}
@@ -90,7 +91,8 @@ body{
                     <strong>LGA: </strong> %7$s<br/>
 					<strong>State: </strong> %6$s<br/>
                     <strong>Month: </strong> %1$s %2$d<br/>
-                    <span class="fontsize10">This report has been generated from DHIS2 data as of %13$s</span>
+                    <span class="fontsize10">This report has been generated from DHIS2 data as of %13$s</span><br/>
+                    <span class="fontsize7">DHIS2 Report Rate: %14$s%12$s</span>
                 </div>
                 
                 <div class="logo alignright">

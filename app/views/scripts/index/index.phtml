@@ -465,7 +465,7 @@ print ScriptContainer::$instance->renderJSHead();
                                            if($key == 1){
                                                //$malecondoms = $consumption;
                                                $consumption = round($consumption/10,0);  
-                                               $method = $row['method'] . '(unit x10)';
+                                               $method = $row['method'] . '<br/>(unit x10)';
                                            } 
                             ?>
                                           {<?php echo "name: '$method', y: $consumption"; ?>},

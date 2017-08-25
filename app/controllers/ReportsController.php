@@ -10017,11 +10017,11 @@ $headers[] = "FP Commodity";
 $clientHeaders[] = "Clients";
 $output = array();
 $details_facility = $details;
-$heading = array("Health Worker Name","Type of Training","Training Organizer");
+$heading = array("Health Worker Name","Type of Training","Training Organizer","Status");
 $outdetails = array();
 $facility_id = implode(",",$facility);
 //$hw_details = $db->fetchAll("SELECT fsummary.first_name,fsummary.middle_name,fsummary.last_name,fsummary.training_title_phrase,fsummary.training_organizer_phrase FROM facility_summary_person_view as fsummary left join person on person.id = person_id WHERE fsummary.facility_id IN (".$facility_id.") AND person.is_deleted='0'");
-$hw_details = $db->fetchAll("SELECT p.last_name,p.first_name,p.middle_name,tto.training_title_phrase,too.training_organizer_phrase FROM person_to_training  as ptt left join person as p on p.id=ptt.person_id left join training as t on t.id = ptt.training_id left join training_title_option as tto on tto.id = t.training_title_option_id left join training_organizer_option as too on too.id=t.training_organizer_option_id WHERE p.facility_id IN ($facility_id) AND tto.is_deleted='0' AND too.is_deleted='0' AND p.is_deleted='0' AND t.is_deleted='0'");
+$hw_details = $db->fetchAll("SELECT p.last_name,p.first_name,p.middle_name,p.person_status_id,ps.title as person_status_title,tto.training_title_phrase,too.training_organizer_phrase FROM person_to_training  as ptt left join person as p on p.id=ptt.person_id LEFT JOIN person_status as ps on ps.id = p.person_status_id left join training as t on t.id = ptt.training_id left join training_title_option as tto on tto.id = t.training_title_option_id left join training_organizer_option as too on too.id=t.training_organizer_option_id WHERE p.facility_id IN ($facility_id) AND tto.is_deleted='0' AND too.is_deleted='0' AND p.is_deleted='0' AND t.is_deleted='0'");
 $title_array = array();
 $title_value = array();
 foreach($hw_details as $hw_det){
@@ -10031,10 +10031,16 @@ foreach($hw_details as $hw_det){
         $type_of_training = str_replace(",", "@", $type_of_training);
         $training_organizer = $hw_det['training_organizer_phrase'];
         $training_organizer = str_replace(",", "@", $training_organizer);
+        $status = $hw_det['person_status_title'];
+        $status = str_replace(",","@",$status);
+        $statusID = $hw_det['person_status_id'];
         array_push($outlook,$full_name);
         array_push($outlook,$type_of_training);
         array_push($outlook,$training_organizer);
+        array_push($outlook,$status);
         array_push($outdetails,$outlook);
+        
+        if($statusID == 1 || $statusID == 0 ){
         if(in_array($type_of_training,$title_array)){
             $key = array_search($type_of_training, $title_array);//$title_array[$type_of_training];
             $count = $title_value[$key];
@@ -10046,6 +10052,7 @@ foreach($hw_details as $hw_det){
            $title_value[$key] = 1;
             
         }
+}
     }
 
 
@@ -10357,7 +10364,7 @@ $heading = array("Health Worker Name","Type of Training","Training Organizer");
 $outdetails = array();
 $facility_id = implode(",",$facility);
 //$hw_details = $db->fetchAll("SELECT fsummary.first_name,fsummary.middle_name,fsummary.last_name,fsummary.training_title_phrase,fsummary.training_organizer_phrase FROM facility_summary_person_view as fsummary left join person on person.id = person_id WHERE fsummary.facility_id IN (".$facility_id.") AND person.is_deleted='0'");
-$hw_details = $db->fetchAll("SELECT p.last_name,p.first_name,p.middle_name,tto.training_title_phrase,too.training_organizer_phrase FROM person_to_training  as ptt left join person as p on p.id=ptt.person_id left join training as t on t.id = ptt.training_id left join training_title_option as tto on tto.id = t.training_title_option_id left join training_organizer_option as too on too.id=t.training_organizer_option_id WHERE p.facility_id IN ($facility_id) AND tto.is_deleted='0' AND too.is_deleted='0' AND p.is_deleted='0' AND t.is_deleted='0'");
+$hw_details = $db->fetchAll("SELECT p.last_name,p.first_name,p.middle_name,p.person_status_id,ps.title as person_status_title,tto.training_title_phrase,too.training_organizer_phrase FROM person_to_training  as ptt left join person as p on p.id=ptt.person_id LEFT JOIN person_status as ps on ps.id = p.person_status_id left join training as t on t.id = ptt.training_id left join training_title_option as tto on tto.id = t.training_title_option_id left join training_organizer_option as too on too.id=t.training_organizer_option_id WHERE p.facility_id IN ($facility_id) AND tto.is_deleted='0' AND too.is_deleted='0' AND p.is_deleted='0' AND t.is_deleted='0'");
 $title_array = array();
 $title_value = array();
 foreach($hw_details as $hw_det){
@@ -10365,10 +10372,15 @@ foreach($hw_details as $hw_det){
         $full_name = $hw_det['last_name']." ".$hw_det['first_name']." ".$hw_det['middle_name'];
         $type_of_training = trim($hw_det['training_title_phrase']);
         $training_organizer = $hw_det['training_organizer_phrase'];
+        $status = $hw_det['person_status_title'];
+        $status = str_replace(",","@",$status);
+        $statusID = $hw_det['person_status_id'];
         array_push($outlook,$full_name);
         array_push($outlook,$type_of_training);
         array_push($outlook,$training_organizer);
+        array_push($outlook,$status);
         array_push($outdetails,$outlook);
+        if($statusID == 1 || $statusID == 0 ){
         if(in_array($type_of_training,$title_array)){
             $key = array_search($type_of_training, $title_array);//$title_array[$type_of_training];
             $count = $title_value[$key];
@@ -10379,6 +10391,7 @@ foreach($hw_details as $hw_det){
             $key = array_search($type_of_training, $title_array);
            $title_value[$key] = 1;
             
+        }
         }
     }
    // print_r($title_value); echo '<br/><br/>';
@@ -10980,6 +10993,9 @@ public function allqueriesresultAction(){
         //aggregate method data catch
         $aggregateMethod = $this->getSanParam("aggregate_method");
         
+        $person_status_id = array();
+        $person_status_id = $this->getSanParam('person_status_id');
+        $person_status_id = $reports->formatSelection($person_status_id);
         //-------------------------------------------------------------------------------------------formatting inputs--------------------------------------------------------------------------//
         
         //striping empty values from the location arrays - formatting values
@@ -11147,7 +11163,7 @@ public function allqueriesresultAction(){
                 $whereStatement = "";
                 $whereStatementConsumption = "";
                 $whereClause = $reports->createWhereClauseArrayFromParameters($tempStartDate,$tempEndDate,$implodeConsumption,$implodeStockOut,"");
-                $whereTraining = $reports->createWheretrainingArrayFromParameters($implodeTrainingType,$implodeTrainingOrganizer,$permanentStartYear,$tempEndDate);
+                $whereTraining = $reports->createWheretrainingArrayFromParameters($implodeTrainingType,$implodeTrainingOrganizer,$permanentStartYear,$tempEndDate,$person_status_id);
                 if($loc!=0){
                 $whereClause[] = "(flv.geo_parent_id ='$loc' OR flv.parent_id='$loc' OR flv.location_id='$loc')";
                
@@ -11251,7 +11267,7 @@ public function allqueriesresultAction(){
                $facilityName = str_replace(",", "@", $facilityName);
               
                $whereClause = $reports->createWhereClauseArrayFromParameters($tempStartDate,$tempEndDate,$implodeConsumption,$implodeStockOut,$facility_id);
-               $whereTraining = $reports->createWheretrainingArrayFromParameters($implodeTrainingType,$implodeTrainingOrganizer,$permanentStartYear,$tempEndDate);
+               $whereTraining = $reports->createWheretrainingArrayFromParameters($implodeTrainingType,$implodeTrainingOrganizer,$permanentStartYear,$tempEndDate,$person_status_id);
                $whereTraining[] = "facility_id IN ($facility_id)"; 
                
                //get the formatted training organizer list if present
@@ -11448,6 +11464,7 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
 		require_once ('models/table/TrainingLocation.php');
 		require_once('views/helpers/TrainingViewHelper.php');
                  $training = new Training();
+                 $personObj = new Person();
                 
 		$criteria = array ();
                 $criteria['stock_out'] = "";
@@ -11538,7 +11555,8 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
 		
                 $output = array();
                 
-                
+                $allPersonStatus = $personObj->getAllPersonStatus();
+                $this->viewAssignEscaped('person_status',$allPersonStatus);
                 $locationName =  $quickLocation->getUserLocationName();
                 
                 //-----------------------------------------the query is here now.----------------------------------------------//
@@ -11624,6 +11642,11 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
         //aggregate method data catch
         $aggregateMethod = $this->getSanParam("aggregate_method");
         
+        $person_status_id = array();
+        $person_status_id = $this->getSanParam('person_status_id');
+        
+        $person_status_id = $reports->formatSelection($person_status_id);
+        $criteria['person_status_id'] = $person_status_id;
         //-------------------------------------------------------------------------------------------formatting inputs--------------------------------------------------------------------------//
         
         //striping empty values from the location arrays - formatting values
@@ -11784,7 +11807,7 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                 $whereStatement = "";
                 $whereStatementConsumption = "";
                 $whereClause = $reports->createWhereClauseArrayFromParameters($tempStartDate,$tempEndDate,$implodeConsumption,$implodeStockOut,"");
-                $whereTraining = $reports->createWheretrainingArrayFromParameters($implodeTrainingType,$implodeTrainingOrganizer,$permanentStartYear,$tempEndDate);
+                $whereTraining = $reports->createWheretrainingArrayFromParameters($implodeTrainingType,$implodeTrainingOrganizer,$permanentStartYear,$tempEndDate,$person_status_id);
                 if($loc!=0){
                 $whereClause[] = "(flv.geo_parent_id ='$loc' OR flv.parent_id='$loc' OR flv.location_id='$loc')";
                
@@ -11888,7 +11911,7 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                $facilityName = str_replace(",", "@", $facilityName);
               
                $whereClause = $reports->createWhereClauseArrayFromParameters($tempStartDate,$tempEndDate,$implodeConsumption,$implodeStockOut,$facility_id);
-               $whereTraining = $reports->createWheretrainingArrayFromParameters($implodeTrainingType,$implodeTrainingOrganizer,$permanentStartYear,$tempEndDate);
+               $whereTraining = $reports->createWheretrainingArrayFromParameters($implodeTrainingType,$implodeTrainingOrganizer,$permanentStartYear,$tempEndDate,$person_status_id);
                $whereTraining[] = "facility_id IN ($facility_id)"; 
                
                //get the formatted training organizer list if present
