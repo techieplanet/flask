@@ -12,13 +12,14 @@
  */
 require_once('Facility.php');
 require_once('Helper2.php');
+require_once('IndicatorGroup.php');
 require_once('CoverageHelper.php');
 require_once('CoverageNationalHelper.php');
 require_once('Stockout.php');
 require_once('StockoutHelper.php');
 require_once 'CacheManager.php';
 
-class Coverage {
+class Coverage extends IndicatorGroup {
     //put your code here
     
     
@@ -78,7 +79,8 @@ class Coverage {
                         ->joinInner(array('ptt'=>'person_to_training'), 'ptt.person_id=p.id', array())
                         ->joinInner(array ('t' => "training" ), "t.id = ptt.training_id", array())
                         ->joinInner(array('tto' => 'training_title_option' ), 'tto.id = t.training_title_option_id', array())
-                        ->joinInner(array ('flv' => "facility_location_view" ), 'flv.id = p.facility_id', array('flv.lga', 'flv.state', 'flv.geo_zone') )
+                        //->joinInner(array ('flv' => "facility_location_view" ), 'flv.id = p.facility_id', array('flv.lga', 'flv.state', 'flv.geo_zone') )
+                        ->joinInner(array ('flv' => "facility_location_view" ), 'flv.id = p.facility_id', array())
                         ->where($longWhereClause)
                         ->order(array($tierText));
                 
@@ -126,7 +128,7 @@ class Coverage {
 
             //get the last DHIS2 pull date from commodity table and use the year for year here
             //$latestDate = $helper->getLatestPullDate();
-             if(empty($lastPullDate) || $lastPullDate==""){
+            if(empty($lastPullDate) || $lastPullDate==""){
             $latestDate = $helper->getLatestPullDate();
             }else{
             $latestDate = $lastPullDate;
@@ -519,7 +521,8 @@ class Coverage {
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
 
             $output = array(array('location'=>'National', 'percent'=>0)); 
-            $helper = new Helper2();
+            $helper = new Helper2(); $facility = new Facility();
+            
             if(empty($lastPullDate) || $lastPullDate==""){
               $latestDate = $helper->getLatestPullDate();
              }else{
@@ -579,152 +582,162 @@ class Coverage {
        
         
         /*
+         * MARKED FOR DELETION
          * Percentage facilities providing at least 3 modern methods in the current month
          */
-       public function fetchPercentFacsProvidingAllMethods($commodity_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
-            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
-
-            $output = array(array('location'=>'National', 'percent'=>0)); 
-            $helper = new Helper2();
-            if(empty($lastPullDate) || $lastPullDate==""){
-              $latestDate = $helper->getLatestPullDate();
-             }else{
-              $latestDate = $lastPullDate;
-             }
-            
-            $cacheManager = new CacheManager();
-            $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_PROVIDING_ALL_METHODS, $latestDate);
-           //$cacheValue =  null;
-           
-            if($cacheValue && $freshVisit){ 
-                $output = json_decode($cacheValue, true);
-            }
-            else{
-                    $tierText = $helper->getLocationTierText($tierValue);
-                    $tierFieldName = $helper->getTierFieldName($tierText);
-
-                    //where clauses
-                  
-                        $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
-                    
-
-                    $dateWhere = "c.date = '$latestDate'";
-                    $reportingWhere = 'facility_reporting_status = 1';
-                    $consumptionWhere = 'csum.sumcons >= 3';
-                    $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
-
-                    $coverageHelper = new CoverageHelper();
-                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
-                                       $consumptionWhere . ' AND ' . $ct_where . ' AND ' . $locationWhere;
-                    $numerators = $coverageHelper->getFacProvidingAllMethodCount($longWhereClause, $geoList, $tierText, $tierFieldName,$latestDate);
-
-                    $dateWhere = "frr.date = '$latestDate'";
-                    $longWhereClause = $dateWhere . ' AND ' . $locationWhere;
-                    
-                    //send only one month date range. 
-                    $denominators = $helper->getReportingFacsOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
-
-                    //set output                    
-                    $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
-                    $output = array_merge($output, $sumsArray['output']);
-                    $output[0]['percent'] = $sumsArray['nationalAvg'];
-
-                    //this is the test of the coverage file here .
-                   // Helper2::jLog('THis is the output daa '.$output[0]['percent'].'inside the else');
-                    
-                    //check if to save month national data
-                    if(!$cacheValue && $freshVisit){ //fresh in month
-                        //do cache insert
-                       
-                            $alias = CacheManager::PERCENT_FACS_PROVIDING_ALL_METHODS;
-                     
-                        
-                        $dataArray = array(
-                            'date_cached'=> $latestDate,
-                            'indicator' => 'Percent of facilities providing all modern methods',
-                            'indicator_alias' => $alias,
-                            'value' => json_encode($output)
-                            //'timestamp_created' => date('');
-                        );
-                        $cacheManager->setIndicator($dataArray);
-                    }
-                    else if($updateMode){
-                        $dataArray = array('value' => json_encode($output));
-
-                        $where = "indicator_alias='$alias'";
-
-                        $cacheManager->updateIndicator($dataArray, $where);
-                    }
-                    else{ //inner if
-                        //get month national data and put in first array element
-                        $cacheValue = json_decode($cacheValue, true);
-                        if($cacheValue)
-                            $output[0]['percent'] = $cacheValue[0]['percent'];
-                    }
-            }
-
-            //set national ave
-            //var_dump($output); exit;
-            return $output;
-
-        }
+//       public function fetchPercentFacsProvidingAllMethods($commodity_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
+//            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+//
+//            $output = array(array('location'=>'National', 'percent'=>0)); 
+//            $helper = new Helper2();
+//            if(empty($lastPullDate) || $lastPullDate==""){
+//              $latestDate = $helper->getLatestPullDate();
+//             }else{
+//              $latestDate = $lastPullDate;
+//             }
+//            
+//            $cacheManager = new CacheManager();
+//            $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_PROVIDING_ALL_METHODS, $latestDate);
+//           //$cacheValue =  null;
+//           
+//            if($cacheValue && $freshVisit){ 
+//                $output = json_decode($cacheValue, true);
+//            }
+//            else{
+//                    $tierText = $helper->getLocationTierText($tierValue);
+//                    $tierFieldName = $helper->getTierFieldName($tierText);
+//
+//                    //where clauses
+//                    $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+//                    
+//
+//                    $dateWhere = "c.date = '$latestDate'";
+//                    $reportingWhere = 'facility_reporting_status = 1';
+//                    $consumptionWhere = 'csum.sumcons >= 3';
+//                    $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
+//
+//                    $coverageHelper = new CoverageHelper();
+//                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
+//                                       $consumptionWhere . ' AND ' . $ct_where . ' AND ' . $locationWhere;
+//                    $numerators = $coverageHelper->getFacProvidingAllMethodCount($longWhereClause, $geoList, $tierText, $tierFieldName,$latestDate);
+//
+//                    $dateWhere = "frr.date = '$latestDate'";
+//                    $longWhereClause = $dateWhere . ' AND ' . $locationWhere;
+//                    
+//                    //send only one month date range. 
+//                    $denominators = $helper->getReportingFacsOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
+//                    
+//                    //set output                    
+//                    $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
+//                    $output = array_merge($output, $sumsArray['output']);
+//                    $output[0]['percent'] = $sumsArray['nationalAvg'];
+//
+//                    //this is the test of the coverage file here .
+//                   // Helper2::jLog('THis is the output daa '.$output[0]['percent'].'inside the else');
+//                    
+//                    //check if to save month national data
+//                    if(!$cacheValue && $freshVisit){ //fresh in month
+//                        //do cache insert
+//                       
+//                            $alias = CacheManager::PERCENT_FACS_PROVIDING_ALL_METHODS;
+//                     
+//                        
+//                        $dataArray = array(
+//                            'date_cached'=> $latestDate,
+//                            'indicator' => 'Percent of facilities providing all modern methods',
+//                            'indicator_alias' => $alias,
+//                            'value' => json_encode($output)
+//                            //'timestamp_created' => date('');
+//                        );
+//                        $cacheManager->setIndicator($dataArray);
+//                    }
+//                    else if($updateMode){
+//                        $dataArray = array('value' => json_encode($output));
+//
+//                        $where = "indicator_alias='$alias'";
+//
+//                        $cacheManager->updateIndicator($dataArray, $where);
+//                    }
+//                    else{ //inner if
+//                        //get month national data and put in first array element
+//                        $cacheValue = json_decode($cacheValue, true);
+//                        if($cacheValue)
+//                            $output[0]['percent'] = $cacheValue[0]['percent'];
+//                    }
+//            }
+//
+//            //set national ave
+//            //var_dump($output); exit;
+//            return $output;
+//
+//        }
         
        
     
-        
-       public function fetchPercentFacsProvidingAllMethodsNumeratorDenominator($commodity_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
-            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
-
-            $output = array(array('location'=>'National', 'percent'=>0)); 
-            $helper = new Helper2();
-            if(empty($lastPullDate) || $lastPullDate==""){
-              $latestDate = $helper->getLatestPullDate();
-             }else{
-              $latestDate = $lastPullDate;
-             }
-            
-            $cacheManager = new CacheManager();
-            $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_PROVIDING_ALL_METHODS, $latestDate);
-           
-            
-            
-            $cacheValue = null;
-            
-          
-                    $tierText = $helper->getLocationTierText($tierValue);
-                    $tierFieldName = $helper->getTierFieldName($tierText);
-
-                    //where clauses
-                    
-                        $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc' OR commodity_alias = 'injectables' )";
-                   
-
-                    $dateWhere = "c.date = '$latestDate'";
-                    $reportingWhere = 'facility_reporting_status = 1';
-                    $consumptionWhere = 'csum.sumcons >= 3';
-                    $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
-
-                    $coverageHelper = new CoverageHelper();
-                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
-                                       $consumptionWhere . ' AND ' . $ct_where . ' AND ' . $locationWhere;
-                    $numerators = $coverageHelper->getFacProvidingAllMethodCount($longWhereClause, $geoList, $tierText, $tierFieldName,$latestDate);
-
-                    $dateWhere = "frr.date = '$latestDate'";
-                    $longWhereClause = $dateWhere . ' AND ' . $locationWhere;
-                    
-                    //send only one month date range. 
-                    $denominators = $helper->getReportingFacsOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
-
-                    //set output                    
-                   // $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
-//                    $output = array_merge($output, $sumsArray['output']);
-//                    $output[0]['percent'] = $sumsArray['nationalAvg'];
-
-                     list($finalNum,$finalDenom) = $helper->addNationalNumersAndDenoms($numerators,$denominators);
-                    
-                return array($finalNum,$finalDenom);
-                   
-       }
+       /**
+        * MARKED FOR DELETION
+        * Numerators and denominators for Facilities providing any 3
+        * @param type $commodity_type
+        * @param type $geoList
+        * @param type $tierValue
+        * @param type $freshVisit
+        * @param type $updateMode
+        * @param type $lastPullDate
+        * @return type
+        */
+//       public function fetchPercentFacsProvidingAllMethodsNumeratorDenominator($commodity_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
+//            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+//
+//            $output = array(array('location'=>'National', 'percent'=>0)); 
+//            $helper = new Helper2();
+//            if(empty($lastPullDate) || $lastPullDate==""){
+//              $latestDate = $helper->getLatestPullDate();
+//             }else{
+//              $latestDate = $lastPullDate;
+//             }
+//            
+//            $cacheManager = new CacheManager();
+//            $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_PROVIDING_ALL_METHODS, $latestDate);
+//           
+//            
+//            
+//            $cacheValue = null;
+//            
+//          
+//                    $tierText = $helper->getLocationTierText($tierValue);
+//                    $tierFieldName = $helper->getTierFieldName($tierText);
+//
+//                    //where clauses
+//                    
+//                        $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc' OR commodity_alias = 'injectables' )";
+//                   
+//
+//                    $dateWhere = "c.date = '$latestDate'";
+//                    $reportingWhere = 'facility_reporting_status = 1';
+//                    $consumptionWhere = 'csum.sumcons >= 3';
+//                    $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
+//
+//                    $coverageHelper = new CoverageHelper();
+//                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
+//                                       $consumptionWhere . ' AND ' . $ct_where . ' AND ' . $locationWhere;
+//                    $numerators = $coverageHelper->getFacProvidingAllMethodCount($longWhereClause, $geoList, $tierText, $tierFieldName,$latestDate);
+//
+//                    $dateWhere = "frr.date = '$latestDate'";
+//                    $longWhereClause = $dateWhere . ' AND ' . $locationWhere;
+//                    
+//                    //send only one month date range. 
+//                    $denominators = $helper->getReportingFacsOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
+//
+//                    //set output                    
+//                   // $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
+////                    $output = array_merge($output, $sumsArray['output']);
+////                    $output[0]['percent'] = $sumsArray['nationalAvg'];
+//
+//                     list($finalNum,$finalDenom) = $helper->addNationalNumersAndDenoms($numerators,$denominators);
+//                    
+//                return array($finalNum,$finalDenom);
+//                   
+//       }
        
         
      /*
@@ -1308,7 +1321,6 @@ class Coverage {
                   
                   $locationNames = $helper->getLocationNames($geoList);
 
-                
                   //add all missing months for each location in the numerator list
                   $numerators = $this->addMissingMonths($numerators, $monthNames, $locationNames, $tierText);             
                   $denominators = $this->addMissingMonths($denominators, $monthNames, $locationNames, $tierText);
@@ -1545,148 +1557,148 @@ class Coverage {
             return $output;
      }
      
-        public function fetchProvidingOvertimeAllMethodsNumeratorDenominator($commodity_type, $geoList, $tierValue, $freshVisit,$lastPullDatemultiple=array()){
-            $db = Zend_Db_Table_Abstract::getDefaultAdapter();
-            
-            //$output = array(array('location'=>'National', 'percent'=>0)); 
-            $output = array();
-            $helper = new Helper2();
-            $latestDate = $helper->getLatestPullDate();
-           
-           // $implodedDate = implode('","',$lastPullDatemultiple); //implode("','",$lastPullDatemultiple);
-            $cacheManager = new CacheManager();
-
-          
-                $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_PROVIDING_OVERTIME_ALL_METHODS, $latestDate);
-                
-
-
-          
-                //echo 'second'; exit;
-                $tierText = $helper->getLocationTierText($tierValue);
-                $tierFieldName = $helper->getTierFieldName($tierText);
-
-                //where clauses
-              
-                    $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
-               
-                
-              
-                if(empty($lastPullDatemultiple)){
-                    
-                $dateWhere = '(date <= (SELECT MAX(date) FROM facility_report_rate) AND date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
-                }else{
-                   
-                    $dateWhere = 'date IN ("'.implode('", "', $lastPullDatemultiple).'")';
-                }
-                $reportingWhere = 'facility_reporting_status = 1';
-                $consumptionWhere = 'countsum >= 3';//csum.sumcons >= 3';
-                $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
-
-                //use coverage helper for this functions even though they have variants in the 
-                //helper2 class but these do not filter and return more rows
-                //appropriate for what we are doing here
-                $coverageHelper = new CoverageHelper();
-                $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
-                                   $reportingWhere . ' AND ' . $ct_where . ' AND ' . $locationWhere;
-                $numerators = $coverageHelper->getFacProvidingOverTimeAllMethods($longWhereClause, $geoList, $tierText, $tierFieldName,$lastPullDatemultiple);
-               //echo $longWhereClause;exit;
-                   
-                $longWhereClause = $dateWhere . ' AND ' . $locationWhere;
-                $denominators = $coverageHelper->getReportingFacsOvertimeByLocationNoFilter($longWhereClause, $geoList, $tierText, $tierFieldName);                    
-                //echo 'denom<br/>';
-                //var_dump($denominators); exit;
-                   
-                  //getprint_r($numerator);exit; the month names
-                  $monthNames = array();  $i =0;
-                  if(empty($lastPullDatemultiple)){
-                  $monthNames = $helper->getPreviousMonthDates(12);
-                  }else{
-                      $monthNames = $lastPullDatemultiple;
-                  }
-                  sort($monthNames);
-                  //convert to strings 
-                  foreach ($monthNames as $key=>$date){
-                      $monthNames[$key] = date('F', strtotime($date));
-                  }              
-                 
-                  
-                  $locationNames = $helper->getLocationNames($geoList);
-
-                
-                  //add all missing months for each location in the numerator list
-                  $numerators = $this->addMissingMonths($numerators, $monthNames, $locationNames, $tierText);             
-                  $denominators = $this->addMissingMonths($denominators, $monthNames, $locationNames, $tierText);
-                  //echo 'numerator count: ' . count($numerators) . '<br/>'; 
-                  //echo 'denominators count: ' . count($denominators) . '<br/>'; 
-                  
-//                  var_dump($numerators); echo '<br><br>';
-//                  var_dump($denominators); echo '<br><br>';
-//                  exit;
-
-
-                  /*TP:
-                   * This routine will arrange location values into month arrays
-                   * Format:
-                   * $output['April']['North Central'] = 1234;
-                   * $output['April']['North East'] = 5678;
-                   * ...
-                   * $output['March']['North Central'] = 1234;
-                   * $output['March']['North East'] = 5678;
-                   */
-               
-                 $numeratorData = array();
-                 $denominatorData = array();
-                  for($i=0; $i<count($monthNames); $i++){                
-                        $monthName = $monthNames[$i];
-                        $output[$monthName] = array();
-                        $j = $i;
-
-                        //$output = array();
-                        //$output[$monthName]['National'] = $nationalNumerator[$i]['fid_count'] / $nationalDenominator[$i]['fid_count'] * 100;
-                        $output[$monthName]['National'] = 0;
-                        foreach($locationNames as $location){   
-                            
-                          
-                            //$output[$monthName][$location] = $numerators[$j]['fid_count'] / $denominators[$j]['fid_count'] * 100;
-                            $numeratorData[$monthName][$location] = $numerators[$j]['fid_count'];
-                            $denominatorData[$monthName][$location] = $denominators[$j]['fid_count'];
-                            
-                            $j += sizeof($monthNames);
-                        }
-                  }
-                    
-                    //check if to save month national data
-                   
-                    
-                        //get national figures
-                        $nationalHelper = new CoverageNationalHelper();
-                        $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
-                                           $consumptionWhere . ' AND ' . $ct_where;
-                        $nationalNumerator = $nationalHelper->getNationalFacProvidingOverTime($longWhereClause);
-                        $nationalDenominator = $nationalHelper->getNationalReportingFacsOvertime($dateWhere);
-                         $nationalNumerators = array();
-                         $nationalDenominators = array(); 
-                        for($i=0; $i<count($monthNames); $i++){
-                            $monthName = $monthNames[$i];
-                           // $output[$monthName]['National'] = $nationalNumerator[$i]['fid_count'] / $nationalDenominator[$i]['fid_count'] * 100;
-                            $nationalNumerators[$monthName]['National'] =  $nationalNumerator[$i]['fid_count'];
-                            $nationalDenominators[$monthName]['National'] = $nationalDenominator[$i]['fid_count'];
-                        }
-                        
-                      
-                   
-                        $finalNumerators = array();
-                        $finalDenominators = array();
-                        
-                        
-                        $finalNumerators = array_merge_recursive($nationalNumerators,$numeratorData);
-                        $finalDenominators = array_merge_recursive($nationalDenominators,$denominatorData);
-                        
-                       
-                        
-                return array($finalNumerators,$finalDenominators);
-     }
+//        public function fetchProvidingOvertimeAllMethodsNumeratorDenominator($commodity_type, $geoList, $tierValue, $freshVisit,$lastPullDatemultiple=array()){
+//            $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+//            
+//            //$output = array(array('location'=>'National', 'percent'=>0)); 
+//            $output = array();
+//            $helper = new Helper2();
+//            $latestDate = $helper->getLatestPullDate();
+//           
+//           // $implodedDate = implode('","',$lastPullDatemultiple); //implode("','",$lastPullDatemultiple);
+//            $cacheManager = new CacheManager();
+//
+//          
+//                $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_PROVIDING_OVERTIME_ALL_METHODS, $latestDate);
+//                
+//
+//
+//          
+//                //echo 'second'; exit;
+//                $tierText = $helper->getLocationTierText($tierValue);
+//                $tierFieldName = $helper->getTierFieldName($tierText);
+//
+//                //where clauses
+//              
+//                    $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+//               
+//                
+//              
+//                if(empty($lastPullDatemultiple)){
+//                    
+//                $dateWhere = '(date <= (SELECT MAX(date) FROM facility_report_rate) AND date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH))';
+//                }else{
+//                   
+//                    $dateWhere = 'date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+//                }
+//                $reportingWhere = 'facility_reporting_status = 1';
+//                $consumptionWhere = 'countsum >= 3';//csum.sumcons >= 3';
+//                $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
+//
+//                //use coverage helper for this functions even though they have variants in the 
+//                //helper2 class but these do not filter and return more rows
+//                //appropriate for what we are doing here
+//                $coverageHelper = new CoverageHelper();
+//                $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
+//                                   $reportingWhere . ' AND ' . $ct_where . ' AND ' . $locationWhere;
+//                $numerators = $coverageHelper->getFacProvidingOverTimeAllMethods($longWhereClause, $geoList, $tierText, $tierFieldName,$lastPullDatemultiple);
+//               //echo $longWhereClause;exit;
+//                   
+//                $longWhereClause = $dateWhere . ' AND ' . $locationWhere;
+//                $denominators = $coverageHelper->getReportingFacsOvertimeByLocationNoFilter($longWhereClause, $geoList, $tierText, $tierFieldName);                    
+//                //echo 'denom<br/>';
+//                //var_dump($denominators); exit;
+//                   
+//                  //getprint_r($numerator);exit; the month names
+//                  $monthNames = array();  $i =0;
+//                  if(empty($lastPullDatemultiple)){
+//                  $monthNames = $helper->getPreviousMonthDates(12);
+//                  }else{
+//                      $monthNames = $lastPullDatemultiple;
+//                  }
+//                  sort($monthNames);
+//                  //convert to strings 
+//                  foreach ($monthNames as $key=>$date){
+//                      $monthNames[$key] = date('F', strtotime($date));
+//                  }              
+//                 
+//                  
+//                  $locationNames = $helper->getLocationNames($geoList);
+//
+//                
+//                  //add all missing months for each location in the numerator list
+//                  $numerators = $this->addMissingMonths($numerators, $monthNames, $locationNames, $tierText);             
+//                  $denominators = $this->addMissingMonths($denominators, $monthNames, $locationNames, $tierText);
+//                  //echo 'numerator count: ' . count($numerators) . '<br/>'; 
+//                  //echo 'denominators count: ' . count($denominators) . '<br/>'; 
+//                  
+////                  var_dump($numerators); echo '<br><br>';
+////                  var_dump($denominators); echo '<br><br>';
+////                  exit;
+//
+//
+//                  /*TP:
+//                   * This routine will arrange location values into month arrays
+//                   * Format:
+//                   * $output['April']['North Central'] = 1234;
+//                   * $output['April']['North East'] = 5678;
+//                   * ...
+//                   * $output['March']['North Central'] = 1234;
+//                   * $output['March']['North East'] = 5678;
+//                   */
+//               
+//                 $numeratorData = array();
+//                 $denominatorData = array();
+//                  for($i=0; $i<count($monthNames); $i++){                
+//                        $monthName = $monthNames[$i];
+//                        $output[$monthName] = array();
+//                        $j = $i;
+//
+//                        //$output = array();
+//                        //$output[$monthName]['National'] = $nationalNumerator[$i]['fid_count'] / $nationalDenominator[$i]['fid_count'] * 100;
+//                        $output[$monthName]['National'] = 0;
+//                        foreach($locationNames as $location){   
+//                            
+//                          
+//                            //$output[$monthName][$location] = $numerators[$j]['fid_count'] / $denominators[$j]['fid_count'] * 100;
+//                            $numeratorData[$monthName][$location] = $numerators[$j]['fid_count'];
+//                            $denominatorData[$monthName][$location] = $denominators[$j]['fid_count'];
+//                            
+//                            $j += sizeof($monthNames);
+//                        }
+//                  }
+//                    
+//                    //check if to save month national data
+//                   
+//                    
+//                        //get national figures
+//                        $nationalHelper = new CoverageNationalHelper();
+//                        $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
+//                                           $consumptionWhere . ' AND ' . $ct_where;
+//                        $nationalNumerator = $nationalHelper->getNationalFacProvidingOverTime($longWhereClause);
+//                        $nationalDenominator = $nationalHelper->getNationalReportingFacsOvertime($dateWhere);
+//                         $nationalNumerators = array();
+//                         $nationalDenominators = array(); 
+//                        for($i=0; $i<count($monthNames); $i++){
+//                            $monthName = $monthNames[$i];
+//                           // $output[$monthName]['National'] = $nationalNumerator[$i]['fid_count'] / $nationalDenominator[$i]['fid_count'] * 100;
+//                            $nationalNumerators[$monthName]['National'] =  $nationalNumerator[$i]['fid_count'];
+//                            $nationalDenominators[$monthName]['National'] = $nationalDenominator[$i]['fid_count'];
+//                        }
+//                        
+//                      
+//                   
+//                        $finalNumerators = array();
+//                        $finalDenominators = array();
+//                        
+//                        
+//                        $finalNumerators = array_merge_recursive($nationalNumerators,$numeratorData);
+//                        $finalDenominators = array_merge_recursive($nationalDenominators,$denominatorData);
+//                        
+//                       
+//                        
+//                return array($finalNumerators,$finalDenominators);
+//     }
      
      
      
@@ -1836,34 +1848,9 @@ class Coverage {
      }
      
      
-     //add all missing months for each location.
-     public  function addMissingMonths($numerators, $monthNames, $locationNames, $tierText ){
-         $helper = new Helper2();
-         $numeratorsArray = array();
-
-          //get all the records for  each location and set missing locations to 0
-          foreach($locationNames as $location){
-              $locationArray = array();
-              foreach ($numerators as $numer){
-                  if($numer[$tierText] == $location)
-                      $locationArray[] = $numer;
-                  else
-                      continue;
-              }
-
-              //now we have all the rows for the current location.
-              //we have to ensure it has all the location names represented
-              $monthArray = $helper->filterMonths($monthNames, $locationArray, $location, $tierText,  'month_name');
-              
-              //var_dump($monthArray); exit;
-              $numeratorsArray = array_merge($numeratorsArray, $monthArray);
-          }
-
-          return $numeratorsArray;
-    }
      
-     
-     public function updateCache(){
+       
+    public function updateCache(){
          $cacheManager = new CacheManager();
          $helper = new Helper2();
          

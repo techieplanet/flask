@@ -128,14 +128,14 @@ class DashboardHelper {
                     $dateWhere = "c.date = '$date'";
                     $select = $db->select()
                                 ->from(array('c' => 'commodity'),
-                                  array('COUNT(DISTINCT(c.facility_id)) AS fid_count'))
+                                  array('COUNT(DISTINCT(c.facility_id)) AS fid_count', 'date'))
                                 ->joinInner(array('cno' => 'commodity_name_option'), 'cno.id = c.name_id', array())
-                                ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = c.facility_id', array('lga', 'state',  'geo_zone'))
+                                ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = c.facility_id', array())
                                 ->where($mainWhereClause . ' AND ' . $dateWhere . ' AND c.facility_id IN (' . $subselect . ')')
-                                ->group('date')
+                                ->group(array('date'))
                                 ->order(array('date'));
 
-                  //echo $select->__toString() . '<br/><br/>'; exit
+                  //echo $select->__toString() . '<br/><br/>'; exit;
 
                    $result = $db->fetchAll($select);
                    //var_dump($result); exit;
