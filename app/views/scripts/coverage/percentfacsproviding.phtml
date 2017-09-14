@@ -42,6 +42,11 @@
 	overflow: hidden;
 }
 
+@media (max-width: 992px) {
+    #topB {
+      float: none !important;
+    }
+}
 </style>
 
 <!--<link href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">-->
@@ -78,9 +83,20 @@ print ScriptContainer::$instance->renderJSHead();
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css"></link>
+
 <!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/framebox.js"></script>-->
 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"></link>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
+
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+
+
 <script>
+    
   $(function() {
     $( "#accordion" ).accordion({header: "h3", collapsible: true,active: 0});
     
@@ -91,7 +107,27 @@ print ScriptContainer::$instance->renderJSHead();
     
   });
   
+  $(document).ready(function(){
+       $( "#tabs" ).tabs({
+        activate: function( event, ui ) {
+            var selectedTab = $("#tabs").tabs('option', 'active');
+            if(selectedTab == 1){
+                //redrawChart(chart11Options, chart11Data, chart11Div); 
+                $("#chart15_div").highcharts().reflow();
+            }
+        }
+      });
+//      
+//      $('.infobutton').click(function(){
+//        console.log("inside click");
+//      });
+  });
   
+  $(document).ready(function() {
+    $('#collapseOne').collapse('show');
+});
+
+
   </script>
 
 </head>
@@ -109,40 +145,42 @@ print ScriptContainer::$instance->renderJSHead();
 				<?php  //require_once('views/scripts/dashboard/load_data.phtml');?>
 
 
-
+<div class="row sidebar" style="margin-top: 30px;">
 			<!-------   /////////////////////////// make top buttons ////////////////////// -->
-
-			<div class="rightdiv" style="float: right;">
-				<?php  require_once('views/scripts/dashboard/top_buttons.phtml');?>
-					
-			</div>
+                        
+<!--			<div class="row rightdiv " style="float: right;">
+                            <div class="col-md-1" style="margin-top: 10px;" >
+				<?php // require_once('views/scripts/dashboard/top_buttons.phtml');?>
+                        </div>	
+			</div>-->
 
 			<!-------   /////////////////////////// make left buttons ////////////////////// -->
 
-			<div class="nav-buttons">
+                                <div class="col-md-2">
+			
 				<?php  
                                     $fileInfo = pathinfo(__FILE__);
                                     $fileID = $fileInfo['filename'];
-                                    require_once('views/scripts/dashboard/left_buttons.phtml');
+                                    require_once('views/scripts/dashboard/left_buttonshome.phtml');
                                 ?>
 			</div>
-			
+                        <div class="col-md-4 pull-right" id="topB" >
+                            <?php  require_once('views/scripts/dashboard/top_buttons.phtml');?>
+                        </div>
+			 <div class="col-md-6" style="margin-top: 10px;" >
 			<!-------   /////////////////////////// load scripts ////////////////////// -->
-            <div class="nav-buttons">
-				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');?>
-			</div>
+           
 
 			<!-------   /////////////////////////// charts ////////////////////// -->
 
 
-			<body class="docs slim framebox_body">
+		
+                       
 
-				<div id="allCharts" class="container">
-				<div id="toprow" class="container">
-						<div id="homecontent" class="container" style="width: 650px !important; margin-left: 10px !important">
-							<div id="homecontent-mid" class="row rounded">
-								<div id="homebanner" class="rounded">
-								<div class="sliderdiv">
+				
+							<div class="row">
+								<div class="col-md-12">
+								
                                                                                 <div id="infobutton" class="infobutton hidden">
                                                                                     <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                     <div id="" class="infodiv" >
@@ -154,26 +192,49 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                         received in-service training for other reasons.
                                                                                     </div>
                                                                                 </div>
-									<div id="chart11_div" style="width: 600px; height: 350px;margin-left: 20px;"></div>
-									</div>
-                                                                    <br/>
-                                                                    <div class="main-search" style="margin-top: 50px; ">
-                                                                                <div id="infobutton" class="infobutton hidden">
-                                                                                    <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                    <div id="" class="infodiv" >
-                                                                                        The percentage of  facilities providing FP shows the proportion of facilities
-                                                                                        reporting in the most recent month that provided any FP commodities in that 
-                                                                                        month. It may be higher than the percentage of facilities with an FP trained 
-                                                                                        health worker because some health workers may have learned to provide FP in 
-                                                                                        their pre-service training, on the job, and/or were not reported as having 
-                                                                                        received in-service training for other reasons.
-                                                                                    </div>
-                                                                                </div>
-									<div id="chart14_div" style="width: 600px; height: 350px;margin-left: 20px;"></div>
-                                                                        <div id="chart15_div" style="width: 600px; height: 350px;margin-left: 20px;"></div>
-									</div>
+									<div id="chart11_div" style="width: 100%; height: 350px;"></div>
+									
+                                                                </div>
                                                                     
-                                                                        <div class="main-search" style="margin-top: 50px; ">
+                                                                    
+                                                                     
+                                                                    
+                                                                     <div id="tabs" class="col-md-12" style="overflow:visible !important; min-height: 450px; border: 0;">
+                                                                         <div id="infobutton" class="infobutton info11 align-left" style="margin-bottom: -57px;width: 55%;margin-left: 50%; padding-right:9% !important" >
+                                                                                    <span class="infowrap" ><i class="fa fa-info-circle"></i></span>
+                                                                                        <div id="" class="infodiv" style="margin-top:26px !important;">
+                                                                                           The percentage of  facilities providing FP shows the proportion of facilities
+                                                                                        reporting in the most recent month that provided any FP commodities in that 
+                                                                                        month. It may be higher than the percentage of facilities with an FP trained 
+                                                                                        health worker because some health workers may have learned to provide FP in 
+                                                                                        their pre-service training, on the job, and/or were not reported as having 
+                                                                                        received in-service training for other reasons.
+                                                                                        </div>
+                                                                                    </div><br/>
+                                                                         
+                                                                          <ul class="">
+                                                                              <li class=""><a href="#tab1">All Facilities</a></li>
+                                                                              <li class=""><a href="#tab2">FP Facilities</a></li>
+                                                                          </ul>     
+                                                                         
+                                                                            <div id="tab1" class="sliderdiv" style="overflow:visible !important;width: 100%;"> 
+                                                                                <div class="hrNav"></div>
+                                                                                <div id="chart14_div" style="width: 100%; height: 300px; "></div>
+                                                                                <!--<div id="chart11_div" style="width: 100%; height: 430px;"></div>-->
+                                                                            </div>
+                                                                         
+                                                                            <div id="tab2" class="sliderdiv" style="overflow:visible !important;width: 100%;"> 
+                                                                                <div class="hrNav"></div>
+                                                                                <div id="chart15_div" style="width: 100%; height: 350px;overflow:visible !important;"></div>
+                                                                            </div>
+                                                                         
+                                                                            
+                                                                     </div>
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+                                                                        <div class="col-md-12" >
                                                                                 <div id="infobutton" class="infobutton hidden">
                                                                                     <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                     <div id="" class="infodiv" >
@@ -185,18 +246,15 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                         reported as having received in-service training for other reasons.
                                                                                     </div>
                                                                                 </div>
-										<div id="chart12_div" style="width: 600px; height: 350px;margin-left: 20px;"></div>
+										<div id="chart12_div" style="width: 100%; height: 350px;"></div>
 									</div>
-								</div>
-							</div>
-						</div>			
-					</div>
+								
+							
 								<!-------   /////////////////////////// chart 2,1 ////////////////////// -->
-					<div id="bottomrow" class="container">
-						<div id="homecontent" class="container">
-							<div id="homecontent-mid" class="row rounded">
-								<div id="homebanner" class="rounded">
-                                                                    <div class="sliderdiv" style="margin-top: 50px;">
+					
+						
+								<div  class="col-md-12">
+                                                                    
                                                                         <div id="infobutton" class="infobutton hidden">
                                                                             <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                             <div id="" class="infodiv" >
@@ -205,29 +263,29 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                 that month.
                                                                             </div>
                                                                         </div>
-									<div id="chart13_div" style="width: 600px; height: 350px; margin-left: 20px;"></div>
-									</div>
-									<div class="main-search">
-										<div id="chart14_div" style="width: 600px; height: 350px;"></div>
-									</div>
+									<div id="chart13_div" style="width:100%; height: 350px; "></div>
+									
+									
 								</div>
-							</div>
-						</div>
-								<!-------   /////////////////////////// chart 2,2 ////////////////////// -->
-								<div class="main-search"></div>
-					</div>
+                                                        </div>
+							<!-------   /////////////////////////// chart 2,2 ////////////////////// -->
+								
+					
 				</div>
 		
 	</div>
-
-		<div class="clear"></div>
-		<div class="hrGrey"></div>
-		<div class="clear"></div>
+</div>
+	
 		
 		<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
 
 		<!-------   /////////////////////////// main  ////////////////////// -->
 
+                
+                
+                
+                
+             
 		<script type="text/javascript">
 		
 //  google.load('visualization', '1.1', {'packages':['corechart', 'table', 'gauge', 'controls']});
@@ -235,7 +293,7 @@ print ScriptContainer::$instance->renderJSHead();
 //  google.setOnLoadCallback(apiLoaded);
 
   $(function() {
-	document.getElementById("allCharts").style.marginLeft="130px";
+	//document.getElementById("allCharts").style.marginLeft="130px";
 	drawChart11();
 	drawChart12();
 	drawChart13();
@@ -660,8 +718,8 @@ print ScriptContainer::$instance->renderJSHead();
 
 
 <script>
-  devsite.github.Link.convertAnchors();
-  window.prettyPrint();
+//  devsite.github.Link.convertAnchors();
+//  window.prettyPrint();
 </script>	
 
 <script src="../js/highcharts/highcharts.js"></script>

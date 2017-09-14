@@ -21,9 +21,11 @@ function clearDisabledField()
 }
 function disableRetiredField2()
 {
-   var data = <?php echo $this->person['person_status_id']; ?>;
-}
-
+    var data = "";
+    <?php if(isset($this->person['person_status_id']) && $this->person['person_status_id']!= "" ){ ?>
+    data = <?php echo $this->person['person_status_id']; ?>;
+    <?php } ?>
+    }
 function disableRetiredField()
 {
     var isAdmin = "<?php
@@ -583,10 +585,15 @@ YAHOO.util.Event.onDOMReady(function() {
 <div class="clear"></div>
 <div class="fieldLabel"><?php tp('Birth date');?></div>
     <div class="fieldInput" id="birthdates">
-	<?php tp('Day');?> <input id="birth-day" onchange="updateAge()" class="dayfield" type="text" value="<?php echo ($this->person['birthdate-day']=="0000")?'':$this->person['birthdate-day'];?>" name="birth-day" />
-	/ <?php tp('Month');?> <input id="birth-month" onchange="updateAge()" class="monthfield" type="text" value="<?php echo ($this->person['birthdate-month']=="00")?'':$this->person['birthdate-month'];?>" name="birth-month" />
-	/ <?php tp('Year');?> <input id="birth-year" onchange="updateAge()" class="yearfield" type="text" value="<?php echo ($this->person['birthdate-year']=="00")?'':$this->person['birthdate-year'];?>" name="birth-year" />
-</div>
+	<?php tp('Day');?> <input id="birth-day" onchange="updateAge()" class="dayfield" type="text" maxlength="2" value="<?php echo ($this->person['birthdate-day']=="0000")?'':$this->person['birthdate-day'];?>" name="birth-day" />
+	/ <?php tp('Month');?> <input id="birth-month" onchange="updateAge()" class="monthfield" type="text" maxlength="2" value="<?php echo ($this->person['birthdate-month']=="00")?'':$this->person['birthdate-month'];?>" name="birth-month" />
+	/ <?php tp('Year');?> <input id="birth-year" onchange="updateAge()" class="yearfield" type="text" maxlength="4" value="<?php echo ($this->person['birthdate-year']=="00")?'':$this->person['birthdate-year'];?>" name="birth-year" />
+ <script  type="text/javascript">
+  		    YAHOO.util.Event.onDOMReady(function () {
+  		    	makeCalendar("birthdates","birth-day", "birth-month", "birth-year",dateCalc);
+  		    });
+  		</script>
+    </div>
 
 <?php }?>
 

@@ -230,7 +230,7 @@
 				<div class="hrGrey"></div>
 				<div class="fieldIndentNoMargin"><?php tp('People');?> <span class="total"><?php echo $this->count;?>  <?php tp('Results');?></span><?php echo $this->printAndExport();?></div>
 					<a href="<?php echo $this->base_url;?>/person/add"><?php tp('Add New Person');?></a><br/><br/>
-                                        
+                                        <div style="width:310px !important; float:left !important">
                                         <span style="font-size: 11px;font-weight: bold; color:#696969;font-family: Arial, Helvetica, sans-serif;">Filter By Active status</span> 
                                         <select id="activeStatus" onchange="filterByActiveStatus()">
                                             
@@ -250,6 +250,16 @@
                                             }
                                             ?>
                                         </select>
+                                        </div>
+                                        <div id="infobutton" class="infobutton" style="width:70px !important; float: left;">
+            <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+            <div id="" class="infodiv" >
+               “Active Status” refers to health workers marked as Active Providers that are currently actively providing clinical services in a health facility. These health workers are counted towards the total health workforce need for family planning Nigeria.
+<br/><br/>
+“Inactive Status” refers to designations including Retired Provider, National Official, State Official, LGA Official or Deceased status indicates that the health worker is not actively providing clinical services in a health facility. These health workers are not counted towards the total health workforce need although they may serve other important functions such as supervision and training of trainers.
+
+            </div>
+ </div>
                                         <br /><br />
                                         
                                         <div id="peopleTableDiv">
@@ -433,6 +443,7 @@
                                      <?php } } ?>
 				</div>
 				<div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
+                                 <script type="text/javascript" src="../js/tp/functions.js"></script>
 			</div>
 		</body>
 	</html>

@@ -100,6 +100,30 @@ class Person extends ITechTable
                        // echo $res->is_deleted;exit;
 		return (isset($res->id))?$res->id : null;
 	}
+        
+        public function updateDashboardRecord(){
+              $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+              
+           
+            $needle = "active";
+            $data = array("person_status_id"=>1);
+            $update1  = $db->update('person',$data,'active='.$needle);
+            
+            $needle2 = 1;
+            $data2 = array("person_status_id"=>5);
+            $update2  = $db->update('person',$data2,'inactive_reason='.$needle2);
+            
+            $needle3 = 2;
+            $data2 = array("person_status_id"=>6);
+            $update3  = $db->update('person',$data2,'inactive_reason='.$needle3);
+            
+            
+            /*This is the query for the others section  = inactive_reason=3*/
+//            $needle2 = 2;
+//            $data2 = array("person_status_id"=>6);
+//            $update  = $db->update('person',$data2,'inactive_reason='.$needle);
+            //return $update;
+        }
         public function updateUserRecord($clause,$value,$id){
             $p = new Person();
              $data = array("$clause"=>$value);
