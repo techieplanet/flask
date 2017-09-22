@@ -5,7 +5,7 @@
  * 
  */
 require_once('../sites/globals.php');
-ll
+ll34
 
 // FIX FOR apache_request_headers() function missing
 
