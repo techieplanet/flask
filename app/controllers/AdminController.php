@@ -1519,7 +1519,7 @@ class AdminController extends UserController
 			}
 		}
 
-		return;
+		//return;
 
 		$NUM_TOPICS = 20;
 		$this->view->assign('NUM_TOPICS', $NUM_TOPICS);
