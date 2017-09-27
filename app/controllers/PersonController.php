@@ -423,6 +423,7 @@ return $clear;
 		$person_id = $this->getSanParam ('id');
                 $facility = new Facility();
                 
+               // $personObj->updateDashboardRecord();
                 if($person_id){ //edit mode
                     $this->view->assign ( 'mode', 'edit' );
                   $personDetails = $personObj->getPersonName($person_id);

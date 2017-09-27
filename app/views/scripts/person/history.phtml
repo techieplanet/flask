@@ -1,8 +1,8 @@
  <div class="historyDiv">
   <b><?php tp('ID');?> </b><?php echo $this->person['id'];?><br/>
-      <b><?php tp('Date created');?> </b><?php echo str_replace(' ','&nbsp;',$this->person['timestamp_created']);?><br/>
+      <b><?php tp('Date created');?> </b><?php echo str_replace(' ','&nbsp;',date("d-m-Y H:i:s",strtotime($this->person['timestamp_created'])));?><br/>
        <b><?php tp('Created by');?> </b><?php echo $this->person['creator'];?><br/>
-       <b><?php tp('Date modified');?> </b><?php echo str_replace(' ','&nbsp;',$this->person['timestamp_updated']);?><br/>
+       <b><?php tp('Date modified');?> </b><?php echo str_replace(' ','&nbsp;',date("d-m-Y H:i:s",strtotime($this->person['timestamp_updated'])));?><br/>
        <b><?php tp('Modified by');?> </b><?php echo $this->person['updater'];?><br/>
        <b>UUID</b><br/><span style="font-size: 6pt;"><?php echo str_replace('}','',str_replace('{','',$this->person['uuid']));?></span><br/>
       <?php if ($this->okToDelete) { ?>

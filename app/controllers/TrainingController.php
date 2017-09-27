@@ -1320,6 +1320,7 @@ $countParticipant = 0;
                 //print_r($facilitiesArray);exit;
 		$this->view->assign('facilities', $facilitiesArray );
                 //exit;
+                
                $coverage = new Coverage();
                $stockout = new Stockout();
                $output = array();

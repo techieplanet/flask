@@ -46,7 +46,17 @@
         color: green !important;
         
     }
+    .zones{
+        background:#4ff343 !important;
+    }
     
+    .states{
+        background:#7ad470 !important; 
+    }
+    
+    .lgas{
+         background:#a4ff98 !important;
+    }
     #bold{
         font-weight:bold !important;
     }
@@ -81,7 +91,7 @@ $.each( states, function( key, value ) {
    var allfacprovfp = value.allfacprovfp;
    var facprovfprep = value.facprovfprep;
    var facprovfprrate = value.facprovfprrate+"%";
-   var cssClass = "treegrid-"+zoneKey+""+key;
+   var cssClass = "treegrid-"+zoneKey+""+key+" states";
    var subclass = "treegrid-parent-"+zoneKey+""+key;
    zones[zoneKey]['states'][key] = new Array();
    zones[zoneKey]['states'][key]['lga'] = new Array();
@@ -139,7 +149,7 @@ $.each( LGAS, function( key, value ) {
    var allfacprovfp = value.allfacprovfp;
    var facprovfprep = value.facprovfprep;
    var facprovfprrate = value.facprovfprrate+"%";
-   var cssClass = "treegrid-"+zoneKey+""+stateKey+""+key;
+   var cssClass = "treegrid-"+zoneKey+""+stateKey+""+key+" lgas";
    var subclass = "treegrid-parent-"+zoneKey+""+stateKey+""+key;
    zones[zoneKey]['states'][stateKey]['lga'][key] = new Array();
    zones[zoneKey]['states'][stateKey]['lga'][key]['facilities'] = new Array();
@@ -279,7 +289,7 @@ $.each( jsonData, function( key, value ) {
    var allfacprovfp = value.allfacprovfp;
    var facprovfprep = value.facprovfprep;
    var facprovfprrate = value.facprovfprrate+"%";
-   var cssClass = "treegrid-"+key;
+   var cssClass = "treegrid-"+key+" zones";
    var subclass = "treegrid-parent-"+key;
    zones[key] = new Array();
    zones[key]['states'] = new Array();
@@ -368,8 +378,22 @@ $.each( jsonData, function( key, value ) {
             </table>  
                         
                         </div>	
+                           <div style="width:3em !important;float:left !important;">
+                                  <div id="infobutton" class="infobutton" style="">
+                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                <div id="" class="infodiv" >
+                                                                                   This table displays the percentage of facilities that reported to DHIS-2 in a given month, as well as the numerator (# of facilities that reported) and the denominator (# facilities expected to report). 
+
+                                                                                   <br/><br/>The data is displayed for Facilities Providing FP, which are reporting facilities providing any FP commodity in the last six months. FP commodities include female condoms, male condoms, injectables, implants, IUCDs, oral pills, and sterilization. 
+
+                                                                                   <br/><br/>The data is also displayed for All Facilities, which are facilities expected to report to DHIS-2.
+                                                                                </div>
+                                                    </div>
+                           </div>
+                         
                         <div class="col-md-1">
-                            <form name="dashboardForm" id="dashboardForm" method="post" s> 
+                          
+                            <form name="dashboardForm" id="dashboardForm" method="post" style=""> 
 
     <select name="lastPullDate" id="lastPullDate" style="margin-bottom:5px !important" size="7">
         <?php 
@@ -402,6 +426,7 @@ $.each( jsonData, function( key, value ) {
 			
 		</div>
                 <?php //echo $this->reporting_rate; ?>
+             <script src="../js/tp/functions.js"></script>
             <div id="pageHolder">
                 <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
             </div>

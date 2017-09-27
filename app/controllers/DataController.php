@@ -142,14 +142,14 @@ class DataController extends ITechController {
    foreach($sorted as $row){
        $tid = $row['id'];
        $resultData[$tid]['Training ID'] = $tid;
-       $resultData[$tid]['Geaographical Zone'] = $sorted[$tid]['province_name'];
+       $resultData[$tid]['Geographical Zone'] = $sorted[$tid]['province_name'];
        $resultData[$tid]['State'] =  $sorted[$tid]['district_name'];
        $resultData[$tid]['Type of Training'] =  $sorted[$tid]['training_title_phrase'];
        $resultData[$tid]['Training Location'] = $sorted[$tid]['training_location_name'];
        $resultData[$tid]['Partner'] = $sorted[$tid]['training_organizer_phrase'];
        $resultData[$tid]['Training Level'] = $sorted[$tid]['level_title'];
-       $resultData[$tid]['Training Start Date'] = $sorted[$tid]['training_start_date'];
-       $resultData[$tid]['Training End Date'] = $sorted[$tid]['training_end_date'];
+       $resultData[$tid]['Training Start Date'] = date("d/m/Y",strtotime($sorted[$tid]['training_start_date']));  
+       $resultData[$tid]['Training End Date'] =  date("d/m/Y",strtotime($sorted[$tid]['training_end_date']));
        $resultData[$tid]['Number of Participants'] =  $sorted[$tid]['participant'];
       
        

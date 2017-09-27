@@ -483,7 +483,7 @@ class Facility extends ITechTable {
                         .       "GROUP BY facility_id "
                         .       ") AS ccount ON c.facility_id = ccount.facility_id AND ccount.cc >= 1 "
                         . "WHERE ($longWhereClause) "
-                        . "GROUP BY flv.geo_parent_id, date "
+                        . "GROUP BY $tierIDField, date "
                         . "ORDER BY geo_zone, date";
 
                //echo $select;exit; 

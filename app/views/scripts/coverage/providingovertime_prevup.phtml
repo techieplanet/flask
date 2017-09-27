@@ -42,12 +42,6 @@
 	overflow: hidden;
 }
 
-@media (max-width: 992px) {
-    #topB {
-      float: none !important;
-    }
-}
-
 </style>
 
 <!--<link href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">-->
@@ -79,16 +73,7 @@ print ScriptContainer::$instance->renderJSHead();
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
 <script id="jqueryui" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js" defer async></script>
-<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css"></link>
 
-<!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/framebox.js"></script>-->
-
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"></link>
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
-
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script src="../bootstrap/js/bootstrap.min.js"></script>
 <!--<script src="//www.google.com/jsapi?key=AIzaSyCZfHRnq7tigC-COeQRmoa9Cxr0vbrK6xw"></script>-->
 <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -104,27 +89,6 @@ print ScriptContainer::$instance->renderJSHead();
             colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#AAAA11', '#B77322']
         });
   });
-  
-  
-  $(document).ready(function(){
-       $( "#tabs" ).tabs({
-        activate: function( event, ui ) {
-            var selectedTab = $("#tabs").tabs('option', 'active');
-            if(selectedTab == 1){
-                //redrawChart(chart11Options, chart11Data, chart11Div); 
-                $("#chart14_div").highcharts().reflow();
-            }
-        }
-      });
-//      
-//      $('.infobutton').click(function(){
-//        console.log("inside click");
-//      });
-  });
-  
-  $(document).ready(function() {
-    $('#collapseOne').collapse('show');
-});
   </script>
 
 </head>
@@ -136,99 +100,120 @@ print ScriptContainer::$instance->renderJSHead();
 		<div id="content">
 
 			<!-------   /////////////////////////// get data ////////////////////// -->
-<div class="row sidebar" style="margin-top: 30px;">
+
+			<div>
+
+				<?php  //require_once('views/scripts/dashboard/load_data.phtml');?>
+
+
+
 			<!-------   /////////////////////////// make top buttons ////////////////////// -->
-                        
-<!--			<div class="row rightdiv " style="float: right;">
-                            <div class="col-md-1" style="margin-top: 10px;" >
-				<?php // require_once('views/scripts/dashboard/top_buttons.phtml');?>
-                        </div>	
-			</div>-->
+
+			<div class="rightdiv" style="float: right;">
+				<?php  require_once('views/scripts/dashboard/top_buttons.phtml');?>
+					
+			</div>
 
 			<!-------   /////////////////////////// make left buttons ////////////////////// -->
 
-                                <div class="col-md-2">
-			
+			<div class="nav-buttons">
 				<?php  
                                     $fileInfo = pathinfo(__FILE__);
                                     $fileID = $fileInfo['filename'];
-                                    require_once('views/scripts/dashboard/left_buttonshome.phtml');
+                                    require_once('views/scripts/dashboard/left_buttons.phtml');
+                                   
                                 ?>
 			</div>
-                        <div class="col-md-4 pull-right" id="topB" >
-                            <?php  require_once('views/scripts/dashboard/top_buttons.phtml');?>
-                        </div>
-			 <div class="col-md-6" style="margin-top: 10px;" >
+			
 			<!-------   /////////////////////////// load scripts ////////////////////// -->
-           
+            <div class="nav-buttons">
+				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');?>
+			</div>
 
 			<!-------   /////////////////////////// charts ////////////////////// -->
 
 
-		
-                       
+			<body class="docs slim framebox_body">
 
-				
-							<div class="row">
-								<div class="col-md-12">
-								
-                                                                                <div id="infobutton" class="infobutton hidden">
-                                                                                    <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                    <div id="" class="infodiv" >
-                                                                                       This chart, which shows the percentage of reporting facilities that provided 
+				<div id="allCharts" class="container">
+				<div id="toprow" class="container">
+						<div id="homecontent" class="container">
+							<div id="homecontent-mid" class="row rounded">
+								<div id="homebanner" class="rounded">
+                                                                    <div class="sliderdiv" style="margin-left: 20px;">
+                                                                        <div id="infobutton" class="infobutton hidden">
+                                                                            <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                            <div id="" class="infodiv" >
+                                                                                This chart, which shows the percentage of reporting facilities that provided 
                                                                                 at least one FP commodity over time, illustrates whether coverage of FP 
                                                                                 services is improving over time.
-                                                                                    </div>
-                                                                                </div>
-									<div id="chart11_div" style="width: 100%; height: 470px;"></div>
-									
-                                                                </div>
-                                                            
-                                                            <div class="col-md-12">
-								
-                                                                                <div id="infobutton" class="infobutton hidden">
-                                                                                    <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                    <div id="" class="infodiv" >
-                                                                                       This chart, which shows the percentage of reporting facilities that provided 
-                                                                                at least one FP commodity over time, illustrates whether coverage of FP 
-                                                                                services is improving over time.
-                                                                                    </div>
-                                                                                </div>
-									<div id="chart14_div" style="width: 100%; height: 470px;"></div>
-									
-                                                                </div>
-                                                                    
-                                                                    
-                                                                     
-                                                                    
-                                                                    
-                                                                    
-                                                                    
-                                                                        <div class="col-md-12" >
-                                                                                <div id="infobutton" class="infobutton hidden">
-                                                                                    <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                    <div id="" class="infodiv" >
-                                                                                       This chart, which shows the percentage of reporting facilities that provided 
-                                                                                at least one implant or IUCD over time, illustrates whether coverage of 
-                                                                                LARC services is improving over time.
-                                                                                    </div>
-                                                                                </div>
-										<div id="chart13_div" style="width: 100%; height: 470px;"></div>
+                                                                            </div>
+                                                                        </div>
+									<div id="chart11_div" style="width: 600px; height: 470px;"></div>
 									</div>
-								
-							
+									
+								</div>
+							</div>
+						</div>	
+                                    
+                                                <div id="homecontent" class="container">
+							<div id="homecontent-mid" class="row rounded">
+								<div id="homebanner" class="rounded">
+                                                                    <div class="sliderdiv" style="margin-left: 20px;">
+                                                                        <div id="infobutton" class="infobutton hidden">
+                                                                            <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                            <div id="" class="infodiv" >
+                                                                                This chart, which shows the percentage of reporting facilities that provided 
+                                                                                at least one FP commodity over time, illustrates whether coverage of FP 
+                                                                                services is improving over time.
+                                                                            </div>
+                                                                        </div>
+									<div id="chart12_div" style="width: 600px; height: 470px;"></div>
+                                                                        <div id="chart14_div" style="width: 600px; height: 470px;"></div>
+									</div>
+									
+								</div>
+							</div>
+						</div>	
+					</div>
+                                    
+                                    
 								<!-------   /////////////////////////// chart 2,1 ////////////////////// -->
-					
-						
-                                                        </div>
-							<!-------   /////////////////////////// chart 2,2 ////////////////////// -->
+					<div id="bottomrow" class="container">
+						<div id="homecontent" class="container">
+							<div id="homecontent-mid" class="row rounded">
+								<div id="homebanner" class="rounded">
+								<div class="sliderdiv" style="margin-left: 20px;">
+                                                                        <div id="infobutton" class="infobutton hidden">
+                                                                            <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                            <div id="" class="infodiv" >
+                                                                                This chart, which shows the percentage of reporting facilities that provided 
+                                                                                at least one implant or IUCD over time, illustrates whether coverage of 
+                                                                                LARC services is improving over time.  
+                                                                            </div>
+                                                                        </div>
+									<div id="chart13_div" style="width: 600px; height: 470px;"></div>
+									</div>
+									
+								</div>
+							</div>
+						</div>
 								
-					
+                                            <!-------   /////////////////////////// chart 2,2 ////////////////////// -->
+                                            <div class="main-search"></div>
+                                            
+					</div>
 				</div>
 		
 	</div>
-                </div>
-        </div>
+
+		<div class="clear"></div>
+		<div class="hrGrey"></div>
+		<div class="clear"></div>
+		
+		<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
+
+		<!-------   /////////////////////////// main  ////////////////////// -->
 
 		<script type="text/javascript">
 		
@@ -238,7 +223,7 @@ print ScriptContainer::$instance->renderJSHead();
       
 $(function() {
   
-	//  document.getElementById("allCharts").style.marginLeft="130px";
+	  document.getElementById("allCharts").style.marginLeft="130px";
 
 	drawChartFPProviding();
         drawChartProvidingAnyThreeModern('allfacs');
@@ -317,7 +302,7 @@ $(function() {
        if(empty($this->selectedDatemultiple)){
            $titleText = $this->end_date." to ".$this->start_date;
        }else{
-           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
        }
       
        
@@ -474,12 +459,12 @@ $(function() {
        if(empty($this->selectedDatemultiple)){
            $titleText = $this->end_date." to ".$this->start_date;
        }else{
-           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
        }
        
        
        ?>
-        var titleText = '<?php echo  "Percent of FP facilities providing LARC, $titleText"; ?>';
+        var titleText = '<?php echo  "Percent of facilities providing LARC, $titleText"; ?>';
         var subtitleText = '(<?php echo  "($titleText)"; ?>)';
         
          
@@ -600,12 +585,12 @@ $(function() {
             if(empty($this->selectedDatemultiple)){
                 $titleText = $this->end_date." to ".$this->start_date;
             }else{
-                $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
+                $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
             }
         ?>
 
          //console.log(JSON.stringify(dataArray));
-         var titleText = '<?php echo  "Percent of FP facilities providing at least 3 FP commodities, $titleText"; ?>';
+         var titleText = '<?php echo  "Percent of facilities providing at least 3 FP commodities, $titleText"; ?>';
          var subtitleText = '(<?php echo  "($titleText)"; ?>)';
          var container = mode == 'allfacs' ? 'chart12_div' : 'chart14_div';
                  
@@ -617,7 +602,7 @@ $(function() {
                  events: {
                      load:function(){
                          $("text:contains(Highcharts.com)").css("display","none");
-                         $("#"+container).siblings("#infobutton").removeClass("hidden");
+                         $("#chart11_div").siblings("#infobutton").removeClass("hidden");
                      }
                  }
              },

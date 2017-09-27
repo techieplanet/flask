@@ -20,7 +20,7 @@ echo '<link rel="stylesheet" href="http://cdn.datatables.net/1.10.12/css/jquery.
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
 <script src="http://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
+ <script type="text/javascript" src="<?php echo $this->base_url; ?>/js/tp/functions.js"></script>
 <style>
    
 <?php if($this->viewonly) : ?>  
@@ -883,9 +883,9 @@ $(function() {
 
   <!-- history + links -->
   <div class="historyDiv">
-    <b><?php tp('ID');?></b> <?php echo $this->row['id']; ?><br/><b><?php tp('Date created:');?></b> <?php echo $this->row['timestamp_created']; ?><br>
+    <b><?php tp('ID');?></b> <?php echo $this->row['id']; ?><br/><b><?php tp('Date created:');?></b> <?php echo   date("d-m-Y H:i:s",strtotime($this->row['timestamp_created'])); ?><br>
     <b><?php tp('Created by:');?></b> <?php echo $this->row['creator']; ?><br>
-    <b><?php tp('Date modified:');?></b>  <?php echo $this->row['timestamp_updated']; ?><br>
+    <b><?php tp('Date modified:');?></b>  <?php echo date("d-m-Y H:i:s",strtotime($this->row['timestamp_updated'])); ?><br>
     <b><?php tp('Modified by:');?></b> <?php echo $this->row['updater']; ?><br>
     <hr size="1">
     <a href="javascript:submitThenRedirect('<?php echo $this->base_url;?>/training/roster/id/<?php echo $this->row['id']; ?>');" onclick=""><?php echo t('View/Print Training Roster');?></a><br>
@@ -1104,12 +1104,7 @@ $('#submitTraining').click(function() {
     <script>
     //addAjaxSubmit('submitTraining','trainingForm','<?php echo $this->base_url;?>/training/add/outputType/json');
     </script>
-    </form></div>
-
-    </div>
-    <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
-    </body>
-    </html>
+    
 
   <?php return; endif;?>
   <?php if($this->setting['display_training_pepfar']) :  ?>
@@ -1547,6 +1542,7 @@ if ( $this->row['has_known_participants']) :
   -->
       <br /><br />
       <input id="activeStatusText" type="hidden" value="all" />
+      <div style="width:310px !important; float:left !important">
       <span style="font-size: 11px;font-weight: bold; color:#696969;font-family: Arial, Helvetica, sans-serif;">Filter By Active status</span> 
         <select id="activeStatus" onchange="filterByActiveStatus()">
             <option value="all">All</option>
@@ -1563,6 +1559,16 @@ if ( $this->row['has_known_participants']) :
                                             }
                                             ?>
         </select>
+      </div>
+       <div id="infobutton" class="infobutton" style="width:70px !important; float: left;">
+            <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+            <div id="" class="infodiv" >
+               “Active Status” refers to health workers marked as Active Providers that are currently actively providing clinical services in a health facility. These health workers are counted towards the total health workforce need for family planning Nigeria.
+<br/><br/>
+“Inactive Status” refers to designations including Retired Provider, National Official, State Official, LGA Official or Deceased status indicates that the health worker is not actively providing clinical services in a health facility. These health workers are not counted towards the total health workforce need although they may serve other important functions such as supervision and training of trainers.
+
+            </div>
+ </div>
         <br /><br />
         
         <div style="text-align:right"><?php echo $this->printAndExport(); ?></div>
@@ -2528,9 +2534,11 @@ function submitForm() {
 //                            
 //console.log("Table length = " + participants.length);
 </script>
-
+  <div class="clear"></div>
+  <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
+   <script type="text/javascript" src="<?php echo $this->base_url; ?>/js/tp/functions.js"></script>
 </div>
 
-<div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
+
 </body>
 </html>
