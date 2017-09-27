@@ -111,6 +111,7 @@ class DashboardHelper {
             
             $monthlyDates = $helper->getPreviousMonthDates(12);
             }
+           $monthlyDates =  array_reverse($monthlyDates);
             //$commTypes = array('fp','larc');
             $output = array();
 

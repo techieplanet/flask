@@ -414,9 +414,11 @@ class Coverage extends IndicatorGroup {
      */
       public function fetchPercentFacsProviding($commodity_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
-
+            $facility = new Facility();
             $output = array(array('location'=>'National', 'percent'=>0)); 
             $helper = new Helper2();
+            
+            
             if(empty($lastPullDate) || $lastPullDate==""){
               $latestDate = $helper->getLatestPullDate();
              }else{
@@ -444,7 +446,7 @@ class Coverage extends IndicatorGroup {
             else{
                     $tierText = $helper->getLocationTierText($tierValue);
                     $tierFieldName = $helper->getTierFieldName($tierText);
-
+                    $locationNames = $helper->getLocationNames($geoList);
                     //where clauses
                     if($commodity_type == 'fp')
                         $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
@@ -463,11 +465,44 @@ class Coverage extends IndicatorGroup {
                                        $consumptionWhere . ' AND ' . $ct_where . ' AND ' . $locationWhere;
                     $numerators = $coverageHelper->getFacProvidingCount($longWhereClause, $geoList, $tierText, $tierFieldName);
 
-                    $dateWhere = "frr.date = '$latestDate'";
-                    $longWhereClause = $dateWhere . ' AND ' . $locationWhere;
+//                    $dateWhere = "frr.date = '$latestDate'";
+//                    $longWhereClause = $dateWhere . ' AND ' . $locationWhere;
                     
+                    
+                    
+                    $reportingWhere = 'facility_reporting_status = 1';
+//                  //  $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
+//                    
+                  
+                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere.' AND '.$locationWhere;
+//                    //send only one month date range. 
+                    $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+//                    
+//                    $tierNameField = $helper->getLocationTierText($tierValue);
+//                    $tierIDField = $helper->getTierFieldName($tierNameField);
+                    
+                    $FPFacsDenominatorsResult = $facility->getFPFacilities(
+                            $longWhereClause, 
+                            $geoList, 
+                            $tierText, 
+                            $tierFieldName, 
+                            $ct_where,
+                            $dateWhere
+                    );
+//                    
+//                    
+                    //$locationNames = $helper->getLocationNames($geoList);
+                    $FPFacsDenominators = $coverageHelper->filterLocations(
+                            $locationNames, 
+                            $FPFacsDenominatorsResult, 
+                            $tierText
+                    );
+                    
+                  // print_r($FPFacsDenominatorsResult);
+//                    echo '<br/><br/>';
+                    $denominators = $FPFacsDenominators;
                     //send only one month date range. 
-                    $denominators = $helper->getReportingFacsOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
+                    //$denominators = $helper->getReportingFacsOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
 
                     //set output                    
                     $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
@@ -519,9 +554,9 @@ class Coverage extends IndicatorGroup {
       
       public function fetchPercentFacsProvidingNumeratorDenominator($commodity_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
-
+            $facility = new Facility();
             $output = array(array('location'=>'National', 'percent'=>0)); 
-            $helper = new Helper2(); $facility = new Facility();
+            $helper = new Helper2(); 
             
             if(empty($lastPullDate) || $lastPullDate==""){
               $latestDate = $helper->getLatestPullDate();
@@ -544,7 +579,7 @@ class Coverage extends IndicatorGroup {
           
                     $tierText = $helper->getLocationTierText($tierValue);
                     $tierFieldName = $helper->getTierFieldName($tierText);
-
+                     $locationNames = $helper->getLocationNames($geoList);
                     //where clauses
                     if($commodity_type == 'fp')
                         $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
@@ -562,12 +597,38 @@ class Coverage extends IndicatorGroup {
                     $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
                                        $consumptionWhere . ' AND ' . $ct_where . ' AND ' . $locationWhere;
                     $numerators = $coverageHelper->getFacProvidingCount($longWhereClause, $geoList, $tierText, $tierFieldName);
-
-                    $dateWhere = "frr.date = '$latestDate'";
-                    $longWhereClause = $dateWhere . ' AND ' . $locationWhere;
+$reportingWhere = 'facility_reporting_status = 1';
+//                  //  $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
+//                    
+                  
+                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere.' AND '.$locationWhere;
+                    $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+//                    //send only one month date range. 
+//                    
+//                    $tierNameField = $helper->getLocationTierText($tierValue);
+//                    $tierIDField = $helper->getTierFieldName($tierNameField);
                     
-                    //send only one month date range. 
-                    $denominators = $helper->getReportingFacsOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
+                    $FPFacsDenominatorsResult = $facility->getFPFacilities(
+                            $longWhereClause, 
+                            $geoList, 
+                            $tierText, 
+                            $tierFieldName, 
+                            $ct_where,
+                            $latestDate
+                    );
+//                    
+//                    
+                    //$locationNames = $helper->getLocationNames($geoList);
+                    $FPFacsDenominators = $coverageHelper->filterLocations(
+                            $locationNames, 
+                            $FPFacsDenominatorsResult, 
+                            $tierText
+                    );
+                    
+                  // print_r($FPFacsDenominatorsResult);
+//                    echo '<br/><br/>';
+                    $denominators = $FPFacsDenominators;
+                   // $denominators = $helper->getReportingFacsOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
 
                     //set output                    
                    // $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
@@ -811,7 +872,7 @@ class Coverage extends IndicatorGroup {
       public function   fetchFacsWithHWProviding($commodity_type, $training_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
           
                 $db = Zend_Db_Table_Abstract::getDefaultAdapter();
-                
+                $facility = new Facility();
                 $output = array(array('location'=>'National', 'percent'=>0));
                 $helper = new Helper2();
                 if(empty($lastPullDate) || $lastPullDate==""){
@@ -867,14 +928,43 @@ class Coverage extends IndicatorGroup {
                                        $ct_where . ' AND ' . $tt_where . ' AND ' . $locationWhere . ' AND ' .
                                        $dateWhere;
                     $numerators = $coverageHelper->getCoverageCountFacWithHWProviding($longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName);
-                    
+                   // print_r($numerators);exit;
                     //concatenate conditions for denominators
-                    $dateWhere = "frr.date = '$latestDate'";
-                    $longWhereClause = $tt_where . ' AND ' . $dateWhere . ' AND ' . $locationWhere;
-
-                    //send only one month date range. 
-                    $denominators = $helper->getReportingFacsWithTrainedHWOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
+                   
+                  //  $longWhereClause = $dateWhere . ' AND ' . $locationWhere;
+                   $reportingWhere = 'facility_reporting_status = 1';
+//                  //  $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
+//                    
+                  
+                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere.' AND '.$locationWhere;
+                    $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+//                    //send only one month date range. 
+//                    
+//                    $tierNameField = $helper->getLocationTierText($tierValue);
+//                    $tierIDField = $helper->getTierFieldName($tierNameField);
                     
+                    $FPFacsDenominatorsResult = $facility->getFPFacilities(
+                            $longWhereClause, 
+                            $geoList, 
+                            $tierText, 
+                            $tierFieldName, 
+                            $ct_where,
+                            $latestDate
+                    );
+//                    
+//                    
+                    //$locationNames = $helper->getLocationNames($geoList);
+                    $FPFacsDenominators = $coverageHelper->filterLocations(
+                            $locationNames, 
+                            $FPFacsDenominatorsResult, 
+                            $tierText
+                    );
+                    
+                  // print_r($FPFacsDenominatorsResult);
+//                    echo '<br/><br/>';
+                    $denominators = $FPFacsDenominators; //$helper->getReportingFacsWithTrainedHWOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
+                    
+                   // print_r($denominators);exit;
                     //set output       
                     $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
                     $output = array_merge($output, $sumsArray['output']);
@@ -918,7 +1008,7 @@ class Coverage extends IndicatorGroup {
       public function   fetchFacsWithHWProvidingNumeratorDenominator($commodity_type, $training_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){
           
                 $db = Zend_Db_Table_Abstract::getDefaultAdapter();
-                
+                $facility = new Facility();
                 $output = array(array('location'=>'National', 'percent'=>0));
                 $helper = new Helper2();
                 if(empty($lastPullDate) || $lastPullDate==""){
@@ -970,11 +1060,40 @@ class Coverage extends IndicatorGroup {
                     $numerators = $coverageHelper->getCoverageCountFacWithHWProviding($longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName);
                     
                     //concatenate conditions for denominators
-                    $dateWhere = "frr.date = '$latestDate'";
-                    $longWhereClause = $tt_where . ' AND ' . $dateWhere . ' AND ' . $locationWhere;
+//                    $dateWhere = "frr.date = '$latestDate'";
+//                    $longWhereClause = $tt_where . ' AND ' . $dateWhere . ' AND ' . $locationWhere;
 
                     //send only one month date range. 
-                    $denominators = $helper->getReportingFacsWithTrainedHWOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
+                    
+                    $reportingWhere = 'facility_reporting_status = 1';
+//                  //  $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
+//                    
+                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere.' AND '.$locationWhere;
+                    $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+//                    //send only one month date range. 
+//                    
+//                    $tierNameField = $helper->getLocationTierText($tierValue);
+//                    $tierIDField = $helper->getTierFieldName($tierNameField);
+                    
+                    $FPFacsDenominatorsResult = $facility->getFPFacilities(
+                            $longWhereClause, 
+                            $geoList, 
+                            $tierText, 
+                            $tierFieldName, 
+                            $ct_where,
+                            $latestDate
+                    );
+//                    
+//                    
+                    $locationNames = $helper->getLocationNames($geoList);
+                    $FPFacsDenominators = $coverageHelper->filterLocations(
+                            $locationNames, 
+                            $FPFacsDenominatorsResult, 
+                            $tierText
+                    );
+                    
+                    $denominators = $FPFacsDenominators;
+                   // $denominators = $helper->getReportingFacsWithTrainedHWOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
                     
                      list($finalNum,$finalDenom) = $helper->addNationalNumersAndDenoms($numerators,$denominators);
                    
@@ -1098,7 +1217,9 @@ class Coverage extends IndicatorGroup {
             //var_dump($hwOverTime); echo '<br><br>';
             //var_dump($providingOverTime); echo '<br><br>';
             //var_dump($stockoutOverTime); echo '<br><br>';
-            
+            $hwOverTime = array_reverse($hwOverTime);
+            $providingOverTime = array_reverse($providingOverTime);
+            $stockoutOverTime = array_reverse($stockoutOverTime);
             $output = array($hwOverTime, $providingOverTime, $stockoutOverTime);
             
             //check if to save month national data
@@ -1229,6 +1350,11 @@ class Coverage extends IndicatorGroup {
             $providingOverTimeNumDenoom = $helper->doOverTimeNumeratorDenominator($facsWithHWAndConsumptionNumers, $facsReportingWithHW);
           
             $stockoutOverTimeNumDenom = $helper->doOverTimeNumeratorDenominator($facsWithHWStockOutNumers, $facsReportingWithHW);
+            
+            
+            $hwOverTimeNumDenom = array_reverse($hwOverTimeNumDenom);
+            $providingOverTimeNumDenoom = array_reverse($providingOverTimeNumDenoom);
+            $stockoutOverTimeNumDenom = array_reverse($stockoutOverTimeNumDenom);
             //var_dump($hwOverTime); echo '<br><br>';
             //var_dump($providingOverTime); echo '<br><br>';
             //var_dump($stockoutOverTime); echo '<br><br>';

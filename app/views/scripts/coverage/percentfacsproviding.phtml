@@ -196,40 +196,28 @@ print ScriptContainer::$instance->renderJSHead();
 									
                                                                 </div>
                                                                     
-                                                                    
-                                                                     
-                                                                    
-                                                                     <div id="tabs" class="col-md-12" style="overflow:visible !important; min-height: 450px; border: 0;">
-                                                                         <div id="infobutton" class="infobutton info11 align-left" style="margin-bottom: -57px;width: 55%;margin-left: 50%; padding-right:9% !important" >
-                                                                                    <span class="infowrap" ><i class="fa fa-info-circle"></i></span>
-                                                                                        <div id="" class="infodiv" style="margin-top:26px !important;">
-                                                                                           The percentage of  facilities providing FP shows the proportion of facilities
+                                                            
+                                                            <div class="col-md-12">
+								
+                                                                                <div id="infobutton" class="infobutton hidden">
+                                                                                    <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                    <div id="" class="infodiv" >
+                                                                                         The percentage of  facilities providing FP shows the proportion of facilities
                                                                                         reporting in the most recent month that provided any FP commodities in that 
                                                                                         month. It may be higher than the percentage of facilities with an FP trained 
                                                                                         health worker because some health workers may have learned to provide FP in 
                                                                                         their pre-service training, on the job, and/or were not reported as having 
                                                                                         received in-service training for other reasons.
-                                                                                        </div>
-                                                                                    </div><br/>
-                                                                         
-                                                                          <ul class="">
-                                                                              <li class=""><a href="#tab1">All Facilities</a></li>
-                                                                              <li class=""><a href="#tab2">FP Facilities</a></li>
-                                                                          </ul>     
-                                                                         
-                                                                            <div id="tab1" class="sliderdiv" style="overflow:visible !important;width: 100%;"> 
-                                                                                <div class="hrNav"></div>
-                                                                                <div id="chart14_div" style="width: 100%; height: 300px; "></div>
-                                                                                <!--<div id="chart11_div" style="width: 100%; height: 430px;"></div>-->
-                                                                            </div>
-                                                                         
-                                                                            <div id="tab2" class="sliderdiv" style="overflow:visible !important;width: 100%;"> 
-                                                                                <div class="hrNav"></div>
-                                                                                <div id="chart15_div" style="width: 100%; height: 350px;overflow:visible !important;"></div>
-                                                                            </div>
-                                                                         
-                                                                            
-                                                                     </div>
+                                                                                    </div>
+                                                                                </div>
+									<div id="chart15_div" style="width: 100%; height: 350px;"></div>
+                                                                          
+									
+                                                                </div>
+                                                                    
+                                                                     
+                                                                    
+                                                                    
                                                                     
                                                                     
                                                                     
@@ -435,7 +423,7 @@ print ScriptContainer::$instance->renderJSHead();
             }
         }
         
-        var titleText = "Percent of facilities providing at least 3 modern methods as of " + '<?= $this->date; ?>';
+        var titleText = "Percent of FP facilities providing at least 3 modern methods as of " + '<?= $this->date; ?>';
         var subtitleText = "as of " + '<?= $this->date; ?>';
         divId = mode == 'allfacs' ? 'chart14_div' : 'chart15_div';
         
@@ -449,7 +437,7 @@ print ScriptContainer::$instance->renderJSHead();
                     events: {
                         load:function(){
                             $("text:contains(Highcharts.com)").css("display","none");
-                            $("#chart11_div").siblings("#infobutton").removeClass("hidden");
+                            $("#"+divId).siblings("#infobutton").removeClass("hidden");
                         }
                     },
                     height: 350
@@ -543,7 +531,7 @@ print ScriptContainer::$instance->renderJSHead();
         $valuesString = substr($valuesString, 0 , -1);
     ?>
         
-        var titleText = '<?php echo  "Percent of facilities providing LARC as of $this->date"; ?>';
+        var titleText = '<?php echo  "Percent of FP facilities providing LARC as of $this->date"; ?>';
         var subtitleText = '(<?php echo  "as of $this->date"; ?>)';
         
 	 $('#chart12_div').highcharts({
@@ -644,7 +632,7 @@ print ScriptContainer::$instance->renderJSHead();
             $valuesString = substr($valuesString, 0 , -1);
     ?>
 	  
-            var titleText = '<?php echo  "Percent of facilities providing injectables as of $this->date"; ?>';
+            var titleText = '<?php echo  "Percent of FP facilities providing injectables as of $this->date"; ?>';
             var subtitleText = '(<?php echo  "as of $this->date"; ?>)';
         
           $('#chart13_div').highcharts({

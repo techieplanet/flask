@@ -329,11 +329,11 @@ print ScriptContainer::$instance->renderJSHead();
       if(empty($this->selectedDatemultiple)){
            $titleText = $this->end_date." to ".$this->start_date;
        }else{
-           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
        }
             $title = ($this->freshvisit) 
-                        ? "Percent of facilities with a trained HW providing FP, " 
-                        : "Percent of facilities with a trained HW providing FP in selected geographies, ";
+                        ? "Percent of facilities with an FP-trained HW providing FP, " 
+                        : "Percent of facilities with an FP-trained HW providing FP in selected geographies, ";
             $title .= $titleText;    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
       ?>;
           
@@ -492,11 +492,11 @@ print ScriptContainer::$instance->renderJSHead();
         if(empty($this->selectedDatemultiple)){
            $titleText = $this->end_date." to ".$this->start_date;
        }else{
-           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
        }
             $title = ($this->freshvisit) 
-                        ? "Percent of facilities with a trained HW providing LARC, " 
-                        : "Percent of facilities with a trained HW providing LARC in selected geographies, ";
+                        ? "Percent of facilities with an FP-trained HW providing LARC, " 
+                        : "Percent of facilities with an FP-trained HW providing LARC in selected geographies, ";
             $title .= $titleText;    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
       ?>;
           

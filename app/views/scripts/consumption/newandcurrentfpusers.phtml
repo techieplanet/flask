@@ -243,7 +243,7 @@ print ScriptContainer::$instance->renderJSHead();
                 <?php if(!isset($this->geoListSelectionMade)) { //line chart only available if no geo selection made?>
                     drawDefaultLineChart();
                 <?php } else { ?>
-                    $('#chart13_div').html('<div style="font-weight:bold; padding:5px;background: #eeeeee;border:1px solid #cccccc;">The consumption chart for the last 12 months will not be displayed when multiple locations are selected. Please either select a single commodity and multiple locations or single commodity and single location to display this chart.</div>');
+                    $('#chart13_div').html('<div style="font-weight:bold; padding:5px;background: #eeeeee;border:1px solid #cccccc;">The consumption chart for the last 12 months will not be displayed when multiple locations are selected. Please either select a single user type and multiple locations or single user type and single location to display this chart.</div>');
                 <?php } ?>
         <?php } else if(isset($this->commodityOnly)) { ?>
                 console.log("commodityOnly");

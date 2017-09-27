@@ -283,14 +283,14 @@ print ScriptContainer::$instance->renderJSHead();
                 <?php 
                 if(!empty($this->selectedDatemultiple)){
                     if(sizeof($this->selectedDatemultiple) > 1){
-                  $title = ($this->freshvisit) ? "Stock out at facilities providing FP, across selected dates" : "Stock outs in selected geographies across, selected dates";
+                  $title = ($this->freshvisit) ? "Stock outs at facilities providing FP, across selected dates" : "Stock outs in selected geographies across, selected dates";
                   $subtitle = "(across selected dates)";   
                     }else{
-                       $title = ($this->freshvisit) ? "Stock out at facilities providing FP, across selected date" : "Stock outs in selected geographies across, selected date";
-                  $subtitle = "(across selected date)";  
+                       $title = ($this->freshvisit) ? "Stock outs at facilities providing FP, across selected date" : "Stock outs in selected geographies across, selected date";
+                  $subtitle = "(across selected date(s))";  
                     }
                 }else{
-                     $title = ($this->freshvisit) ? "Stock out at facilities providing FP, $this->start_date to $this->end_date" : "Stock outs in selected geographies, $this->start_date to $this->end_date";
+                     $title = ($this->freshvisit) ? "Stocks out at facilities providing FP, $this->start_date to $this->end_date" : "Stock outs in selected geographies, $this->start_date to $this->end_date";
                     $subtitle = "($this->start_date to $this->end_date)"; 
                 }
               ?>;

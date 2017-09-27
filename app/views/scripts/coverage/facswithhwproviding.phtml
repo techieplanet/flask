@@ -268,7 +268,7 @@ print ScriptContainer::$instance->renderJSHead();
         $valuesString = substr($valuesString, 0 , -1);
     ?>
             
-        var titleText = '<?php echo  "Percent of facilities with a trained HW providing FP, $this->date"; ?>';
+        var titleText = '<?php echo  "Percent of facilities with an FP-trained HW providing FP, $this->date"; ?>';
         var subtitleText = '(<?php echo  $this->date; ?>)';
         
 		                                                     	  
@@ -354,8 +354,8 @@ print ScriptContainer::$instance->renderJSHead();
             foreach($this->larc_data as $key=>$row){ 
                 $locationsString .= "'" . $row['location'] . "',";
                 $location = $row['location'];
-                $numerator = $this->larc_numerator[''.$location.''];
-                $denominator = $this->larc_denominator[''.$location.''];
+                $numerator = (isset($this->larc_numerator[''.$location.'']) && !empty($this->larc_numerator[''.$location.'']))?$this->larc_numerator[''.$location.'']:"0";
+                $denominator = (isset($this->larc_denominator[''.$location.'']) && !empty($this->larc_denominator[''.$location.'']))?$this->larc_denominator[''.$location.'']:"0";
                 
                 if($firstKey == $key)
                     $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
@@ -372,7 +372,7 @@ print ScriptContainer::$instance->renderJSHead();
             $valuesString = substr($valuesString, 0 , -1);
     ?>
 
-          var titleText = '<?php echo  "Percent of facilities with a trained HW providing LARC, $this->date"; ?>';
+          var titleText = '<?php echo  "Percent of facilities with an FP-trained HW providing LARC, $this->date"; ?>';
           var subtitleText = '(<?php echo  $this->date; ?>)';
 	  
           $('#chart12_div').highcharts({

@@ -209,24 +209,19 @@ print ScriptContainer::$instance->renderJSHead();
                                                                             <div id="infobutton" class="infobutton hidden" style="margin-bottom: -25px;padding-right:15px;">
                                                                                 <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                 <div id="" class="infodiv" >
-                                                                                    The blue bars show the percent of all facilities in the country that have at 
-                                                                                    least one trained health worker in FP or LARC as of the most recent month.<br/><br/>
+                                                                                    <b>FP Chart</b> 
+                                                                                   <br/>The blue bar shows the number of all facilities in the country that have at least one trained health worker in FP as of the most recent month. <br/><br/>
+                                                                                   The red bar shows the number of facilities with an FP-trained health worker that reported in the most recent month and consumed at least one FP commodity in the most recent month. <br/><br/>
+                                                                                   The yellow bar shows the number of facilities with an FP-trained health worker that reported in the most recent month and that were stocked out of any FP commodity for seven consecutive days in that month. FP training includes Contraceptive Technology Update, FP Technology, Injectable Contraceptives for CHEWs, LARC, and Post Partum IUCD in-service trainings. <br/><br/>
+                                                                                    <br/>
                                                                                     
-                                                                                    The red bars show the percentage of facilities with a trained health 
-                                                                                    worker that reported in the most recent month and consumed at least one FP/LARC 
-                                                                                    commodity in the most recent month. <br/><br/>
+                                                                                    <b>LARC Chart</b>
+                                                                                    <br/>The blue bar shows the number of all facilities in the country that have at least one trained health worker in LARC as of the most recent month. <br/><br/>
+                                                                                    The red bars show the number of facilities with a LARC-trained health worker that reported in the most recent month and consumed at least one LARC commodity in the most recent month. <br/><br/>
                                                                                     
-                                                                                    The yellow bars show the  percentage of facilities with a trained health 
-                                                                                    worker that reported in the most recent month and are stocked out of any FP commodity or implants. <br/><br/>
-                                                                                    
-                                                                                    FP training includes Contraceptive Technology Update, FP Technology, Injectable Contraceptives for CHEWs, 
-                                                                                    LARC, and Post Partum IUCD in-service trainings. <br/><br/>
-                                                                                    
-                                                                                    LARC training includes LARC and Post Partum IUCD in-service trainings. 
+                                                                                    The yellow bar shows the number of facilities with a LARC-trained health worker that reported in the most recent month and that were stocked out of implants. LARC training includes LARC and Post Partum IUCD in-service trainings.
                                                                                     <br/><br/>
                                                                                     
-                                                                                    Together, these charts can provide a snapshot of barriers to service delivery 
-                                                                                    (lack of training, lack of commodity availability, or lack of service provision due to some other barrier).
                                                                                 </div>
                                                                             </div>
                                                                         <div class="hrNav"></div>
@@ -495,15 +490,15 @@ print ScriptContainer::$instance->renderJSHead();
         //var categories = "'FP', 'LARC'";
         var dataArray = [ 
                             {
-                                //name: 'Facilities with FP-trained HW',
+                                name: 'No. of facilities with<br/> FP-trained HW &<br/> No. of FP facilities<br/> with LARC-trained HW',
                                 data: [<?php echo $cs_fp_trained_facility_count . "," . $cs_larc_trained_facility_count; ?>]
                             },
                             {
-                                //name: 'FP-trained facilities providing FP',
+                                name: 'No. of FP-trained<br/> facilities providing FP &<br/> No. of LARC-trained<br/> facilities providing LARC',
                                 data: [<?php echo $cs_fp_consumption_facility_count . "," . $cs_larc_consumption_facility_count; ?>]
                             },
                             {
-                                //name: 'FP-trained facilities stocked out of FP or implants',
+                                name: 'No. of FP-trained<br/> facilities stocked out <br/>of any FP commodity<br/> & No. of LARC-<br/>trained facilities stocked<br/> out of Implants',
                                 data: [<?php echo $cs_fp_stock_out_facility_count . "," . $cs_larc_stock_out_facility_count; ?>]
                             }                                                       
                         ];
@@ -547,13 +542,13 @@ print ScriptContainer::$instance->renderJSHead();
                 formatter: function () {
                     var seriesName='';
                     if(this.x == 'FP'){
-                        if(this.series.index == 0) seriesName = 'Facilities with FP-trained HW';
-                        if(this.series.index == 1) seriesName = 'FP-trained facilities providing FP';
-                        if(this.series.index == 2) seriesName = 'FP-trained facilities stocked out of FP or implants';
+                        if(this.series.index == 0) seriesName = 'No. of facilities with FP-trained HW';
+                        if(this.series.index == 1) seriesName = 'No. of FP-trained facilities providing FP';
+                        if(this.series.index == 2) seriesName = 'No. of FP trained facilities stocked out of any FP commodity';
                     } else if(this.x == 'LARC'){
-                        if(this.series.index == 0) seriesName = 'Facilities with LARC-trained HW';
-                        if(this.series.index == 1) seriesName = 'LARC-trained facilities providing LARC';
-                        if(this.series.index == 2) seriesName = 'LARC-trained facilities stocked out of LARC or implants';
+                        if(this.series.index == 0) seriesName = 'No. of FP facilities with LARC-trained HW';
+                        if(this.series.index == 1) seriesName = 'No. of LARC-trained facilities providing LARC';
+                        if(this.series.index == 2) seriesName = 'No. of LARC-trained facilities stocked out of implants';
                     }
                     
                     return '<b>' + this.x + '</b><br/>' +
@@ -569,20 +564,19 @@ print ScriptContainer::$instance->renderJSHead();
                 }
             },
             legend: {
-                //layout: 'vertical',
-                //align: 'right',
-                //verticalAlign: 'middle',
-                //borderWidth: 0,
-                layout: 'horizontal',
-                align: 'right',
-                //verticalAlign: 'top',
-                //x: 40,
-                //y: 40,
-                //width:100,
-                //floating: true,
-                borderWidth: 1,
-                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-                shadow: true
+             
+             layout: 'vertical',
+             align: 'right',
+             verticalAlign: 'top',
+           
+            floating: false,
+            borderWidth: 1,
+            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+            shadow: true,
+            itemStyle: {
+                 font: '5pt',
+               
+              }
             },
             credits: {enabled: false},
             series:dataArray

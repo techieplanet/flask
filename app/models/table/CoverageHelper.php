@@ -588,8 +588,10 @@ class CoverageHelper {
            if(!empty($result)){
                   //echo 'not empty: ' . $tierText; exit;
                     //var_dump($locationNames);exit;
+               // print_r($locationNames);exit;
                 foreach($locationNames as $key=>$locationName){
                     $locationValue = '';
+                   
                     foreach($result as $coverageEntry){
                         if($locationName == $coverageEntry[$tierText]){                                    
                             $locationValue = $coverageEntry['fid_count']; 

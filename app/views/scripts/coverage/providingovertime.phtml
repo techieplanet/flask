@@ -183,38 +183,23 @@ print ScriptContainer::$instance->renderJSHead();
 									<div id="chart11_div" style="width: 100%; height: 470px;"></div>
 									
                                                                 </div>
+                                                            
+                                                            <div class="col-md-12">
+								
+                                                                                <div id="infobutton" class="infobutton hidden">
+                                                                                    <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                    <div id="" class="infodiv" >
+                                                                                       This chart, which shows the percentage of reporting facilities that provided 
+                                                                                at least one FP commodity over time, illustrates whether coverage of FP 
+                                                                                services is improving over time.
+                                                                                    </div>
+                                                                                </div>
+									<div id="chart14_div" style="width: 100%; height: 470px;"></div>
+									
+                                                                </div>
                                                                     
                                                                     
                                                                      
-                                                                    
-                                                                     <div id="tabs" class="col-md-12" style="overflow:visible !important; min-height: 450px; border: 0;">
-                                                                         <div id="infobutton" class="infobutton info11 align-left" style="margin-bottom: -57px;width: 55%;margin-left: 50%; padding-right:9% !important" >
-                                                                                    <span class="infowrap" ><i class="fa fa-info-circle"></i></span>
-                                                                                        <div id="" class="infodiv" style="margin-top:26px !important;">
-                                                                                          This chart, which shows the percentage of reporting facilities that provided 
-                                                                                at least one FP commodity over time, illustrates whether coverage of FP 
-                                                                                services is improving over time.
-                                                                                        </div>
-                                                                                    </div><br/>
-                                                                         
-                                                                          <ul class="">
-                                                                              <li class=""><a href="#tab1">All Facilities</a></li>
-                                                                              <li class=""><a href="#tab2">FP Facilities</a></li>
-                                                                          </ul>     
-                                                                         
-                                                                            <div id="tab1" class="sliderdiv" style="overflow:visible !important;width: 100%;"> 
-                                                                                <div class="hrNav"></div>
-                                                                                <div id="chart12_div" style="width: 100%; height: 4700px; "></div>
-                                                                                <!--<div id="chart11_div" style="width: 100%; height: 430px;"></div>-->
-                                                                            </div>
-                                                                         
-                                                                            <div id="tab2" class="sliderdiv" style="overflow:visible !important;width: 100%;"> 
-                                                                                <div class="hrNav"></div>
-                                                                                <div id="chart14_div" style="width: 100%; height: 470px;overflow:visible !important;"></div>
-                                                                            </div>
-                                                                         
-                                                                            
-                                                                     </div>
                                                                     
                                                                     
                                                                     
@@ -332,7 +317,7 @@ $(function() {
        if(empty($this->selectedDatemultiple)){
            $titleText = $this->end_date." to ".$this->start_date;
        }else{
-           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
        }
       
        
@@ -489,12 +474,12 @@ $(function() {
        if(empty($this->selectedDatemultiple)){
            $titleText = $this->end_date." to ".$this->start_date;
        }else{
-           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
        }
        
        
        ?>
-        var titleText = '<?php echo  "Percent of facilities providing LARC, $titleText"; ?>';
+        var titleText = '<?php echo  "Percent of FP facilities providing LARC, $titleText"; ?>';
         var subtitleText = '(<?php echo  "($titleText)"; ?>)';
         
          
@@ -615,12 +600,12 @@ $(function() {
             if(empty($this->selectedDatemultiple)){
                 $titleText = $this->end_date." to ".$this->start_date;
             }else{
-                $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+                $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
             }
         ?>
 
          //console.log(JSON.stringify(dataArray));
-         var titleText = '<?php echo  "Percent of facilities providing at least 3 FP commodities, $titleText"; ?>';
+         var titleText = '<?php echo  "Percent of FP facilities providing at least 3 FP commodities, $titleText"; ?>';
          var subtitleText = '(<?php echo  "($titleText)"; ?>)';
          var container = mode == 'allfacs' ? 'chart12_div' : 'chart14_div';
                  
@@ -632,7 +617,7 @@ $(function() {
                  events: {
                      load:function(){
                          $("text:contains(Highcharts.com)").css("display","none");
-                         $("#chart11_div").siblings("#infobutton").removeClass("hidden");
+                         $("#"+container).siblings("#infobutton").removeClass("hidden");
                      }
                  }
              },
