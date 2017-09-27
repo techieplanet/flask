@@ -933,13 +933,18 @@ stopLoading();
                                                                  <div id="infobutton" class="infobutton" style="padding-left:10px !important;">
                                                                                 <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                 <div id="" class="infodiv" >
-                                                                                   Select training information to choose what training information you wish to view in the output data
+                                                                                   Select training information to choose what training information you wish to view in the output data.
+                                                                                   <br/><br/>
+                                                                                   Active Provider status indicates that the health worker is currently actively providing clinical services in a health facility. These health workers are counted towards the total health workforce need for family planning Nigeria.
+<br/><br/>
+All other designations including Retired Provider, National Official, State Official, LGA Official or Deceased status indicates that the health worker is not actively providing clinical services in a health facility. These health workers are not counted towards the total health workforce need although they may serve other important functions such as supervision and training of trainers.
+
                                                                                 </div>
                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div clas="row">
-                                                    <div class="col-md-5" style="min-width:200px !important;">
+                                                    <div class="col-md-4" style="min-width:200px !important;">
 							<p align="center"><?php echo t('Training Type'); ?></p>
 							
 							<p align="center"><select name="training_type[]" id="trainingtype" multiple size="10" style="width:100% !important;" >
@@ -963,7 +968,7 @@ echo "<option value=''  >--choose--</option>";
 							</select></p></div>
                                                         
                                                     
-							<div class="col-md-7" style="min-width:200px !important;">
+							<div class="col-md-4" style="min-width:200px !important;">
 
 							<p align="center"><?php echo 'Training Organizer'; ?></p>
 							
@@ -985,6 +990,39 @@ echo "<option value=''  >--choose--</option>";
 		}
 	?>
 							</select></p></div>
+                                                            
+                                                            
+                                                              <div class="col-md-3" style="min-width:147px !important;">
+                                                                  
+                                                                    <p align="center">Active Provider Status</p>
+                                                            <p align="center"> <select name="person_status_id[]" id="person_status_id" multiple  size="10">
+                                                <?php 
+                                                
+                                                if(empty($this->criteria['person_status_id'])){
+                                                    $this->criteria['person_status_id'][] = 1;
+                                                }
+                                                
+                                                echo "<option value=''  >--choose--</option>";
+                                            //print_r($this->person_status);
+                                          
+                                            foreach($this->person_status as $pstatus){
+                                                $titleShow = $pstatus['title'];
+                                                $id = $pstatus['id'];
+                                                //$id = ($id==0 || $id=="")?1:$id;
+                                                
+                                                $selected = (in_array($id, $this->criteria['person_status_id']))? 'selected' : '';
+                                              // $selected = (!empty($this->criteria['person_status_id']) && $this->criteria['person_status_id'] == $id)? 'selected':'';
+                                               ?>
+                                              <option value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $titleShow; ?></option> 
+  
+  
+                                            <?php
+                                            }
+                                            ?>
+                                                                </select></p>
+							
+							
+							</div>
                                                         </div>
                                                         </fieldset>
                                                         </div>

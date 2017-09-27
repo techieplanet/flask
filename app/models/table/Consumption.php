@@ -162,7 +162,7 @@ class Consumption extends IndicatorGroup {
             
 
             $consHelper = new ConsumptionHelper();
-            $consOverTime = $consHelper->getAllConsumptionBySingleLocationOverTime($dateWhere, $commodityWhere, $locationWhere);
+            $consOverTime = $consHelper->getAllConsumptionBySingleLocationOverTime($dateWhere, $commodityWhere, $locationWhere,$lastPullDatemultiple);
             
             //return first element in single element location array and the over time details
             return array(current($locationNames), $consOverTime);  

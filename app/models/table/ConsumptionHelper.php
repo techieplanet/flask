@@ -205,7 +205,7 @@ class ConsumptionHelper {
             return $output;
        }
        
-       public function getAllConsumptionBySingleLocationOverTime($dateWhere, $commodityWhere, $locationWhere){
+       public function getAllConsumptionBySingleLocationOverTime($dateWhere, $commodityWhere, $locationWhere,$lastPullDatemultiple=array()){
            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $helper = new Helper2(); $output = array();
 
@@ -229,7 +229,15 @@ class ConsumptionHelper {
             //var_dump($commNames);
             //get the month names
             $monthNames = array();  $i =0;
-            $dates = $helper->getPreviousMonthDates(12);
+            
+            if(empty($lastPullDatemultiple)){
+                $dates = $helper->getPreviousMonthDates(12); 
+               // $dates = array_reverse($pullDates); //put in ascending order
+                }else{
+                   $dates = $lastPullDatemultiple;
+                }
+                
+          //  $dates = $helper->getPreviousMonthDates(12);
             foreach($dates as $key=>$date){
                 $monthNames[] = date('F', strtotime($date));
             }

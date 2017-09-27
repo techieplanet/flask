@@ -30,7 +30,7 @@
                                     for($u=0;$u<$sizer;$u++){
                                         $titles = $this->summary[$u];
                                         $values = $this->summary_details[$u];
-                                    $data[] =  array("Health Workers trained in ".$titles.": ".$values,"");  
+                                    $data[] =  array("Active Providers Trained in ".$titles.": ".$values,"");  
                                     //array_push($data,$hw_summary);
                                     }
                 
@@ -178,6 +178,14 @@
         
 	</head>
     <style type="text/css">
+
+    .grey {
+            background-color: grey !important;
+        }
+        .grey td.sorting_1 {
+            background-color: inherit !important;
+        }
+        
         #content {
     
   
@@ -329,11 +337,21 @@ startLoading();
        responseTable1 += '<th>'+value+'</th>';
 });
     responseTable1 += '\n</tr>\n</thead>\n<tbody>\n';
+    var classCSS = "";
      jQuery.each( outdetailsArray, function( key, value ) {
       
       var individualResponseTable1Data = value.toString();
       var individualResponseTable1DataArray = individualResponseTable1Data.split(",");
-      responseTable1  += '<tr>\n';
+      var lengthStatus = individualResponseTable1DataArray.length;
+      var tempPlacHolder = individualResponseTable1DataArray[lengthStatus-1];
+      var activateStatus = tempPlacHolder.toString();
+      if(activateStatus.toString() != "Active Provider" && activateStatus.toString()  !="" ){
+          classCSS = "grey";
+      }else{
+        classCSS = "";
+      }
+
+      responseTable1  += '<tr class="'+classCSS+'">\n';
       jQuery.each( individualResponseTable1DataArray, function( key, result ) {
           result = result.replace("@", ",");
           responseTable1  += '<td>'+result+'</td>\n';
@@ -346,7 +364,7 @@ startLoading();
                 jQuery.each( summaryArray, function( key, value ) {
              
               
-              responseTable1 +='<h2><b>'+summary[key]+': '+value+'</b></h2>';
+              responseTable1 +='<h2><b>Active Providers Trained in '+summary[key]+': '+value+'</b></h2>';
           });
                
                

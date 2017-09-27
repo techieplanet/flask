@@ -806,6 +806,7 @@ class Helper2 {
               $locname =  $sortedArray[$i]['location'];
               
               $location_id = $this->fetchlocaid($locname);
+              
               $sortedArray[$i]['location_id'] = $location_id;
            }
            return $sortedArray;

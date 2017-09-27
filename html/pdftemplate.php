@@ -1,7 +1,7 @@
 <html>
     <head>
         <style>
-            .header{height: 55px;font-family: Arial, Helvetica, sans-serif;}
+            .header{height: 65px;font-family: Arial, Helvetica, sans-serif;}
             .header-text{width: 350px;font-family: Arial, Helvetica, sans-serif;}
             .logo{width: 105px; position: absolute; top: 0; right: 0;font-family: Arial, Helvetica, sans-serif;}
             
@@ -49,7 +49,8 @@
                     <br/>
                     <strong>Month: </strong> %1$s %2$d
                     <br/>
-                     <span class="fontsize10">This report has been generated from DHIS2 data as of %23$s</span>
+                     <span class="fontsize10">This report has been generated from DHIS2 data as of %23$s</span><br/>
+                     <span class="fontsize10">DHIS2 Report Rate: %25$s%21$s</span>
                 </div>
                 
                 <div class="logo alignright">
@@ -152,9 +153,10 @@
                             <li>Investigate states with high stock out rates to determine if distribution is happening frequently enough, if sufficient stock is provided, and if all facilities are included in the distribution system.</li>
                         </ul>
                     </fieldset>
+                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/> <div  class='fontsize8'>%24$s</div>
                     </div>
                           
-               <div  class='fontsize8'>%24$s</div>
+               
 
             </div>
                 

@@ -197,8 +197,8 @@ class CoverageController extends ReportFilterHelpers {
                 $fp_coverage = $coverage->fetchFacsWithHWProviding('fp', 'fp', $geoList, $tierValue, true,false,$lastPullDate);
                 $larc_coverage = $coverage->fetchFacsWithHWProviding('larc', 'larc', $geoList, $tierValue, true,false,$lastPullDate);
                 
-                list($fp_numerator,$fp_denominator) = $coverage->fetchFacsWithHWProvidingNumeratorDenominator('fp', 'fp', $geoList, $tierValue, true,false,$lastPullDate);
-                list($larc_numerator,$larc_denominator) = $coverage->fetchFacsWithHWProvidingNumeratorDenominator('larc', 'larc', $geoList, $tierValue, true,false,$lastPullDate);
+                list($fp_numerator,$fp_denominator) = $coverage->fetchFacsWithHWProvidingNumeratorDenominator('fp', 'fp', $geoList, $tierValue, false,false,$lastPullDate);
+                list($larc_numerator,$larc_denominator) = $coverage->fetchFacsWithHWProvidingNumeratorDenominator('larc', 'larc', $geoList, $tierValue, false,false,$lastPullDate);
                 
                 
             }

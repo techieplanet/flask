@@ -287,7 +287,7 @@ class CoverageHelper {
                         ->order(array($tierText)); 
 
 
-                //echo $sql = $select->__toString(); exit;
+              //  echo $sql = $select->__toString(); //exit;
                 
                $result = $db->fetchAll($select);
                
@@ -588,8 +588,10 @@ class CoverageHelper {
            if(!empty($result)){
                   //echo 'not empty: ' . $tierText; exit;
                     //var_dump($locationNames);exit;
+               // print_r($locationNames);exit;
                 foreach($locationNames as $key=>$locationName){
                     $locationValue = '';
+                   
                     foreach($result as $coverageEntry){
                         if($locationName == $coverageEntry[$tierText]){                                    
                             $locationValue = $coverageEntry['fid_count']; 

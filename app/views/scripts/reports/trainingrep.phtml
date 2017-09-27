@@ -362,8 +362,14 @@ div#dialog-certification-message {
             }
             </script>
            <style type="text/css">
-             
 
+        .grey {
+            background-color: grey !important;
+        }
+        .grey td.sorting_1 {
+            background-color: inherit !important;
+        }
+   
 
 /* HTML5 Boilerplate accessible hidden styles */
 [type="radio"] {
@@ -507,7 +513,8 @@ $('#submitTrainingData').click(function() {
              //alert(locationName);
             //lert(agreggate_participants);
              var dataMessage = "";
-           
+             var checkActiveStatus = false;
+
            if(aggregate_method=="view_aggregate_part" || aggregate_method=="view_part_names")
            {
                 if(aggregate_method=="view_part_names"){
@@ -519,6 +526,7 @@ $('#submitTrainingData').click(function() {
                 }else{
                     dataMessage = "<h3 align='left'><b><i>Total Participants :  "+totalParticipants+"</i></b></h3>";
                 }
+                checkActiveStatus = true;
              }
              
 else{
@@ -538,13 +546,25 @@ else{
        responseTable += '<th>'+value+'</th>';
 });
     responseTable += '\n</tr>\n</thead>\n<tbody>\n';
-  
+   var classCSS = "";
      jQuery.each( outputArray, function( key, value ) {
       
       var individualResponseTableData = value.toString();
      
       var individualResponseTableDataArray = individualResponseTableData.split(","); 
-      responseTable  += '<tr>\n';
+      if(checkActiveStatus){
+      var lengthStatus = individualResponseTableDataArray.length;
+      var tempPlacHolder = individualResponseTableDataArray[lengthStatus-1];
+      var activateStatus = tempPlacHolder.toString();
+      console.log("THis is the active status "+activateStatus.length+" the length "+lengthStatus+" another one "+activateStatus[14]+" dfdfdf"+activateStatus.toString());
+      if(activateStatus.toString() != "Active Provider" && activateStatus.toString()  !="" ){
+          classCSS = "grey";
+      }else{
+        classCSS = "";
+      }
+        }
+
+      responseTable  += '<tr class="'+classCSS+'">\n';
       jQuery.each( individualResponseTableDataArray, function( key, result ) {
           result = result.replaceAll("@", ",");
           responseTable  += '<td>'+result+'</td>\n';
@@ -696,7 +716,7 @@ stopLoading();
                                        
                                         
                                             <div class="col-md-11" style="border:1px solid black;margin:0 auto;padding-bottom: 3px;">
-                                                <div class="row">	
+                                                <div class="row" style="padding-top: 9px !important">	
                                                     <div class="col-md-3" >
 							<p align="center"><?php echo t('Training Type'); ?></p>
 							
@@ -762,9 +782,28 @@ echo "<option value=''  >--choose--</option>";
                                                         </div>
                                                         <div class="col-md-3" >
                                                             <div id="csvdownload"></div>
-                                                            <p align="center">Active Provider Status</p>
+                                                            <div class="row">
+                                                            <div class="col-md-1">
+                                                               <div id="infobutton" class="infobutton" style="">
+                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                <div id="" class="infodiv" >
+                                                                                   Active Provider status indicates that the health worker is currently actively providing clinical services in a health facility. These health workers are counted towards the total health workforce need for family planning Nigeria.<br/><br/>
+
+All other designations including Retired Provider, National Official, State Official, LGA Official or Deceased status indicates that the health worker is not actively providing clinical services in a health facility. These health workers are not counted towards the total health workforce need although they may serve other important functions such as supervision and training of trainers.
+
+                                                                                </div>
+                                                    </div>
+                                                            </div>
+                                                             <div class="col-md-9">
+                                                            <p align="center">
+
+
+                                                              Active Provider Status</p>
                                                             <p align="center"> <select name="person_status_id[]" id="person_status_id" multiple  size="10">
                                                 <?php 
+                                                if(empty($this->criteria['person_status_id'])){
+                                                    $this->criteria['person_status_id'][] = 1;
+                                                }
                                                 echo "<option value=''  >--choose--</option>";
                                             //print_r($this->person_status);
                                           
@@ -785,7 +824,8 @@ echo "<option value=''  >--choose--</option>";
                                                         
 	                                                          
                                                                                 
-                                                                                
+                                                              </div>
+                                                              </div>                  
                                                                                      
 														   
                                                         </div>
@@ -823,9 +863,9 @@ echo "<option value=''  >--choose--</option>";
                                                          <p align="center"><?php echo t('Date of Birth'); ?></p>
 
 							
-                                                           <p align="center"><input type="text" id="dobStart"  value="<?php echo $this->criteria['dobStart']; ?>" name="dobStart" style="width:30% !important" placeholder="mm/dd/yyyy"/>
+                                                           <p align="center"><input type="text" id="dobStart"  value="<?php echo $this->criteria['dobStart']; ?>" name="dobStart" style="width:30% !important" placeholder="dd/mm/yyyy"/>
 							 &nbsp;&nbsp;to &nbsp;&nbsp;    
-                                                           <input type="text" id="dobEnd"  value="<?php echo $this->criteria['dobEnd'];  ?>" name="dobEnd"  style="width:30% !important" placeholder="mm/dd/yyyy"/></p>                  
+                                                           <input type="text" id="dobEnd"  value="<?php echo $this->criteria['dobEnd'];  ?>" name="dobEnd"  style="width:30% !important" placeholder="dd/mm/yyyy"/></p>                  
                                                                         
                                                                         
                                                     </div>
@@ -954,9 +994,11 @@ $url = $_SERVER['REQUEST_URI'] . "&csv=1";
                		
 	
 			<div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
+
 			</div>
 		
 	</body>
+  <script src="../js/tp/functions.js"></script>
     <script type="text/javascript">
    function replaceGeoGraphy(aggregateValue){
       

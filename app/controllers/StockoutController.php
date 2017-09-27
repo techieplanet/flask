@@ -196,6 +196,8 @@ class StockoutController extends ReportFilterHelpers {
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
                 //$facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedout($geoList, $tierValue, true);
                 $fp_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
+               // print_r($fp_facsProvidingStockedout);exit;
+                
                 $larc_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
                 
                 list($fp_numerator,$fp_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
@@ -246,8 +248,8 @@ class StockoutController extends ReportFilterHelpers {
             }
            // echo $implodeDates;exit;
             //print_r($overTimeDates);exit;
-            $this->view->assign('end_date', date('F', strtotime($overTimeDates[0])). ',' . date('Y', strtotime($overTimeDates[0]))); 
-            $this->view->assign('start_date', date('F', strtotime($overTimeDates[11])) . ',' . date('Y', strtotime($overTimeDates[11])));
+            $this->view->assign('end_date', date('F', strtotime($overTimeDates[0])). ' ' . date('Y', strtotime($overTimeDates[0]))); 
+            $this->view->assign('start_date', date('F', strtotime($overTimeDates[11])) . ' ' . date('Y', strtotime($overTimeDates[11])));
             //print_r($lastPullDatemultiple);exit;
             $locationName = $helper->getLocationNames($geoList);            
             reset($locationName); $key = key($locationName);  $location_name = $locationName[$key];
