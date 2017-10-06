@@ -210,10 +210,10 @@ print ScriptContainer::$instance->renderJSHead();
 
 <script type="text/javascript">
     
-  var newFPCurrentMonth = "This chart shows number of clients who accepted a modern family planning method for the first time in their lives in the most recent month for the selected geography.";
-  var newFPOvertime = "This chart shows the number of clients who accepted a modern family planning method for the first time in their lives over a period of 12 months for the selected geography.";
-  var currentFPCurrentMonth = "This chart shows the number of clients who have ever used an FP method at any point before returning to receive any family planning method in the most recent month for the selected geography.";
-  var currentFPOvertime = "This chart, which shows the number of clients who have ever used an FP method at any point before returning to receive any family planning method, illustrates use over a period of 12 months for the selected geography.";
+  var newFPCurrentMonth = "This chart shows number of clients who accepted a modern family planning method for the first time in their lives in the most recent month or selected date(s) for the selected geography.";
+  var newFPOvertime = "This chart shows the number of clients who accepted a modern family planning method for the first time in their lives over a period of 12 months or selected date(s) for the selected geography.";
+  var currentFPCurrentMonth = "This chart shows the number of clients who have ever used an FP method at any point before returning to receive any family planning method in the most recent month or selected date(s) for the selected geography.";
+  var currentFPOvertime = "This chart, which shows the number of clients who have ever used an FP method at any point before returning to receive any family planning method, illustrates use over a period of 12 months or selected date(s) for the selected geography.";
   
   var currentMonthText ="";
   var overtimeText = "";
@@ -351,7 +351,7 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     yAxis: {
                         title: {
-                      text: '#Users',
+                      text: '#  Users',
                       style:{ "fontWeight": "bold" }
                       }
                     },
@@ -473,7 +473,7 @@ function drawLocationBarChart() {
                     },
                     yAxis: {
                         title: {
-                      text: '#Users',
+                      text: '#  Users',
                       style:{ "fontWeight": "bold" }
                       }
                     },
@@ -592,7 +592,7 @@ function drawDefaultLineChart() {
                     },
                     yAxis: {
                         title: {
-                      text: '#Users',
+                      text: '#  Users',
                       style:{ "fontWeight": "bold" }
                       },
                         plotLines: [{
@@ -711,7 +711,7 @@ function drawDefaultLineChart() {
                     },
                     yAxis: {
                          title: {
-                      text: '#Users',
+                      text: '#  Users',
                       style:{ "fontWeight": "bold" }
                       },
                         plotLines: [{
@@ -854,7 +854,7 @@ function drawDefaultLineChart() {
                     },
                     yAxis: {
                         title: {
-                      text: '#Users',
+                      text: '#  Users',
                       style:{ "fontWeight": "bold" }
                       },
                         plotLines: [{
