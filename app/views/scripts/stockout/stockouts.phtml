@@ -147,13 +147,13 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                     This chart shows stock out rates over time at facilities that have provided 
                                                                                     any FP services or implants specifically in the past. <br/><br/>
                                                                                     
-                                                                                    For FP, this is the percentage of facilities reporting in the given month that 
+                                                                                    For FP, this is the percentage of facilities reporting in the given month or selected date(s) that 
                                                                                     have provided any FP commodities any time in the last six months that were 
-                                                                                    stocked out of any FP commodity for at least seven days in the given month. <br/><br/>
+                                                                                    stocked out of any FP commodity for at least seven days in the given month or selected date(s). <br/><br/>
                                                                                     
-                                                                                    For implants, this is the percentage of facilities reporting in the given month that 
+                                                                                    For implants, this is the percentage of facilities reporting in the given month or selected date(s) that 
                                                                                     have consumed implants any time in the last six months that are stocked out of 
-                                                                                    implants in the given month.
+                                                                                    implants in the given month or selected date(s).
                                                                                 </div>
                                                                             </div>
 									<div id="chart11_div" style="width: 600px; height: 440px;"></div>
@@ -260,7 +260,7 @@ print ScriptContainer::$instance->renderJSHead();
                   $subtitle = "(across selected date(s))";  
                     }
                 }else{
-                     $title = ($this->freshvisit) ? "Stocks out at facilities providing FP, $this->start_date to $this->end_date" : "Stock outs in selected geographies, $this->start_date to $this->end_date";
+                     $title = ($this->freshvisit) ? "Stock outs at facilities providing FP, $this->start_date to $this->end_date" : "Stock outs in selected geographies, $this->start_date to $this->end_date";
                     $subtitle = "($this->start_date to $this->end_date)"; 
                 }
               ?>;
@@ -296,7 +296,7 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     yAxis: {
                        title: {
-                        text: '%Facilities',
+                        text: '%  Facilities',
                         style:{ "fontWeight": "bold" }
                     },
                         labels: {

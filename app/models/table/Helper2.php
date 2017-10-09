@@ -601,7 +601,7 @@ class Helper2 {
            list($startYears,$endYears) = $report->getMonthlyDateRange($startMonth,$startYear,$endMonth,$endYear);
            $monthNames = array();
            foreach($startYears as $startD){
-               $formattedDate = date('M,Y',strtotime($startD));
+               $formattedDate = date('F Y',strtotime($startD));
                $monthNames[]  = $formattedDate;
            }
            

@@ -417,7 +417,8 @@ class Coverage extends IndicatorGroup {
             $facility = new Facility();
             $output = array(array('location'=>'National', 'percent'=>0)); 
             $helper = new Helper2();
-            
+//            $updateMode = true;
+//            $freshVisit = true;
             
             if(empty($lastPullDate) || $lastPullDate==""){
               $latestDate = $helper->getLatestPullDate();
@@ -428,7 +429,7 @@ class Coverage extends IndicatorGroup {
             $cacheManager = new CacheManager();
             
             if($commodity_type == 'fp')
-                $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_PROVIDING_FP, $latestDate);
+                $cacheValue =  $cacheManager->getIndicator(CacheManager::PERCENT_FACS_PROVIDING_FP, $latestDate);
             else if($commodity_type == 'larc')
                 $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_PROVIDING_LARC, $latestDate);
             else if($commodity_type == 'injectables')
@@ -477,7 +478,7 @@ class Coverage extends IndicatorGroup {
                     $longWhereClause = $reportingWhere . ' AND ' . $dateWhere.' AND '.$locationWhere;
 //                    //send only one month date range. 
                     $ct_where = "(commodity_type = 'fp' OR commodity_type = 'larc')";
-//                    
+                    //$dateWhere = "c_sub.date = '$latestDate'";
 //                    $tierNameField = $helper->getLocationTierText($tierValue);
 //                    $tierIDField = $helper->getTierFieldName($tierNameField);
                     
@@ -487,7 +488,7 @@ class Coverage extends IndicatorGroup {
                             $tierText, 
                             $tierFieldName, 
                             $ct_where,
-                            $dateWhere
+                            $latestDate
                     );
 //                    
 //                    

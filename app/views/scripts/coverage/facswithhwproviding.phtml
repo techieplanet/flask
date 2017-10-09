@@ -146,7 +146,7 @@ print ScriptContainer::$instance->renderJSHead();
                                                                             <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                             <div id="" class="infodiv" >
                                                                                 This chart shows the percentage of facilities reporting in the most recent 
-                                                                                month that have at least one health worker trained in FP and provided at 
+                                                                                month or selected date(s) that have at least one health worker trained in FP and provided at 
                                                                                 least one FP commodity. This chart illustrates the percentage of 
                                                                                 facilities that should be providing FP that are actually providing the 
                                                                                 service. 
@@ -160,7 +160,7 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                 <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                 <div id="" class="infodiv" >
                                                                                     This chart shows the percentage of facilities reporting in the most recent 
-                                                                                    month that have at least one health worker trained in LARC and provided at 
+                                                                                    month or selected date(s) that have at least one health worker trained in LARC and provided at 
                                                                                     least one implant or IUCD. This chart illustrates the percentage of 
                                                                                     facilities that should be providing LARC that are actually providing the 
                                                                                     service. 
@@ -308,7 +308,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 yAxis: {
                     title: {
-                       text: '%Facilities',
+                       text: '%  Facilities',
                        style:{ "fontWeight": "bold" }
                     },
                     labels: {
@@ -372,7 +372,7 @@ print ScriptContainer::$instance->renderJSHead();
             $valuesString = substr($valuesString, 0 , -1);
     ?>
 
-          var titleText = '<?php echo  "Percent of facilities with an FP-trained HW providing LARC, $this->date"; ?>';
+          var titleText = '<?php echo  "Percent of FP facilities with an FP-trained HW providing LARC, $this->date"; ?>';
           var subtitleText = '(<?php echo  $this->date; ?>)';
 	  
           $('#chart12_div').highcharts({
@@ -410,7 +410,7 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 yAxis: {
                     title: {
-                        text: '%Facilities',
+                        text: '%  Facilities',
                         style:{ "fontWeight": "bold" }
                     },
                     labels: {

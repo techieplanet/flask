@@ -320,7 +320,7 @@ function drawChart11() {
                            .siblings('.infobutton')
                            .find('.infodiv')
                            .html('This chart shows consumption of each FP commodity in the ' +
-                                    'most recent month for the selected geography. ' +
+                                    'most recent month or selected date(s) for the selected geography. ' +
                                     'Given the different scale of male condom consumption, consumption ' +
                                     'is reflected in units of 10 male condoms, while all other commodities ' +
                                     'are reflected as a single commodity.'
@@ -352,7 +352,7 @@ function drawChart11() {
                 },
                 yAxis: {
                     title: {
-                        text: '#Commodities Consumed',
+                        text: '#  Commodities Consumed',
                         style:{ "fontWeight": "bold" }
                     }
                 },
@@ -472,7 +472,7 @@ function drawChart13() {
                                        .siblings('.infobutton')
                                        .find('.infodiv')
                                        .html('This chart shows consumption of each FP commodity for each of ' +
-                                             'the last 12 months for the selected geography.');
+                                             'the last 12 months or selected date(s) for the selected geography.');
                                        $("#chart13_div").siblings("#infobutton").removeClass("hidden");
                                     }
                                 },
@@ -501,7 +501,7 @@ function drawChart13() {
                             },
                             yAxis: {
                                 title: {
-                                     text: '#Commodities Consumed',
+                                     text: '#  Commodities Consumed',
                                      style:{ "fontWeight": "bold" }
                                 },
                                 plotLines: [{
@@ -624,7 +624,7 @@ function drawChart13() {
                             $("#chart13_div")
                            .siblings('.infobutton')
                            .find('.infodiv')
-                           .html('This chart displays the consumption of each FP commodity for the last 12 months in the selected geography.');
+                           .html('This chart displays the consumption of each FP commodity for the last 12 months or selected date(s) in the selected geography.');
                            $("#chart13_div").siblings("#infobutton").removeClass("hidden");
                         }
                     },
@@ -653,7 +653,7 @@ function drawChart13() {
                 },
                 yAxis: {
                     title: {
-                       text: '#Commodities Consumed',
+                       text: '#  Commodities Consumed',
                        style:{ "fontWeight": "bold" }
                     },
                     plotLines: [{
@@ -853,7 +853,7 @@ function drawChart13() {
                             .siblings('.infobutton')
                             .find('.infodiv')
                             .html('This chart shows consumption of each FP commodity in the ' +
-                                     'most recent month for the selected geography. ' +
+                                     'most recent month or selected date(s) for the selected geography. ' +
                                      'Given the different scale of male condom consumption, consumption ' +
                                      'is reflected in units of 10 male condoms, while all other commodities ' +
                                      'are reflected as a single commodity.'
@@ -890,7 +890,7 @@ function drawChart13() {
                 yAxis: {
                     min: 0,
                     title: {
-                        text: '#Commodities Consumed',
+                        text: '#  Commodities Consumed',
                         style:{ "fontWeight": "bold" },
                         align: 'high'
                     },
@@ -1007,7 +1007,7 @@ function drawChart13() {
                                             $("#chart13_div")
                                             .siblings('.infobutton')
                                             .find('.infodiv')
-                                            .text("This chart displays the consumption of <?php echo $commodityName; ?>  for each of the last 12 months in the selected geography");
+                                            .text("This chart displays the consumption of <?php echo $commodityName; ?>  for each of the last 12 months or selected date(s) in the selected geography");
                                         }
                                     }
                                 },
@@ -1029,7 +1029,7 @@ function drawChart13() {
                                 },
                                 yAxis: {
                                      title: {
-                                     text: '#Commodities Consumed',
+                                     text: '#  Commodities Consumed',
                                      style:{ "fontWeight": "bold" }
                                       },
 //                                    labels: {
@@ -1159,7 +1159,7 @@ function drawChart13() {
                             $("#chart13_div")
                            .siblings('.infobutton')
                            .find('.infodiv')
-                           .html('This chart displays the consumption of each of the selected FP commodity for the last 12 months in the selected geography.');
+                           .html('This chart displays the consumption of each of the selected FP commodity for the last 12 months or selected date(s) in the selected geography.');
                            $("#chart13_div").siblings("#infobutton").removeClass("hidden");
                         }
                     },
@@ -1188,7 +1188,7 @@ function drawChart13() {
                 },
                 yAxis: {
                     title: {
-                      text: '#Commodities Consumed',
+                      text: '#  Commodities Consumed',
                       style:{ "fontWeight": "bold" }
                                 },
                     plotLines: [{
