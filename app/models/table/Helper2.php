@@ -622,13 +622,13 @@ class Helper2 {
        $numerSum = $denomSum = 0; $output = array();
        
         foreach ($numerators as $location=>$numer){
-            //$nationalNumerator += $numer;
-            //$nationalDenominator += $denominators[$location];
-            //$this->jLog("The location is ".$numer.PHP_EOL);
-            
             $output[] = array(
+                'numer' => $numer,
+                'denom' => $denominators[$location],
                 'location' => $location,
-                'percent' => (($numer>0 && $denominators[$location])?($numer / $denominators[$location]):0)
+                'percent' => ($numer>0 && $denominators[$location])?
+                             round($numer / $denominators[$location] * 100, 1) :
+                             0
             );
 
             $numerSum += $numer;
@@ -636,7 +636,6 @@ class Helper2 {
                      
         }
         
-       
         //divide national avg by length of national zones
         $nationalAvg = (($numerSum>0 && $denomSum>0)?($numerSum / $denomSum):0);
         
@@ -656,10 +655,6 @@ class Helper2 {
        $numerSum = $denomSum = 0; $output = array();
        
         foreach ($numerators as $location=>$numer){
-            //$nationalNumerator += $numer;
-            //$nationalDenominator += $denominators[$location];
-            //$this->jLog("The location is ".$numer.PHP_EOL);
-            
             $output[$location] = array(
                 'location' => $location,
                 'num' => $numer,
@@ -990,7 +985,9 @@ class Helper2 {
                    $output[] = array(
                                'month' => $numer['month_name'],
                                'year' => $numer['year'],
-                               'percent' => $numer['fid_count'] / $denomArray[$i]['fid_count']
+                               'percent' => round($numer['fid_count'] / $denomArray[$i]['fid_count'] * 100, 1),
+                               'numer' => $numer['fid_count'],
+                               'denom' => $denomArray[$i]['fid_count']
                    );
                }
             }
@@ -999,7 +996,9 @@ class Helper2 {
                     $output[] = array(
                                'month' => $denom['month_name'],
                                'year' => $denom['year'],
-                               'percent' => 0
+                               'percent' => 0,
+                               'numer' => 0,
+                               'denom' => 0
                    );
                 }
             }

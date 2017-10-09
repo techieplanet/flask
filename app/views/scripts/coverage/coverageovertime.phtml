@@ -92,10 +92,10 @@ print ScriptContainer::$instance->renderJSHead();
             colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#AAAA11', '#B77322']
         });
   });
-   $(".accordion").on("click", "dd", function (event) {
- $("div.active").slideToggle("slow");
- $(this).find(".content").slideToggle("slow");
- });
+   //$(".accordion").on("click", "dd", function (event) {
+ //$("div.active").slideToggle("slow");
+ //$(this).find(".content").slideToggle("slow");
+ //});
   </script>
 </head>
 <body class="yui-skin-sam">
@@ -243,88 +243,31 @@ print ScriptContainer::$instance->renderJSHead();
    
   });
 
-  <!-------   /////////////////////////// script 1,1 ////////////////////// -->
-  //TA:17:17: Coverage HW Trained chart
+  
   function drawFPChart() {
-      var jNumData = new Array();
-      var jDenomData = new Array();
-      jNumData['% of facilities with FP-trained HW'] = [];
-      jNumData['% of FP-trained facilities providing FP'] = [];
-      jNumData['% of FP-trained facilities stocked out of FP'] = [];
-      
-      jDenomData['% of facilities with FP-trained HW'] = [];
-      jDenomData['% of FP-trained facilities providing FP'] = [];
-      jDenomData['% of FP-trained facilities stocked out of FP'] = [];
-      
-      <?php
-        $hwCoverage = $this->fp_overtime[0]; 
-        $providingCoverage = $this->fp_overtime[1]; 
-        $soCoverage = $this->fp_overtime[2]; 
+        FPOvertime = <?= $this->fp_overtime; ?>;
+        var selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        var startDate = '<?= $this->end_date; ?>';
         
-        $hwNumDenom = $this->fp_numerator_denominator[0];
-        $providingNumDenom = $this->fp_numerator_denominator[1];
-        $soNumDenom = $this->fp_numerator_denominator[2];
-      ?>
-          
-       var facTrainedObject = {name:'% of facilities with FP-trained HW', data: [],alias:'factrained'};
-       var facProvObject = {name:'% of FP-trained facilities providing FP', data: [],alisa:'facprov'};
-       var facSOObject = {name:'% of FP-trained facilities stocked out of FP', data: [],alias:'facSO'};
+        hwCoverage = FPOvertime[0];
+        providingCoverage = FPOvertime[1];
+        soCoverage = FPOvertime[2];
+        
+        var facTrainedObject = {name:'% of facilities with FP-trained HW', data: [],alias:'factrained'};
+        var facProvObject = {name:'% of FP-trained facilities providing FP', data: [],alisa:'facprov'};
+        var facSOObject = {name:'% of FP-trained facilities stocked out of FP', data: [],alias:'facSO'};
        
-        <?php
-        
-        foreach($hwNumDenom as $i => $det) {
-            $month = $det['month'];
-             
-             $numerator = $det['numerator'];   
-             $denominator = $det['denominator'];
-            ?>
-           jNumData['% of facilities with FP-trained HW']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
-           jDenomData['% of facilities with FP-trained HW']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
-            <?php
-             
+        monthNames = new Array();
+        for(key in hwCoverage){
+            var monthName = hwCoverage[key]['month'];
+            monthNames.push(monthName);
+            facTrainedObject.data.push(hwCoverage[key]['percent']);
+            facProvObject.data.push(monthName == providingCoverage[key]['month'] ? providingCoverage[key]['percent'] : 0);
+            facSOObject.data.push(monthName == soCoverage[key]['month'] ? soCoverage[key]['percent'] : 0);
         }
         
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
         
-         foreach($providingNumDenom as $i => $det) {
-            $month = $det['month'];
-             
-             $numerator = $det['numerator'];   
-             $denominator = $det['denominator'];
-            ?>
-           jNumData['% of FP-trained facilities providing FP']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
-           jDenomData['% of FP-trained facilities providing FP']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
-            <?php
-             
-        }
-        
-        foreach($soNumDenom as $i => $det) {
-            $month = $det['month'];
-             
-             $numerator = $det['numerator'];   
-             $denominator = $det['denominator'];
-            ?>
-           jNumData['% of FP-trained facilities stocked out of FP']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
-           jDenomData['% of FP-trained facilities stocked out of FP']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
-            <?php
-             
-        }
-        
-        
-                    $monthNames = array();
-                    foreach($hwCoverage as $i => $details) {
-                        $monthNames[] = $details['month'];
-                        $hwCount = round($details['percent']*100, 1);                
-                        $provCount = array_key_exists($i, $providingCoverage) ? round($providingCoverage[$i]['percent']*100, 1) : 0;
-                        $soCount = array_key_exists($i, $soCoverage) ? round($soCoverage[$i]['percent']*100, 1) : 0;
-        ?> 
-                        //JS
-                        facTrainedObject.data.push(<?php echo $hwCount; ?>);
-                        facProvObject.data.push(<?php echo $provCount; ?>);
-                        facSOObject.data.push(<?php echo $soCount; ?>);
-        <?php
-                    }
-        ?>                                        
-
       <?php 
       if(empty($this->selectedDatemultiple)){
            $titleText = $this->end_date." to ".$this->start_date;
@@ -335,10 +278,10 @@ print ScriptContainer::$instance->renderJSHead();
                         ? "Percent of facilities with an FP-trained HW providing FP, " 
                         : "Percent of facilities with an FP-trained HW providing FP in selected geographies, ";
             $title .= $titleText;    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
-      ?>;
+      ?>
           
           
-      $('#chart_div').highcharts({
+          $('#chart_div').highcharts({
                 chart: {
                     //type: 'line',
                     height: 470,
@@ -364,7 +307,7 @@ print ScriptContainer::$instance->renderJSHead();
                         text:'Month',
                         style:{ "fontWeight": "bold" }
                     },
-                    categories: <?php echo json_encode($monthNames); ?>
+                    categories: monthNamesWithYears
                 },
                 yAxis: {
                     title: {
@@ -383,8 +326,28 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 tooltip: {
                     formatter: function () {
+                        var monthArray = (this.x).split(",");
+                        var month = monthArray[0];
+                        
+                        if((this.series.name).includes('HW'))
+                            dataObj = hwCoverage;
+                        else if((this.series.name).includes('providing'))
+                            dataObj = providingCoverage;
+                        else if((this.series.name).includes('stocked out'))
+                            dataObj = soCoverage;
+                                                
+                        index = -1;
+                        for(key in dataObj){
+                            if ((dataObj[key]['month']).toUpperCase() === month.toUpperCase()){
+                                index = key;
+                                break;
+                            }
+                        }
+                        
                         return '<b>' + this.x + '</b><br/>' +
-                            '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
+                            '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>' +
+                            '<b>Numerator</b>:'+thousandSeparator(dataObj[index]['numer'])+'<br/>' + 
+                            '<b>Denominator</b>:'+thousandSeparator(dataObj[index]['denom']);
                     }
                 },
                 plotOptions: {
@@ -395,113 +358,56 @@ print ScriptContainer::$instance->renderJSHead();
                     }
                 },
                 legend: {
-                    layout: 'horizontal',
+                    layout: 'vertical',
                     //verticalAlign: 'center',
                     align: 'center',
                     borderWidth: 1,
                     //shadow: true
                 },
                 series: [facTrainedObject, facProvObject, facSOObject]
-            });
-
+            });      
 
     }//end fp chart
     
     
-    
     function drawLARCChart() {
-       var jNumData = new Array();
-      var jDenomData = new Array();
-      jNumData['% of facilities with LARC-trained HW'] = [];
-      jNumData['% of LARC-trained facilities providing LARC'] = [];
-      jNumData['% of LARC-trained facilities stocked out of LARC'] = [];
-      
-      jDenomData['% of facilities with LARC-trained HW'] = [];
-      jDenomData['% of LARC-trained facilities providing LARC'] = [];
-      jDenomData['% of LARC-trained facilities stocked out of LARC'] = [];
-      <?php
-        $hwCoverage = $this->larc_overtime[0]; 
-        $providingCoverage = $this->larc_overtime[1]; 
-        $soCoverage = $this->larc_overtime[2]; 
+        LARCOvertime = <?= $this->larc_overtime; ?>;
+        var selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        var startDate = '<?= $this->end_date; ?>';
         
-         $hwNumDenom = $this->larc_numerator_denominator[0];
-        $providingNumDenom = $this->larc_numerator_denominator[1];
-        $soNumDenom = $this->larc_numerator_denominator[2];
-      ?>
-              
-       var facTrainedObject = {name:'% of facilities with LARC-trained HW', data: []};
-       var facProvObject = {name:'% of LARC-trained facilities providing LARC', data: []};
-       var facSOObject = {name:'% of LARC-trained facilities stocked out of LARC', data: []};
-          
-        <?php
+        hwCoverage = LARCOvertime[0];
+        providingCoverage = LARCOvertime[1];
+        soCoverage = LARCOvertime[2];
         
-         foreach($hwNumDenom as $i => $det) {
-            $month = $det['month'];
-             
-             $numerator = $det['numerator'];   
-             $denominator = $det['denominator'];
-            ?>
-           jNumData['% of facilities with LARC-trained HW']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
-           jDenomData['% of facilities with LARC-trained HW']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
-            <?php
-             
+        var facTrainedObject = {name:'% of facilities with LARC-trained HW', data: []};
+        var facProvObject = {name:'% of LARC-trained facilities providing LARC', data: []};
+        var facSOObject = {name:'% of LARC-trained facilities stocked out of FP', data: []};
+       
+        monthNames = new Array();
+        for(key in hwCoverage){
+            var monthName = hwCoverage[key]['month'];
+            monthNames.push(monthName);
+            facTrainedObject.data.push(hwCoverage[key]['percent']);
+            facProvObject.data.push(monthName == providingCoverage[key]['month'] ? providingCoverage[key]['percent'] : 0);
+            facSOObject.data.push(monthName == soCoverage[key]['month'] ? soCoverage[key]['percent'] : 0);
         }
         
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
         
-         foreach($providingNumDenom as $i => $det) {
-            $month = $det['month'];
-             
-             $numerator = $det['numerator'];   
-             $denominator = $det['denominator'];
-            ?>
-           jNumData['% of LARC-trained facilities providing LARC']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
-           jDenomData['% of LARC-trained facilities providing LARC']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
-            <?php
-             
-        }
-        
-        foreach($soNumDenom as $i => $det) {
-            $month = $det['month'];
-             
-             $numerator = $det['numerator'];   
-             $denominator = $det['denominator'];
-            ?>
-           jNumData['% of LARC-trained facilities stocked out of LARC']['<?php echo $month; ?>'] = <?php echo $numerator; ?>;
-           jDenomData['% of LARC-trained facilities stocked out of LARC']['<?php echo $month; ?>'] = <?php echo $denominator; ?>;
-            <?php
-             
-        }
-        
-        
-                    $monthNames = array();
-                     foreach($hwCoverage as $i => $details) {
-                         $monthNames[] = $details['month'];
-                         $hwCount = round($details['percent']*100, 1);
-                         $provCount = array_key_exists($i, $providingCoverage) ? round($providingCoverage[$i]['percent']*100, 1) : 0;
-                         $soCount = array_key_exists($i, $soCoverage) ? round($soCoverage[$i]['percent']*100, 1) : 0;
-        ?> 
-                        //JS
-                        facTrainedObject.data.push(<?php echo $hwCount; ?>);
-                        facProvObject.data.push(<?php echo $provCount; ?>);
-                        facSOObject.data.push(<?php echo $soCount; ?>);
-         <?php
-                     }
-        ?>                                        
-      
       <?php 
-        if(empty($this->selectedDatemultiple)){
+      if(empty($this->selectedDatemultiple)){
            $titleText = $this->end_date." to ".$this->start_date;
        }else{
            $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
        }
             $title = ($this->freshvisit) 
-                        ? "Percent of facilities with an FP-trained HW providing LARC, " 
-                        : "Percent of facilities with an FP-trained HW providing LARC in selected geographies, ";
+                        ? "Percent of facilities with an LARC-trained HW providing FP, " 
+                        : "Percent of facilities with an LARC-trained HW providing FP in selected geographies, ";
             $title .= $titleText;    //echo  " var title_data = 'FP HR coverage for $this->location_name, $this->start_date to $this->end_date' " ;
-      ?>;
+      ?>
           
           
-      $('#chart13_div').highcharts({
+          $('#chart13_div').highcharts({
                 chart: {
                     //type: 'line',
                     height: 470,
@@ -509,7 +415,7 @@ print ScriptContainer::$instance->renderJSHead();
                     events: {
                         load:function(){
                             $("text:contains(Highcharts.com)").css("display","none");
-                            $("#chart13_div").siblings("#infobutton").removeClass("hidden");
+                            $("#chart_div").siblings("#infobutton").removeClass("hidden");
                         }
                     }
                 },
@@ -527,7 +433,7 @@ print ScriptContainer::$instance->renderJSHead();
                         text:'Month',
                         style:{ "fontWeight": "bold" }
                     },
-                    categories: <?php echo json_encode($monthNames); ?>
+                    categories: monthNamesWithYears
                 },
                 yAxis: {
                     title: {
@@ -546,8 +452,28 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 tooltip: {
                     formatter: function () {
+                        var monthArray = (this.x).split(",");
+                        var month = monthArray[0];
+                        
+                        if((this.series.name).includes('HW'))
+                            dataObj = hwCoverage;
+                        else if((this.series.name).includes('providing'))
+                            dataObj = providingCoverage;
+                        else if((this.series.name).includes('stocked out'))
+                            dataObj = soCoverage;
+                                                
+                        index = -1;
+                        for(key in dataObj){
+                            if ((dataObj[key]['month']).toUpperCase() === month.toUpperCase()){
+                                index = key;
+                                break;
+                            }
+                        }
+                        
                         return '<b>' + this.x + '</b><br/>' +
-                            '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
+                            '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>' +
+                            '<b>Numerator</b>:'+thousandSeparator(dataObj[index]['numer'])+'<br/>' + 
+                            '<b>Denominator</b>:'+thousandSeparator(dataObj[index]['denom']);
                     }
                 },
                 plotOptions: {
@@ -558,17 +484,18 @@ print ScriptContainer::$instance->renderJSHead();
                     }
                 },
                 legend: {
-                    layout: 'horizontal',
+                    layout: 'vertical',
                     //verticalAlign: 'center',
                     align: 'center',
                     borderWidth: 1,
                     //shadow: true
                 },
                 series: [facTrainedObject, facProvObject, facSOObject]
-            });
-          
-          
-    }
+            });      
+
+    }//end fp chart
+    
+    
     
   
 
@@ -586,6 +513,7 @@ print ScriptContainer::$instance->renderJSHead();
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
 
 <script src="../js/tp/functions.js"></script>
+<script src="../js/tp/overtime-ops.js"></script>
 
 </body>
 

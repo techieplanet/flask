@@ -544,27 +544,24 @@ class CoverageController extends ReportFilterHelpers {
             
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
                 $fp_overtime = $coverage->fetchHWCoverageOvertime('fp', $geoList, $tierValue, true,false,$lastPullDatemultiple);
-                $numeratorDenominatorsFP = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,false,$lastPullDatemultiple);
+                //$numeratorDenominatorsFP = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,false,$lastPullDatemultiple);
                 
                 $larc_overtime = $coverage->fetchHWCoverageOvertime('larc', $geoList, $tierValue, true,false,$lastPullDatemultiple);
-                $numeratorDenominatorsLARC = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,false,$lastPullDatemultiple);
+                //$numeratorDenominatorsLARC = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,false,$lastPullDatemultiple);
             }
             else { 
                 $fp_overtime = $coverage->fetchHWCoverageOvertime('fp', $geoList, $tierValue, false,false,$lastPullDatemultiple);
-                $numeratorDenominatorsFP = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('fp', $geoList, $tierValue, false,false,$lastPullDatemultiple);
+                //$numeratorDenominatorsFP = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('fp', $geoList, $tierValue, false,false,$lastPullDatemultiple);
                 
                 $larc_overtime = $coverage->fetchHWCoverageOvertime('larc', $geoList, $tierValue, false,false,$lastPullDatemultiple);
-                $numeratorDenominatorsLARC = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('larc', $geoList, $tierValue, false,false,$lastPullDatemultiple);
+                //$numeratorDenominatorsLARC = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('larc', $geoList, $tierValue, false,false,$lastPullDatemultiple);
                 $freshVisit = false;
             }
             
             $locationName = $helper->getLocationNames($geoList);
             
-            $this->view->assign('fp_overtime', $fp_overtime); 
-            $this->view->assign('larc_overtime', $larc_overtime); 
-            
-            $this->view->assign('fp_numerator_denominator',$numeratorDenominatorsFP);
-            $this->view->assign('larc_numerator_denominator',$numeratorDenominatorsLARC);
+            $this->view->assign('fp_overtime', json_encode($fp_overtime)); 
+            $this->view->assign('larc_overtime', json_encode($larc_overtime)); 
 
            
             //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
@@ -603,36 +600,37 @@ class CoverageController extends ReportFilterHelpers {
             }
             $this->view->assign('selectedDatemultiple',$lastPullDatemultiple);
             //get the parameters
+            //echo var_dump($lastPullDatemultiple); exit;
             
             list($geoList, $tierValue) = $this->buildParameters();
             
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
                 $fp_overtime = $coverage->fetchProvidingOvertime('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
                 $larc_overtime = $coverage->fetchProvidingOvertime('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
-                list($fp_numerator,$fp_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
-                list($larc_numerator,$larc_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
+                //list($fp_numerator,$fp_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
+                //list($larc_numerator,$larc_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
                 $modern_method_coverage = $cipCoverage->fetchFacsProvidingNumberOfMethodsOvertime('', 3, $geoList, $tierValue, true, false, $lastPullDatemultiple);
                 
             }
             else {
                 $fp_overtime = $coverage->fetchProvidingOvertime('fp', $geoList, $tierValue, false,$lastPullDatemultiple);
                 $larc_overtime = $coverage->fetchProvidingOvertime('larc', $geoList, $tierValue, false,$lastPullDatemultiple);
-                list($fp_numerator,$fp_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
-                list($larc_numerator,$larc_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
+                //list($fp_numerator,$fp_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
+                //list($larc_numerator,$larc_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
                 $modern_method_coverage = $cipCoverage->fetchFacsProvidingNumberOfMethodsOvertime('', 3, $geoList, $tierValue, false, false, $lastPullDatemultiple); 
             }
             
             $monthNameDisplay = $helper->formatMonthName($lastPullDatemultiple);
-            $this->view->assign('fp_numerator',$fp_numerator);
-            $this->view->assign('fp_denominator',$fp_denominator);
+            //$this->view->assign('fp_numerator',$fp_numerator);
+            //$this->view->assign('fp_denominator',$fp_denominator);
             $this->view->assign('modern_method_data', json_encode($modern_method_coverage));
             
-            $this->view->assign('larc_numerator',$larc_numerator);
-            $this->view->assign('larc_denominator',$larc_denominator);
+            //$this->view->assign('larc_numerator',$larc_numerator);
+            //$this->view->assign('larc_denominator',$larc_denominator);
             
-            $this->view->assign('fp_overtime', $fp_overtime); 
-            $this->view->assign('larc_overtime', $larc_overtime); 
-           // $this->view->assign('modern_method_overtime',$modern_method_overtime);
+            $this->view->assign('fp_overtime', json_encode($fp_overtime)); 
+            $this->view->assign('larc_overtime', json_encode($larc_overtime)); 
+                        
             $this->view->assign('latestPullDatemultipleMonthName',$monthNameDisplay);
             $sDate = $helper->fetchTitleDate();
            
@@ -642,10 +640,12 @@ class CoverageController extends ReportFilterHelpers {
             
             if(!empty($lastPullDatemultiple)){
                // echo 'It is not empty';
-             $overTimeDates = $lastPullDatemultiple;   
+               $overTimeDates = $lastPullDatemultiple;   
             }
+            
+            $overtimeLength = count($overTimeDates) - 1;
             $this->view->assign('start_date', date('F', strtotime($overTimeDates[0])). ' '. date('Y', strtotime($overTimeDates[0]))); 
-            $this->view->assign('end_date', date('F', strtotime($overTimeDates[11])). ' '. date('Y', strtotime($overTimeDates[11]))); 
+            $this->view->assign('end_date', date('F', strtotime($overTimeDates[$overtimeLength])). ' '. date('Y', strtotime($overTimeDates[$overtimeLength]))); 
 
             $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
             $this->viewAssignEscaped ('locations', Location::getAll(1) );

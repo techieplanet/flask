@@ -14,7 +14,7 @@
 require_once '../../sites/globals.php';
 require_once 'CommodityDataProcessor.php';
 require_once 'FRRDataProcessor.php';
-
+require_once 'excel/ExcelUpdateManager.php';
 
 class DHIS2QDataDownloader {
     //put your code here
@@ -164,6 +164,7 @@ ini_set('display_errors', 'On');
 ini_set("memory_limit","4095M");
 
 try{
+    
     set_time_limit(600);
     date_default_timezone_set('Africa/Lagos');
 
@@ -180,15 +181,24 @@ try{
     foreach ($datesArray as $focusDate){
         //update the facility with any new facilities in WS data
         $commDataProc = new CommodityDataProcessor($focusDate, $db);
-        $commDataProc->updateFacilities();
-
+        $newFacilities = $commDataProc->updateFacilities();
+        
         //upload FRR data
         $frrDataProc = new FRRDataProcessor($focusDate, $db);
         $frrDataProc->loadMonthData();
 
         //upload commodity data
         $commDataProc->loadMonthData();
+        
+        //Now update the execl files for states of any new facilities
+        if(!empty($newFacilities)){
+            $commDataProc->tempPersitNewFacilities($newFacilities);
+            $fileNamePrefix = Globals::$BASE_PATH . Globals::$WEB_FOLDER . '/templates/ImportTrainingTemplate ';
+            (new ExcelUpdateManager($fileNamePrefix))->run();
+        }
     }
+    
+    
 
     //$cacheController = new CacheController();
     //$cacheController->setcacheAction();

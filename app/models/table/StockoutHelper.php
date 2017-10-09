@@ -23,12 +23,12 @@ class StockoutHelper {
                               array('COUNT(DISTINCT(c.facility_id)) AS fid_count'))
                             ->joinInner(array('cno'=>'commodity_name_option'), 'cno.id = c.name_id', array())
                             ->joinInner(array('fwtc'=>'facility_worker_training_counts_view'), 'c.facility_id = facid', array())
-                            ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = c.facility_id', array('lga', 'state',  'geo_zone'))
+                            ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = c.facility_id', array($tierText))
                             ->where($longWhereClause)
                             ->group($tierFieldName)
                             ->order(array($tierText));
                         
-              //echo 'CS: ' . $select->__toString() . '<br/>'; exit;
+              //echo $select->__toString() . '<br/>'; exit;
 
               $result = $db->fetchAll($select);
               

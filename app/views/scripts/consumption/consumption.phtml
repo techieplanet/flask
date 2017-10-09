@@ -385,7 +385,7 @@ function drawChart11() {
 
 
 function drawChart13() {
-        //console.log('inside 13');
+        
         <?php 
                 if(isset($this->consumption_overtime) && !empty($this->consumption_overtime)) {
                     //return;
@@ -451,7 +451,10 @@ function drawChart13() {
                   $titleText = $this->start_date." to ".$this->end_date;
                }
                ?>
-                       
+                        selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+                        startDate = <?php echo json_encode($this->end_date); ?>;
+                        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+                        
                         var title_data = <?php echo "'Consumption of FP commodities, $titleText'"; ?>; 
                         var subtitleText = <?php echo "'($titleText)'"; ?>
                             
@@ -494,7 +497,7 @@ function drawChart13() {
                                     text:'Month',
                                     style:{ "fontWeight": "bold" }
                                 },
-                                categories: <?php echo json_encode($monthNames); ?>
+                                categories: monthNamesWithYears
                             },
                             yAxis: {
                                 title: {
@@ -535,6 +538,10 @@ function drawChart13() {
     
     
     function drawChartAllConsumptionByLocationOvertime() {
+        selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        startDate = <?php echo json_encode($this->end_date); ?>;
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+        
         <?php 
             if(isset($this->cons_all_BSL_overtime) && !empty($this->cons_all_BSL_overtime)){
                 //first get all the commodtiy names from the first element/month
@@ -601,6 +608,8 @@ function drawChart13() {
               title_data = <?php echo "'Consumption of FP commodities in selected geographies, $titleText'"; ?>; 
               subtitleText = <?php echo "'($titleText)'"; ?>
           <?php } ?>
+              
+          
         
         $('#chart13_div').highcharts({
                 chart: {
@@ -640,7 +649,7 @@ function drawChart13() {
                       text:'Month',
                       style:{ "fontWeight": "bold" }
                        },
-                    categories: <?php echo json_encode($monthNames); ?>
+                    categories: monthNamesWithYears
                 },
                 yAxis: {
                     title: {
@@ -797,6 +806,7 @@ function drawChart13() {
               var selectedCommoditites = [<?php echo $methodsString; ?>];
               var seriesObjectsArray = new Array(); 
               var consumptionData = '<?php echo $firstConsumption; ?>';
+              console.log("consumptionData: " + consumptionData);
               consumptionDataObject = JSON.parse(consumptionData);
               console.log("selectedCommoditites: " + selectedCommoditites);
                   
@@ -827,7 +837,7 @@ function drawChart13() {
                 seriesObjectsArray.push(seriesObject);
             }
             
-            //console.log(JSON.stringify(seriesObjectsArray));
+            console.log(JSON.stringify(seriesObjectsArray));
             
             //display highcharts
             $('#chart11_div').highcharts({
@@ -938,8 +948,10 @@ function drawChart13() {
     
     
     function drawChartConsumption_BSMAndLocation(){
-        console.log('drawChartConsumption_BSMAndLocation');
-                 
+        selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        startDate = <?php echo json_encode($this->end_date); ?>;
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+        
         var dataArray = new Array();
         <?php 
                 
@@ -1013,7 +1025,7 @@ function drawChart13() {
                                     text:'Month',
                                     style:{ "fontWeight": "bold" }
                                 },
-                                    categories: <?php echo json_encode($monthNames); ?>
+                                    categories: monthNamesWithYears
                                 },
                                 yAxis: {
                                      title: {
@@ -1060,6 +1072,10 @@ function drawChart13() {
     
     
     function drawChartMMSLOvertime() {
+        selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        startDate = <?php echo json_encode($this->end_date); ?>;
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+        
         <?php 
             if(isset($this->consumption_bmmandlocation) && !empty($this->consumption_bmmandlocation)){
                 //first get all the commodtiy names from the first element/month
@@ -1168,7 +1184,7 @@ function drawChart13() {
                      text:'Month',
                      style:{ "fontWeight": "bold" }
                                 },
-                    categories: <?php echo json_encode($monthNames); ?>
+                    categories: monthNamesWithYears
                 },
                 yAxis: {
                     title: {
@@ -1208,8 +1224,8 @@ function drawChart13() {
 
 
 <script>
-  devsite.github.Link.convertAnchors();
-  window.prettyPrint();
+  //devsite.github.Link.convertAnchors();
+  //window.prettyPrint();
 </script>	
                 
         <script src="../js/highcharts/highcharts.js"></script>
@@ -1217,6 +1233,7 @@ function drawChart13() {
                 
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
 <script src="../js/tp/functions.js"></script>
+<script src="../js/tp/overtime-ops.js"></script>
 
 
 </body>

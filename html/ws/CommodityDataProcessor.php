@@ -70,6 +70,7 @@ class CommodityDataProcessor {
             $names = $data_json_arr ["metaData"]["names"];
             $db_facility_info = $this->existingFacs;
             $db_state_info = $this->existingStates;
+            $newFacilities = array();
             
             $error = '';
     
@@ -113,6 +114,7 @@ class CommodityDataProcessor {
                             if($facility_name !== $db_facility_info[$facility_external_id]['facility_name']){
                                     try{
                                             $this->db->query("UPDATE facility SET facility_name='" . $facility_name . "' WHERE external_id='" . $facility_external_id . "'");
+                                            $newFacilities[] = $facility_external_id; //this will go into the new facilities temp table
                                     }catch(Exception $e){
                                             $error = $error . "ERROR: EDIT FACILITY: " . $facility_external_id . " (" . $e->getMessage() . ")\n";
                                     }
@@ -140,6 +142,7 @@ class CommodityDataProcessor {
                                                             //all value automatically will be removed white spaces at the END during insertion to DB
                                                             $this->db->insert("facility", $bind);
                                                             $facility_id=$this->db->lastInsertId();
+                                                            $newFacilities[] = $facility_external_id; //this will go into the new facilities temp table
                                                             
                                                     }catch(Exception $e){
                                                             $error = $error . "ERROR: ADD FACILITY: " . $facility_external_id . " does not have prefix (" . $e->getMessage() . ")\r\n";
@@ -152,6 +155,8 @@ class CommodityDataProcessor {
                                     }
                     }
             }
+            
+            
             if(!empty($error)){
                     $this->all_errors .= "\r\n=> UPDATE FACILITIES:\n" . $error . "\r\n";
             }
@@ -160,6 +165,8 @@ class CommodityDataProcessor {
             //validate process
             $db_facility_info_count = $this->db->fetchAll ("select count(*) as count from facility");
             print $db_facility_info_count[0]['count'] . " facilities in database.\n\n";
+            
+            return $newFacilities;
     }
     
     
@@ -515,6 +522,13 @@ class CommodityDataProcessor {
       }
       else 
           return array();
+   }
+   
+   public function tempPersitNewFacilities($newFacilities){
+       $this->db->query('DELETE FROM temp_new_facility');
+       foreach($newFacilities as $facility){
+           $this->db->insert('temp_new_facility', ['facility_external_id' => $facility]);
+       }
    }
    
    private function log($logMessage){

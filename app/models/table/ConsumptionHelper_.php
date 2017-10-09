@@ -355,7 +355,7 @@ class ConsumptionHelper {
                          ->group(array($tierFieldName, 'c.date'))
                          ->order(array($tierText, 'c.date'));
 
-            //echo $select->__toString(); exit;
+            echo $select->__toString(); exit;
 
             $result = $db->fetchAll($select);
             

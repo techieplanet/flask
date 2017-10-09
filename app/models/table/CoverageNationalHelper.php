@@ -25,7 +25,7 @@ class CoverageNationalHelper {
                             ->group('date')
                             ->order(array('date'));   
                 
-             //echo 'Providing: ' . $select->__toString() . '<br/>'; exit;
+             //echo $select->__toString() . '<br/>'; exit;
 
               $result = $db->fetchAll($select);
                
