@@ -187,7 +187,7 @@ print ScriptContainer::$instance->renderJSHead();
 					</div>
 					
 					
-
+<?php if(isset($this->fp_cumm_location)){ ?>
                                         <!-------   /////////////////////////// chart 2,1 - FP ////////////////////// -->
 					<div id="bottomrow" class="container" style="width:550px !important;">
 						<div id="homecontent" class="container">
@@ -210,6 +210,8 @@ print ScriptContainer::$instance->renderJSHead();
 						</div>									
 								<!--<div class="main-search"></div>-->
 					</div>
+<?php } ?>
+                                          <?php if(isset($this->larc_cumm_location)){ ?>
                                         
                                         <div id="bottomrow" class="container" style="width:550px !important;">
 						<div id="homecontent" class="container">
@@ -231,6 +233,7 @@ print ScriptContainer::$instance->renderJSHead();
 						</div>									
 					</div><!--larc chart ends -->
                                         
+                                          <?php } ?>
                                     </div><!-- allcharts -->
 				</div>
 		
@@ -420,7 +423,7 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     yAxis: {
                         title: {
-                            text: '#HWs Trained',
+                            text: '#  HWs Trained',
                             style:{ "fontWeight": "bold" }
                         }
                     },
@@ -531,7 +534,7 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     yAxis: {
                         title: {
-                            text: '#HWs Trained',
+                            text: '#  HWs Trained',
                             style:{ "fontWeight": "bold" }
                         }
                     },
@@ -603,7 +606,7 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     yAxis: {
                         title: {
-                            text: '#HWs Trained',
+                            text: '#  HWs Trained',
                             style:{ "fontWeight": "bold" }
                         }
                     },
@@ -677,7 +680,7 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     yAxis: {
                         title: {
-                            text: '#HWs Trained',
+                            text: '#  HWs Trained',
                             style:{ "fontWeight": "bold" }
                         }
                     },
