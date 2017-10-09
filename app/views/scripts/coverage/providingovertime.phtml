@@ -241,7 +241,7 @@ $(function() {
 	//  document.getElementById("allCharts").style.marginLeft="130px";
 
 	drawChartFPProviding();
-        drawChartProvidingAnyThreeModern('allfacs');
+        //drawChartProvidingAnyThreeModern('allfacs');
         drawChartProvidingAnyThreeModern('fpfacs');
 	drawChartLARCProviding();
 		
@@ -251,83 +251,25 @@ $(function() {
   });
   
     function drawChartFPProviding(){
-        var jNumData = new Array();
-       var jDenomData = new Array();
-        <?php 
-                //$locationNames = '';
-                reset($this->fp_overtime);
-                $locationArray = array(); $monthNames = array();
-                $firstElement = current($this->fp_overtime);
-                
-            
-                if(!empty($firstElement)){
-                    $monthNames = array_keys($this->fp_overtime);
-                    foreach($firstElement as $location => $consumption){                    
-                            //$locationNames .= "'$location',{ role: 'tooltip', type: 'string', 'p': {'html': true} },";
-                            $locationArray[] = $location;
-                    }
-                }
-                
-                 foreach($monthNames as $month){ 
-                        
-                ?>
-                        jNumData['<?php echo $month; ?>'] = [];
-                        jDenomData['<?php echo $month; ?>'] = [];
-                        
-                        <?php
-             }
-         ?>  
-         
-         //declare the array in which to store data
-         var dataArray = new Array();
-            
-            <?php 
-                if(!empty($this->fp_overtime)){
-                    foreach($locationArray as $key=>$loc){
-            ?>  
-                        var obj = {name: '<?php echo $loc; ?>', data: []};
-            
-            <?php       foreach($monthNames as $month){ 
-                         $numerator =  $this->fp_numerator[$month][$loc];
-                         $denominator = $this->fp_denominator[$month][$loc];
-                         
-                ?>
-                     
-                   jNumData['<?php echo $month; ?>']['<?php echo $loc; ?>']  = <?php echo $numerator; ?>; 
-                   jDenomData['<?php echo $month; ?>']['<?php echo $loc; ?>']  = <?php echo $denominator; ?>; 
-                    
-                                obj.data.push(<?php echo round($this->fp_overtime[$month][$loc],1); ?>);
-            <?php
-                        }//end month
-                        
-                        if($key == 0){
-            ?>
-                            obj.marker = {enabled: true};
-                            obj.color = '#000000';
-                            obj.dashStyle = 'dot';
-                            //console.log(JSON.stringify(obj));
-            <?php
-                        }//key
-            ?>
-                        //add the object to the big array
-                        dataArray.push(obj);
-                        
-            <?php   }//end location ?>
-         <?php
-       if(empty($this->selectedDatemultiple)){
-           $titleText = $this->end_date." to ".$this->start_date;
-       }else{
-           $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
-       }
-      
-       
-       
-       ?>
+        var FPOvertime = <?= $this->fp_overtime; ?>;
+        var selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        var startDate = '<?= $this->start_date; ?>';
+        
+        dataArray = processOvertimeData(FPOvertime);
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+        
+        <?php
+            if(empty($this->selectedDatemultiple)){
+                $titleText = $this->end_date." to ".$this->start_date;
+            }else{
+                $titleText = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date(s)";
+            }
+        ?>
       
         //console.log(JSON.stringify(dataArray));
         var titleText = '<?php echo  "Percent of facilities providing FP, $titleText"; ?>';
         var subtitleText = '(<?php echo  "($titleText)"; ?>)';
-                
+        
         $('#chart11_div').highcharts({
             chart: {
                 //type: 'line',
@@ -354,7 +296,9 @@ $(function() {
                         text:'Months',
                         style:{ "fontWeight": "bold" }
                     },
-                categories: <?php echo json_encode($monthNames); ?>
+                
+                categories: monthNamesWithYears
+
             },
             yAxis: {
                 title: {
@@ -373,8 +317,13 @@ $(function() {
             },
             tooltip: {
                 formatter: function () {
+                    var monthArray = (this.x).split(",");
+                    var month = monthArray[0];
+                    
                     return '<b>' + this.x + '</b><br/>' +
-                        '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x][this.series.name])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x][this.series.name]);
+                        '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>' +
+                        '<b>Numerator</b>: ' + thousandSeparator(FPOvertime[month][this.series.name]['numer']) + '<br/>' +
+                        '<b>Denominator</b>: ' + thousandSeparator(FPOvertime[month][this.series.name]['denom']);
                 }
             },
             plotOptions: {
@@ -392,84 +341,18 @@ $(function() {
                 //shadow: true
             },
             series: dataArray
-        });
-        
-        
-     <?php }//end if !empty fp_overtime ?>
- 
+        }); 
  }
-    
-    
-     function drawChartLARCProviding(){
-       var jNumData = new Array();
-       var jDenomData = new Array();
-        <?php 
-                //$locationNames = '';
-                reset($this->larc_overtime);
-                $locationArray = array(); $monthNames = array();
-                $firstElement = current($this->larc_overtime);
-                
-                if(!empty($firstElement)){
-                  
-                    $monthNames = array_keys($this->fp_overtime);
-                   
-                        foreach($firstElement as $location => $consumption){                    
-                                //$locationNames .= "'$location',{ role: 'tooltip', type: 'string', 'p': {'html': true} },";
-                                $locationArray[] = $location;
-                        }            
-                }
-                
-                 foreach($monthNames as $month){ 
-                        
-                ?>
-                        jNumData['<?php echo $month; ?>'] = [];
-                        jDenomData['<?php echo $month; ?>'] = [];
-                        
-                        <?php
-             }
-         ?>  
-           // print_r($monthNames);
-            
-         
-         //declare the array in which to store data
-         var dataArray = new Array(); var obj = '';
-         
-        <?php 
-                if(!empty($this->larc_overtime)){
-                    foreach($locationArray as $key=>$loc){
-            ?>  
-                        var obj = {name: '<?php echo $loc; ?>', data: []};
-            
-            <?php       foreach($monthNames as $month){ 
-                         $numerator =  $this->larc_numerator[$month][$loc];
-                         $denominator = $this->larc_denominator[$month][$loc];
-                ?>
-                        
-                          
-                   jNumData['<?php echo $month; ?>']['<?php echo $loc; ?>']  = <?php echo $numerator; ?>; 
-                   jDenomData['<?php echo $month; ?>']['<?php echo $loc; ?>']  = <?php echo $denominator; ?>;
-                   
-                                obj.data.push(<?php echo round($this->larc_overtime[$month][$loc],1); ?>);
-                                
-            <?php
-                        }//end month
-                        
-                        if($key == 0){
-            ?>
-                            obj.marker = {enabled: true};
-                            obj.color = '#000000';
-                            obj.dashStyle = 'dot';
-                            //console.log(JSON.stringify(obj));
-            <?php
-                        }//key
-            ?>
-                        //add the object to the big array
-                        dataArray.push(obj);
-                        
-            <?php   }//end location ?>
         
+    
+    function drawChartLARCProviding(){
+        var LARCOvertime = <?= $this->larc_overtime; ?>;
+        var selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        var startDate = '<?= $this->start_date; ?>';
         
-        //console.log(JSON.stringify(dataArray));
+        dataArray = processOvertimeData(LARCOvertime);
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+        
        <?php
        if(empty($this->selectedDatemultiple)){
            $titleText = $this->end_date." to ".$this->start_date;
@@ -509,7 +392,7 @@ $(function() {
                         text:'Months',
                         style:{ "fontWeight": "bold" }
                     },
-                    categories: <?php echo json_encode($monthNames); ?>
+                    categories: monthNamesWithYears
                 },
                 yAxis: {
                     title: {
@@ -528,9 +411,14 @@ $(function() {
                 },
                 tooltip: {
                     formatter: function () {
+                        var monthArray = (this.x).split(",");
+                        var month = monthArray[0];
+                    
                         return '<b>' + this.x + '</b><br/>' +
-                            '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x][this.series.name])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x][this.series.name]);
-                    }
+                            '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>' +
+                            '<b>Numerator</b>: ' + thousandSeparator(LARCOvertime[month][this.series.name]['numer']) + '<br/>' +
+                            '<b>Denominator</b>: ' + thousandSeparator(LARCOvertime[month][this.series.name]['denom']);
+                        }
                 },
                 plotOptions: {
                     series: {
@@ -549,53 +437,60 @@ $(function() {
                 series: dataArray
             });
 
-
-         <?php }//end if !empty fp_overtime ?>
         
     }
-    
+
     
     
     function drawChartProvidingAnyThreeModern(mode){
+//        var modernMethodData = <?= $this->modern_method_data; ?>;
+//        console.log(modernMethodData);
+//
+//          //declare the array in which to store data
+//          var dataArray = new Array();
+//          var modernMethodDataModed = modernMethodData[mode];
+//          
+//          //get month names for x axis: keys of the moded array
+//          var monthNames = [];
+//          for(month in modernMethodDataModed)
+//              monthNames.push(month);
+//              
+//          //get the location names: keys for month. Locations for each month are same
+//          var firstMonth = modernMethodDataModed[monthNames[0]];
+//          var locationNames = [];
+//          for(loc in firstMonth)
+//              locationNames.push(loc);
+//          
+//          locationNames.sort();
+//          for(loc in locationNames){
+//              loopLocation = locationNames[loc];
+//              obj = {name: loopLocation, data: []};
+//              
+//              for(month in monthNames){
+//                  loopMonth = monthNames[month];
+//                  obj.data.push(modernMethodDataModed[loopMonth][loopLocation]['percent']);
+//              }
+//              
+//                if(loopLocation == 'National'){
+//                    obj.marker = {enabled: true};
+//                    obj.color = '#000000';
+//                    obj.dashStyle = 'dot';
+//                }
+//              
+//                dataArray.push(obj);
+//          }
+          
         var modernMethodData = <?= $this->modern_method_data; ?>;
-        console.log(modernMethodData);
-
-          //declare the array in which to store data
-          var dataArray = new Array();
-          var modernMethodDataModed = modernMethodData[mode];
-          console.log(modernMethodDataModed);
-          
-          //get month names for x axis: keys of the moded array
-          var monthNames = [];
-          for(month in modernMethodDataModed)
-              monthNames.push(month);
-              
-          //get the location names: keys for month. Locations for each month are same
-          var firstMonth = modernMethodDataModed[monthNames[0]];
-          var locationNames = [];
-          for(loc in firstMonth)
-              locationNames.push(loc);
-          
-          locationNames.sort();
-          for(loc in locationNames){
-              loopLocation = locationNames[loc];
-              obj = {name: loopLocation, data: []};
-              
-              for(month in monthNames){
-                  loopMonth = monthNames[month];
-                  obj.data.push(modernMethodDataModed[loopMonth][loopLocation]['percent']);
-              }
-              
-                if(loopLocation == 'National'){
-                    obj.marker = {enabled: true};
-                    obj.color = '#000000';
-                    obj.dashStyle = 'dot';
-                }
-              
-                dataArray.push(obj);
-          }
-          
-             console.log(dataArray);
+        var modernMethodDataModed = modernMethodData[mode];
+        var selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        var startDate = '<?= $this->start_date; ?>';
+        
+        dataArray = processOvertimeData(modernMethodDataModed);
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+        
+        console.log('dataArray: ', dataArray);
+        console.log('monthNamesWithYears: ', monthNamesWithYears);
+        
         <?php
             if(empty($this->selectedDatemultiple)){
                 $titleText = $this->end_date." to ".$this->start_date;
@@ -635,7 +530,8 @@ $(function() {
                          text:'Months',
                          style:{ "fontWeight": "bold" }
                      },
-                 categories: monthNames
+                 //categories: monthNames
+                 categories: monthNamesWithYears
              },
              yAxis: {
                  title: {
@@ -698,6 +594,7 @@ $(function() {
 
 <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
 <script src="../js/tp/functions.js"></script>
+<script src="../js/tp/overtime-ops.js"></script>
 
 <script>
      

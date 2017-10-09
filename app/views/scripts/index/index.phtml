@@ -315,8 +315,7 @@ print ScriptContainer::$instance->renderJSHead();
 //  var chart11Options = "", chart11Data ="", chart11Div =""; 
   
   $(function() {
-	  //document.getElementById("allCharts").style.marginLeft="130px";
-
+	//document.getElementById("allCharts").style.marginLeft="130px";
 	drawChart11();
 	drawChart12();
 	drawChart13();
@@ -405,7 +404,22 @@ print ScriptContainer::$instance->renderJSHead();
   
   
    function drawPieChart() {
-
+          var consumptionByMethod = <?= json_encode($this->consumption_by_method); ?>;
+          var dataArray = new Array();
+          
+          for(key in consumptionByMethod){
+              row = consumptionByMethod[key];
+              consumption = parseInt(row['consumption']);
+              method = row['method'];
+              
+              if(key == 1){
+                   consumption = parseInt(consumption/10);
+                   method = row['method'] + "<br/>(unit x10)";
+               }
+               
+               dataArray.push({name: method, y: consumption});
+          }
+                                    
 	  $('#piechart').highcharts({
                 chart: {
                     plotBackgroundColor: null,
@@ -424,7 +438,15 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 tooltip: {
                     //pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                    pointFormat: '<b>{point.percentage:.1f}%</b>'
+                    //pointFormat: '<b>{point.percentage:.1f}%</b>'
+                    formatter: function () {
+                        //var maleCondomsInPieChart = parseInt(consumptionByMethod[1] / 10);
+                        //var maleCondomsRealValue = consumptionByMethod[1];
+                        
+                        return '<strong>' + this.key + ':</strong> ' + this.percentage.toFixed(1) + '%<br/>' +
+                               '<strong>Numerator:</strong> ' + thousandSeparator(this.y) + '<br/>' +
+                               '<strong>Denominator:</strong> ' + thousandSeparator(this.total);
+                    }
                 },
                 plotOptions: {
                     pie: {
@@ -449,25 +471,7 @@ print ScriptContainer::$instance->renderJSHead();
                 series: [{
                     name: 'Methods',
                     colorByPoint: true,
-                    data: [
-                            <?php
-                                foreach ($this->consumption_by_method as $key=>$row){
-                                           $consumption = $row['consumption'];
-                                           $malecondoms = 0;
-                                           $method = $row['method'];
-                                           $color = 'blue';
-
-                                           if($key == 1){
-                                               //$malecondoms = $consumption;
-                                               $consumption = round($consumption/10,0);  
-                                               $method = $row['method'] . '<br/>(unit x10)';
-                                           } 
-                            ?>
-                                          {<?php echo "name: '$method', y: $consumption"; ?>},
-                            <?php
-                                }
-                            ?>
-                    ]
+                    data: dataArray
                 }]
             });
                   
@@ -586,57 +590,24 @@ print ScriptContainer::$instance->renderJSHead();
   
   
   function drawChart13() {
-	var jNumData = new Array();
-        var jDenomData = new Array();
-         
-         jNumData['FP'] = [];
-         jDenomData['FP'] = [];
-         
-         jNumData['LARC'] = [];
-         jDenomData['LARC'] = [];
+        var FPProviding = <?= $this->fp_facs_providing; ?>;
+        var LARCProviding = <?= $this->larc_facs_providing; ?>;
          
         var FPObject = {name: "FP", data: []};
         var LARCObject = {name: "LARC", data: []};
-                    
-        <?php 
-            //$locationNamesArray = explode(',', $locationNames);
-            $month = $fpList = $larcList = "";
-            if(!empty($this->fp_facs_providing)){
-                foreach ($this->fp_facs_providing as $key=>$value){ 
-                    $month .= "'" . $this->fp_facs_providing[$key]['month'] . "',";
-                    $monthName = $this->fp_facs_providing[$key]['month'];
-                    
-                    
-                    $numeratorFP = $this->fp_numerator_facsprov[$monthName];
-                    $denominatorFP = $this->fp_denominator_facsprov[$monthName];
-                        
-                    $numeratorLARC = $this->larc_numerator_facsprov[$monthName];
-                    $denominatorLARC = $this->larc_denominator_facsprov[$monthName];
-                    
-                    $fp_percent = round($this->fp_facs_providing[$key]['percent'] * 100,1);
-                    $larc_percent = round($this->larc_facs_providing[$key]['percent'] * 100,1);
-            ?>
-                    jNumData['FP']['<?php echo $monthName; ?>'] = <?php echo $numeratorFP ?>;
-                    
-                    jDenomData['FP']['<?php echo $monthName; ?>'] = <?php echo $denominatorFP ?>;
-                    
-                    jNumData['LARC']['<?php echo $monthName; ?>'] = <?php echo $numeratorLARC ?>;
-                    
-                    jDenomData['LARC']['<?php echo $monthName; ?>'] = <?php echo $denominatorLARC ?>;
-                    
-                    //set PHP values into JS objects
-                    FPObject.data.push(<?php echo $fp_percent; ?>);
-                    LARCObject.data.push(<?php echo $larc_percent; ?>);
-            <?php
-                   }//end foreach
-                } //end if
-                
-                //strip trailing commas
-                $month = substr($month, 0, strlen($month)-1);
-            ?>
+             
+        for(key in FPProviding){
+            monthName = FPProviding[key]['month'];
+            FPObject.data.push(FPProviding[key]['percent']);
+            LARCObject.data.push(LARCProviding[key]['percent'])
+        }
+        
+        var startDate = '<?= $this->start_date; ?>';
+        var monthNamesWithYears = getLastTwelveMonthsWithYears(<?= "'$this->end_date'"; ?>);
         
         var titleText = 'Percent of facilities providing FP and LARC, <?php echo $this->start_date . ' to ' . $this->end_date; ?>';
         var subtitleText = '(<?php echo $this->start_date . ' to ' . $this->end_date; ?>)';
+        
         
               $('#chart13_div').highcharts({
                     chart: {
@@ -665,7 +636,7 @@ print ScriptContainer::$instance->renderJSHead();
                             text: 'Month',
                             style:{ "fontWeight": "bold" }
                         },
-                        categories: [<?php echo $month; ?>]
+                        categories: monthNamesWithYears
                     },
                     yAxis: {
                         title: {
@@ -683,8 +654,26 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     tooltip: {
                         formatter: function () {
+                            monthArray = this.x.split(", ");
+                            month = monthArray[0];
+                            
+                            if(this.series.name.includes("FP"))
+                                dataObj = FPProviding;
+                            else 
+                                dataObj = LARCProviding;
+                            
+                            index = -1;
+                            for(key in dataObj) {
+                                if(dataObj[key]['month'].toUpperCase() === month.toUpperCase()){
+                                    index = key;
+                                    break;
+                                }
+                            }
+                            
                             return '<b>' + this.x + '</b><br/>' +
-                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
+                                   '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>' +
+                                   '<b>Numerator</b>:' + thousandSeparator(dataObj[key]['numer'])+'<br/>' +
+                                   '<b>Denominator</b>:' + thousandSeparator(dataObj[key]['denom']);
                         }
                     },
                     legend: {
@@ -700,57 +689,26 @@ print ScriptContainer::$instance->renderJSHead();
     
     
     function drawChart14() {
-        var jNumData = new Array();
-        var jDenomData = new Array();
-         
-         jNumData['% FP facilities stocked out of any FP commodity for 7 days'] = [];
-         jDenomData['% FP facilities stocked out of any FP commodity for 7 days'] = [];
-         
-         jNumData['% implant facilities stocked out of implants'] = [];
-         jDenomData['% implant facilities stocked out of implants'] = [];
+        var FPSO = <?= $this->fp_facs_providing_stockedout; ?>;
+        var LARCSO = <?= $this->larc_facs_providing_stockedout; ?>;
+        var monthNamesWithYears = getLastTwelveMonthsWithYears(<?= "'$this->end_date'"; ?>);
+        var startDate = '<?= $this->end_date; ?>';
+
+        var sevenObject = {name: 'Percent FP facilities stocked out of any FP commodity for 7 days', data: []};
+        var implantsObject = {name: 'Percent implant facilities stocked out of implants', data: []};
         
-        var sevenObject = {name: '% FP facilities stocked out of any FP commodity for 7 days', data: []};
-        var implantsObject = {name: '% implant facilities stocked out of implants', data: []};
-                                    
-       <?php 
-            $month = "";
-            if(!empty($this->fp_facs_providing_stockedout)){
-                foreach ($this->fp_facs_providing_stockedout as $key=>$monthProviders){ 
-                    $month .= "'" . $monthProviders['month'] . "',";
-                    $monthName = $monthProviders['month'];
-                    
-                    $numeratorFP = $this->fp_numerator_stockout[$monthName];
-                    $denominatorFP = $this->fp_denominator_stockout[$monthName];
-                        
-                    $numeratorLARC = $this->larc_numerator_stockout[$monthName];
-                    $denominatorLARC = $this->larc_denominator_stockout[$monthName];
-                        
-                    $seven_days_percent = round($monthProviders['seven_days_percent'] * 100,1);
-                    $implant_percent = round($this->larc_facs_providing_stockedout[$key]['implant_percent'] * 100,1);
-        ?>                    
-                  jNumData['% FP facilities stocked out of any FP commodity for 7 days']['<?php echo $monthName; ?>'] = <?php echo $numeratorFP ?>;
-                    
-                    jDenomData['% FP facilities stocked out of any FP commodity for 7 days']['<?php echo $monthName; ?>'] = <?php echo $denominatorFP ?>;
-                    
-                    jNumData['% implant facilities stocked out of implants']['<?php echo $monthName; ?>'] = <?php echo $numeratorLARC ?>;
-                    
-                    jDenomData['% implant facilities stocked out of implants']['<?php echo $monthName; ?>'] = <?php echo $denominatorLARC ?>;
-                    //set PHP values into JS objects
-                    sevenObject.data.push(<?php echo $seven_days_percent; ?>);
-                    implantsObject.data.push(<?php echo $implant_percent; ?>);
-        <?php
-                        
-                    }//end foreach
-                } //end if
-                
-                //strip trailing commas
-                $month = substr($month, 0, strlen($month)-1);
-        ?>
+        monthNames = new Array();
+        for(key in FPSO){
+            var monthName = FPSO[key]['month'];
+            monthNames.push(monthName);
+            sevenObject.data.push(FPSO[key]['percent']);
+            implantsObject.data.push(LARCSO[key]['percent']);
+        }
                 
 
         var titleText = '<?php echo  "Stock outs, $this->start_date to $this->end_date"; ?>';
         var subtitleText = '(<?php echo $this->start_date . ' to ' . $this->end_date; ?>)';
-
+        
               $('#chart14_div').highcharts({
                     chart: {
                         //type: 'line',
@@ -777,7 +735,7 @@ print ScriptContainer::$instance->renderJSHead();
                             text: 'Month',
                             style:{ "fontWeight": "bold" }
                         },
-                        categories: [<?php echo $month; ?>]
+                        categories: monthNamesWithYears
                     },
                     yAxis: {
                         title: {
@@ -795,8 +753,29 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     tooltip: {
                         formatter: function () {
+                            var monthArray = (this.x).split(", ");
+                            var month = monthArray[0];
+                            
+                            dataObj = new Array();
+                            if((this.series.name).includes('FP')){
+                                dataObj = FPSO;
+                            }
+                            else if((this.series.name).includes('implant')){
+                                dataObj = LARCSO;
+                            }
+                            
+                            index = -1; 
+                            for(key in dataObj){
+                                if ((dataObj[key]['month']).toUpperCase() === month.toUpperCase()){
+                                    index = key;
+                                    break;
+                                }
+                            }
+                        
                             return '<b>' + this.x + '</b><br/>' +
-                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
+                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>' +
+                                '<b>Numerator</b>:'+thousandSeparator(dataObj[index]['numer'])+'<br/>' + 
+                                '<b>Denominator</b>:'+thousandSeparator(dataObj[index]['denom']);
                         }
                     },
                     legend: {
@@ -825,6 +804,7 @@ print ScriptContainer::$instance->renderJSHead();
 <script src="js/highcharts/highcharts.js"></script>
 <script src="js/highcharts/modules/exporting.js"></script>
 <script src="js/tp/functions.js"></script>
+<script src="js/tp/overtime-ops.js"></script>
 <div id="footer"><?php //require_once('views/scripts/footer.phtml');?></div>
 
 

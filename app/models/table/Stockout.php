@@ -80,8 +80,9 @@ class Stockout {
                     //$denominators = $stockoutHelper->getStockoutFacsWithTrainedHWCountByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
                     $denominators = $helper->getReportingFacsWithTrainedHWOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
                     
-                    $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
+                    $sumsArray = $helper->sumNumersAndDenomsWithValues($numerators, $denominators);
                     $output = array_merge($output, $sumsArray['output']);
+                    
                     $output[0]['percent'] = $sumsArray['nationalAvg'];
 
                     //do cache insert

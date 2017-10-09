@@ -200,8 +200,8 @@ class StockoutController extends ReportFilterHelpers {
                 
                 $larc_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
                 
-                list($fp_numerator,$fp_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
-                list($larc_numerator,$larc_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
+                //list($fp_numerator,$fp_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
+                //list($larc_numerator,$larc_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
                 $freshVisit = true;
             }
             else{
@@ -209,8 +209,8 @@ class StockoutController extends ReportFilterHelpers {
                 $fp_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('fp', $geoList, $tierValue, false,$lastPullDatemultiple);
                 $larc_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('larc', $geoList, $tierValue, false,$lastPullDatemultiple);
                 
-                list($fp_numerator,$fp_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('fp', $geoList, $tierValue, false,$lastPullDatemultiple);
-                list($larc_numerator,$larc_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('larc', $geoList, $tierValue, false,$lastPullDatemultiple);
+                //list($fp_numerator,$fp_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('fp', $geoList, $tierValue, false,$lastPullDatemultiple);
+                //list($larc_numerator,$larc_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('larc', $geoList, $tierValue, false,$lastPullDatemultiple);
                 
                 
                 
@@ -218,14 +218,14 @@ class StockoutController extends ReportFilterHelpers {
             }
                 
             //$this->view->assign('facs_providing_stockedout', $facsProvidingStockedout);
-            $this->view->assign('fp_facs_providing_stockedout', $fp_facsProvidingStockedout);
-            $this->view->assign('larc_facs_providing_stockedout', $larc_facsProvidingStockedout);
+            $this->view->assign('fp_facs_providing_stockedout', json_encode($fp_facsProvidingStockedout));
+            $this->view->assign('larc_facs_providing_stockedout', json_encode($larc_facsProvidingStockedout));
             
-            $this->view->assign('fp_numerator',$fp_numerator);
-            $this->view->assign('fp_denominator',$fp_denominator);
+            //$this->view->assign('fp_numerator',$fp_numerator);
+            //$this->view->assign('fp_denominator',$fp_denominator);
             
-            $this->view->assign('larc_numerator',$larc_numerator);
-            $this->view->assign('larc_denominator',$larc_denominator);
+            //$this->view->assign('larc_numerator',$larc_numerator);
+            //$this->view->assign('larc_denominator',$larc_denominator);
             
             
             $title_date = $helper->fetchTitleDate();

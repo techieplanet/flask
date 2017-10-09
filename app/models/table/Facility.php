@@ -356,12 +356,12 @@ class Facility extends ITechTable {
                 $helper = new Helper2();
                 
                 $select = $db->select()
-                            ->from(array('flv' => 'facility_location_view'), array('COUNT(id) AS fid_count','lga', 'state',  'geo_zone'))
+                            ->from(array('flv' => 'facility_location_view'), array('COUNT(id) AS fid_count', $tierText))
                             ->where($longWhereClause)
                             ->group($tierFieldName)
                             ->order(array($tierText));
                 
-             //echo 'FCL: ' . $select->__toString() . '<br/>'; exit;
+             //echo $select->__toString() . '<br/>'; exit;
 
               $result = $db->fetchAll($select);
               
@@ -375,7 +375,7 @@ class Facility extends ITechTable {
        
        
        /**
-        * Gets count of facilities thart provided up to a number of products in a period
+        * Gets count of facilities that provided up to a number of products in a period
         * e.g. count of facilities providing at least 3 commodities in a period
         * 
         * @param type $longWhereClause

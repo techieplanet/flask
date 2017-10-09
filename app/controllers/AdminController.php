@@ -1503,6 +1503,7 @@ class AdminController extends UserController
 
 		$output = $multiAssign->init($this);
 		if(is_array($output)) { // json
+                        echo 'send data'; exit;
 			$this->sendData($output);
 		} else {
 			$this->view->assign('multiAssign', $output);
@@ -1519,7 +1520,7 @@ class AdminController extends UserController
 			}
 		}
 
-		//return;
+		return;
 
 		$NUM_TOPICS = 20;
 		$this->view->assign('NUM_TOPICS', $NUM_TOPICS);

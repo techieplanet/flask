@@ -516,6 +516,10 @@ function drawLocationBarChart() {
 
 function drawDefaultLineChart() {
   
+        selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        startDate = <?php echo json_encode($this->end_date); ?>;
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+        
         var dataArray = new Array();
         
             <?php 
@@ -588,7 +592,7 @@ function drawDefaultLineChart() {
                       text: 'Month',
                       style:{ "fontWeight": "bold" }
                       },
-                        categories: <?php echo json_encode($monthNames); ?>
+                        categories: monthNamesWithYears
                     },
                     yAxis: {
                         title: {
@@ -631,6 +635,10 @@ function drawDefaultLineChart() {
     
     
     function drawCommodityOvertimeChart() {
+        selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        startDate = <?php echo json_encode($this->end_date); ?>;
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+        
         <?php 
                 $commodityName = '';
                 if(isset($this->commodityOnly)) {
@@ -702,12 +710,11 @@ function drawDefaultLineChart() {
                         //x: -20 //center
                     },
                     xAxis: {
-                        : {
-                         title: {
-                      text: 'Month',
-                      style:{ "fontWeight": "bold" }
+                      title: {
+                        text: 'Month',
+                        style:{ "fontWeight": "bold" }
                       },
-                        categories: <?php echo json_encode($monthNames); ?>
+                        categories: monthNamesWithYears
                     },
                     yAxis: {
                          title: {
@@ -753,12 +760,9 @@ function drawDefaultLineChart() {
 
 
     function drawCommodityAndLocationLineChart() {
-        //console.log("Highest");
-        //console.log(<?php //echo json_encode($this->consumptionArray);?>);
-        //console.log(<?php //echo json_encode($this->consumptionArray); ?>);
-        
-         ///$mmg = array_keys($this->consumptionArray); 
-        //console.log("Location count: " + '<?php //echo json_encode($mmg);?>');
+        selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+        startDate = <?php echo json_encode($this->end_date); ?>;
+        monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
         
         var dataArray = new Array();
         
@@ -850,7 +854,7 @@ function drawDefaultLineChart() {
                       text: 'Month',
                       style:{ "fontWeight": "bold" }
                       },
-                        categories: <?php echo json_encode($monthNames); ?>
+                        categories: monthNamesWithYears
                     },
                     yAxis: {
                         title: {
@@ -902,6 +906,7 @@ function drawDefaultLineChart() {
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
 
 <script src="../js/tp/functions.js"></script>
+<script src="../js/tp/overtime-ops.js"></script>
 
 </body>
 
