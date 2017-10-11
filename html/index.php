@@ -45,3 +45,7 @@ try {
 	error_log(ob_get_clean());
 }
 ?>
+
+<?php
+
+?>
