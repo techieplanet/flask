@@ -1,3 +1,131 @@
+   <?php  
+                                        $fileInfo = pathinfo(__FILE__);
+                                        $fileID = $fileInfo['filename'];
+                                        $activationBar = 'stockout';
+                                        //$variable = 'Simple';        
+                                        require_once('views/scripts/template/template.phtml');
+                                       
+                                    ?>
+                                
+                                </div>
+                                <div class="col-sm-10 " style="background-color:white;height:100%;padding-top:10px;">
+                                    
+                                    
+                                    
+                                     <div class="row">
+                                         
+                                           <div class=" col-sm-5 pull-right"  >
+	
+			         	                      <?php require_once('views/scripts/dashboard/top_buttons.phtml');?>
+				
+                                           </div>
+                                    
+                                           <div  class="col-sm-7 pull-right box-shadow clearfix"  style="height:500px;"  >
+                                               
+                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
+                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
+                                                                                <?php echo "Consumption by method, $this->date"; ?>
+                                                                            </div>
+                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
+                                                                                  <div id="infobutton" class="infobutton hidden">
+                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                <div id="" class="infodiv" >
+                                                                                    This chart shows stock out rates over time at facilities that have provided 
+                                                                                    any FP services or implants specifically in the past. <br/><br/>
+                                                                                    
+                                                                                    For FP, this is the percentage of facilities reporting in the given month that 
+                                                                                    have provided any FP commodities any time in the last six months that were 
+                                                                                    stocked out of any FP commodity for at least seven days in the given month. <br/><br/>
+                                                                                    
+                                                                                    For implants, this is the percentage of facilities reporting in the given month that 
+                                                                                    have consumed implants any time in the last six months that are stocked out of 
+                                                                                    implants in the given month.
+                                                                                </div>
+                                                                            </div>
+                                                                            </div>
+                                                                             
+                                                                          </div>   
+                                             
+                                               <div id="chart11_div" style="width: 600px; height: 440px;"></div>
+                                             
+				                           </div>                           
+                                    </div>
+                                    
+                                    <div  class="row" style="margin-top:50px;margin-bottom:50px;">
+                                         
+                                           <div class="col-sm-7 box-shadow" style="height:500px;"  >
+                                               
+                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
+                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
+                                                                                
+                                                                          
+                       
+                                                                            </div>
+                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
+                                                                              <div id="infobutton" class="infobutton hidden" style="margin-bottom:-23px;">
+                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                <div id="" class="infodiv" >
+                                                                                    ...
+                                                                                </div>
+                                                                            </div>
+                                                                          </div>   
+	
+			         	                       <div class="main-search">
+                                                    <div id="chart12_div" style="width: 600px; height: 300px;"></div>
+                                               </div>
+
+				
+                                           </div>
+                                               
+                                           <div class=" col-sm-6"  >
+                                               
+                                           </div>
+                                               
+                                           </div>
+                                    </div>
+                                    
+                                   
+                                
+                                   
+                                </div>
+
+		
+		<div class="clear"></div>
+                </div>
+          
+           </div><!-- content -->
+           <br/><br/><br/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -370,3 +498,9 @@ print ScriptContainer::$instance->renderJSHead();
 </body>
 
 </html>
+
+
+<?php
+
+
+?>
