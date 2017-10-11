@@ -11,40 +11,42 @@
                 <div class="panel-body p-body">
                  <div>
       <ul>
-          <li> <a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/coverage/cummhwtrained'; ?>" 
+          <li id='trained_hws' >
+              <a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/coverage/cummhwtrained'; ?>" 
          id="cummhwtrained"
          class="<?php echo $fileID == 'cummhwtrained' || $fileID == 'cummhwtraineddemo' ? 'active': ''?>">
           Trained HWs
       </a>
           </li>
-          <li>
+          
+          <li id='fptrained_hws'>
       <a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/coverage/percentfacswithtrainedhw'; ?>"
          id="percentfacswithtrainedhw"
          class="<?php echo $fileID == 'percentfacswithtrainedhw' ? 'active': ''?>">
           Facilities with Trained HWs
       </a></li>
-      <li>
+      <li id='fp'>
       <a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/coverage/percentfacsproviding'; ?>"
          id="percentfacsproviding"
          class="<?php echo $fileID == 'percentfacsproviding' ? 'active': ''?>">
           Facilities Providing FP
       </a>
       </li>
-      <li>
+      <li id='fp_OverTime'>
       <a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/coverage/providingovertime'; ?>"
          id="providingovertime"
          class="<?php echo $fileID == 'providingovertime' || $fileID == 'providingovertimedemo' ? 'active': ''?>">
           Facilities Providing FP Over Time
       </a>
       </li>
-      <li>
+      <li id='fptrained_hws_pfp'>
       <a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/coverage/facswithhwproviding'; ?>"
          id="facswithhwproviding"
          class="<?php echo $fileID == 'facswithhwproviding' ? 'active': ''?>">
           Facilities with Trained HWs Providing FP
       </a>
       </li>
-      <li>
+      <li id='fptrained_hws_pfp_overtime'>
       
       <a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/coverage/coverageovertime'; ?>"
          id="coverageovertime"
@@ -67,11 +69,13 @@
                 <div class="panel-body p-body">
                      <div>
       <ul>
-          <li><a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/consumption/consumption'; ?>"
+          <li id='fptrained_hws_pfp_overtime'>
+              <a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/consumption/consumption'; ?>"
          id="consumption"
          class="<?php echo $fileID == 'consumption' || $fileID == 'consumptiondemo' ? 'active': ''?>">
               Commodity Consumption
-      </a></li>
+      </a>
+          </li>
             <li><a href="<?php  echo Settings::$COUNTRY_BASE_URL.'/consumption/newandcurrentfpusers'; ?>"
                id="newandcurrentfpusers"
                class="<?php echo $fileID == 'newandcurrentfpusers' ? 'active': ''?>">
@@ -214,3 +218,9 @@
     .p-title .ui-accordion-header .ui-helper-reset .ui-state-default .ui-corner-all .ui-accordion-icons{display: none;}
     
 </style>
+
+
+<?php
+
+
+?>
