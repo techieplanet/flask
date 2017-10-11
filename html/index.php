@@ -5,7 +5,7 @@
  * 
  */
 require_once('../sites/globals.php');
-ll34
+
 
 // FIX FOR apache_request_headers() function missing
 
@@ -29,6 +29,8 @@ try {
     $frontController = Zend_Controller_Front::getInstance(); 
     //$frontController->throwExceptions(true);
     $frontController->setControllerDirectory(Globals::$BASE_PATH.'app/controllers/');
+    
+    //ECHO  Globals::$BASE_PATH.'app/controllers/';
     
     $frontController->setDefaultControllerName('index');
     $frontController->setDefaultAction('index');
