@@ -53,6 +53,16 @@
 body {font-family: "Lato", sans-serif;}
 
 
+
+@media screen and (max-width: 700px) and (min-width: 300px) {
+    
+    #lastd{
+        margin-top:70px;
+    }
+    
+}
+
+
     
     
 
@@ -98,6 +108,9 @@ print ScriptContainer::$instance->renderJSHead();
 
 
 <script>
+    
+    
+    
   $(function() {
     //$( "#accordion" ).accordion({header: "h3", collapsible: true, active: false, animated:200, animated:"slide"});
     $( "#tabs").tabs();
@@ -212,33 +225,29 @@ require_once('views/helpers/ScriptContainer.php');
                                     
                                     <form name="dashboardForm" id="consumptionForm" method="post" onsubmit="return checkCommoditySelection();"> 
                                     
-                                     <div class="row">
+                                       <div class="row">
+                                         
+                                           <div class="col-sm-5 pull-right" style="margin-bottom:20px;">
+                                                 <br/>
+    
+                                          
+                                                   <?php region_filters_dropdown_db($this, $this->locations, $this->criteria, true, true); ?>
+                                                   <p>
+                                                       <strong>Maximum of six (6) locations allowed per filter</strong><br/>
+                                                        <!--<strong>Only one (1) location allowed when filtering ALL commodities</strong>-->
+
+                                                    <p>
+                                                    <br/>
+                                                    <input type="submit" value="Preview" class="dbbutton dbbutton_leftmenu" onclick="return checkSelection();">
+    
+                                           </div>
                                            
-                                           <div class="col-sm-7">
+                                           <div class="col-sm-7 pull-right" >
                                          
                                               <div class="row">
-                                                 <div  class="col-sm-12 pull-right  clearfix"  style="height:500px;"  >
-                                                    <div class="col-sm-10 box-shadow"  style="height:500px;">
-                                               
-                                                       <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                <?php echo "Consumption by method, $this->date"; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                                   <div id="infobutton" class="infobutton infoButtonFirst" style="margin-bottom:-23px;">
-                                                                                      <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                     <div id="" class="infodiv" >
-                                                                            ...
-                                                                                    </div>
-                                                                            </div>
-                                                                            </div>
-                                                                             
-                                                                          </div>   
-                                             
-                                                       <div id="chart11_div" style="width:100%; height:400px;"></div>
-                                                    </div>
-                                                     
-                                                    <div class="col-sm-2">
+                                                 <div  class="col-sm-12 pull-right  clearfix"  style="height:500px;margin-bottom:50px;"  >
+                                                    
+                                                    <div class="col-sm-2 pull-right" style="margin-bottom:70px;">
                                                         
                                                            <?php 
                                                                   if(isset($this->monthDate)){
@@ -255,48 +264,29 @@ require_once('views/helpers/ScriptContainer.php');
                                                              </select><br/>
                                                     
                                                      </div>
+                                                     <div class="col-sm-10 box-shadow pull-right"  style="height:500px;">
+                                               
+                                                     
+                                                          <?php
+                                                                       $chart_title = "Consumption by method, $this->date"; 
+                                                                        $info_text =  "";
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
+                                                         
+                                                        
+                                                           <div id="chart11_div" style="width:100%; height:400px;"></div>
+                                                       
+                                                    </div>
+                                                     
+                                                     
+                                                     
                                          
 				                              </div> 
                                                
                                                  <div class="col-sm-12 " style="height:500px;margin-top:20px;margin-bottom:20px;"  >
                                                      
-                                                     <div class="col-sm-10 box-shadow" style="height:500px;">
-                                               
-                                                       <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                
-                                                                                 <?php 
-                                                                                
-                                                                                       if(!empty($this->selectedDatemultiple)){
-                   
-                                                                                          $titleText = (sizeof($this->selectedDatemultiple)>1) ?"across selected dates" : "across selected date";
-                                                                                       }else{
-                                                                                            $titleText = $this->start_date." to ".$this->end_date;
-                                                                                       }
-                                                                                 ?>
-                                                                                
-                                                                                 <?php
-                                                                                
-                                                                                      echo "Consumption of FP commodities, $titleText"; 
-                                                                                
-                                                                                 ?>
-                       
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                              <div id="infobutton" class="infobutton hidden" style="margin-bottom:-23px;">
-                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                <div id="" class="infodiv" >
-                                                                                    ...
-                                                                                </div>
-                                                                            </div>
-                                                                          </div>  
-                                                     </div>
-                                                         
-                                                        <div id="chart13_div" style="width:100%; height:400px;"></div>
-                                                         
-                                                     </div>
-                                                         
-                                                     <div class="col-sm-2">
+                                                    <div class="col-sm-2 pull-right" id="lastd" style="margin-bottom:70px;">
                                                           
                                                           <?php  
                                                                  if(isset($this->monthDatemultiple)){
@@ -316,6 +306,35 @@ require_once('views/helpers/ScriptContainer.php');
                                                           ?>
                                                          
                                                      </div>
+                                                     
+                                                     <div class="col-sm-10 box-shadow pull-right" style="height:500px;">
+                                               
+                                                        <?php 
+                                                                                
+                                                                                       if(!empty($this->selectedDatemultiple)){
+                   
+                                                                                          $titleText = (sizeof($this->selectedDatemultiple)>1) ?"across selected dates" : "across selected date";
+                                                                                       }else{
+                                                                                            $titleText = $this->start_date." to ".$this->end_date;
+                                                                                       }
+                                                                                 ?>
+                                                               
+                                                                                
+                                                                                    
+                                                                            
+                                                                               <?php
+                                                                                       $chart_title = "Consumption of FP commodities, $titleText "; 
+                                                                                       $info_text =  "";
+                                                                                       include('views/scripts/template/chart_title.phtml');
+                                                                                       //echo 6;
+                                                           
+                                                                               ?>
+                                                         
+                                                        <div id="chart13_div" style="width:100%; height:400px;"></div>
+                                                         
+                                                     </div>
+                                                         
+                                               
 	
 				
                                            </div>
@@ -327,22 +346,8 @@ require_once('views/helpers/ScriptContainer.php');
                                               
                                           </div>
                                        
-                                           <div class="col-sm-5">
-                                                 <br/>
-    
-    <div>
-        <?php region_filters_dropdown_db($this, $this->locations, $this->criteria, true, true); ?>
-        <p>
-            <strong>Maximum of six (6) locations allowed per filter</strong><br/>
-            <!--<strong>Only one (1) location allowed when filtering ALL commodities</strong>-->
-        </p>
-    </div>
-    
-    <br/>
-    <input type="submit" value="Preview" class="dbbutton dbbutton_leftmenu" onclick="return checkSelection();">
-    
-                                           </div>
-                                    </div>
+                                         
+                                        </div>
                                         
                                     </form>
                            
