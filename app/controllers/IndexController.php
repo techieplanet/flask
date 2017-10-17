@@ -67,18 +67,41 @@ class IndexController extends ReportFilterHelpers  {
             
             $this->view->assign('base_url', $this->baseUrl);
         }
+    
+        
+        public function tryAction()
+        {
+           
+            $this->view->assign('base_url', $this->baseUrl);
+        }
+            
+            
         
         
         public function indexAction(){
             //fetch consumption by method
+            
+            
+            
+         
+            
             $dashboard = new Dashboard();
-            list($geoList, $tierValue) = $this->buildParameters();                
+          
+          
+        list($geoList, $tierValue) = $this->buildParameters();   
+          
+         
+            
+            
             
             $consumptionbyMethod = $dashboard->fetchConsumptionByMethod();
-            $coverageSummary = $dashboard->fetchCoverageSummary($geoList, $tierValue);
+          
+          $coverageSummary = $dashboard->fetchCoverageSummary($geoList, $tierValue);
+          
+          
             
             $fp_facsProviding = $dashboard->fetchFacsProviding('fp');
-            $larc_facsProviding = $dashboard->fetchFacsProviding('larc');
+           $larc_facsProviding = $dashboard->fetchFacsProviding('larc');
             
             list($fp_numeratorfacsprov,$fp_denominatorfacsprov) = $dashboard->fetchFacsProvidingNumeratorDenominator('fp');
             list($larc_numeratorfacsprov,$larc_denominatorfacsprov) = $dashboard->fetchFacsProvidingNumeratorDenominator('larc');
@@ -91,12 +114,18 @@ class IndexController extends ReportFilterHelpers  {
             list($fp_numeratorStockedOut,$fp_denominatorStockedOut) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true);
             list($larc_numeratorStockedOut,$larc_denominatorStockedOut) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true);
             
+           
+            
             
             //var_dump($coverageSummary); exit;
+        
             
             $this->view->assign('consumption_by_method', $consumptionbyMethod);
+            
             $this->view->assign('csummary', $coverageSummary);
+          
             $this->view->assign('fp_facs_providing', $fp_facsProviding);
+           
             $this->view->assign('larc_facs_providing', $larc_facsProviding);
             //$this->view->assign('facs_providing_stockedout', $facsProvidingStockedout);
             $this->view->assign('fp_facs_providing_stockedout', $fp_facsProvidingStockedout);
@@ -123,8 +152,10 @@ class IndexController extends ReportFilterHelpers  {
             $overTimeDates = $this->helper->getPreviousMonthDates(12);
             $this->view->assign('end_date', date('F', strtotime($overTimeDates[0])). ' '. date('Y', strtotime($overTimeDates[0]))); 
             $this->view->assign('start_date', date('F', strtotime($overTimeDates[11])). ' '. date('Y', strtotime($overTimeDates[11]))); 
+         
             
             $this->view->assign('base_url', $this->baseUrl);
+              
         }
         
         
