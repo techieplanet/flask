@@ -1,15 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title><?php echo $this->translation['Application Name'];?> | <?php echo t('Edit').space.t('Facility');?></title>
+
+
 <?php
-require_once('views/helpers/Location.php');
-require_once('views/helpers/ScriptContainer.php');
-require_once('views/helpers/TrainingViewHelper.php');
-require_once('views/helpers/FormHelper.php');
-print ScriptContainer::$instance->renderCSSHead();
-print ScriptContainer::$instance->renderJSHead();
+                                        $fileInfo = pathinfo(__FILE__);
+                                        $fileID = $fileInfo['filename'];
+                                        require_once('views/scripts/template/template2.phtml');
 ?>
+
 <script type="text/javascript" charset="utf-8">
 			$(document).ready(function() {
 				/* Init the table */
@@ -18,26 +14,34 @@ print ScriptContainer::$instance->renderJSHead();
 					"sPaginationType": "full_numbers"
 				});
 			} );
-		</script>
-</head>
-<body class="yui-skin-sam" >
-<div id="pageHolder">
-  <div id="header"><?php require_once('views/scripts/header.phtml');?></div>
-  <div id="content">
+                        
+</script>
 
+ 
 		<h1><?php echo t('Edit').space.t('Facility');?></h1>
 
 
-<div class="fieldLabel" id="facility_name_lbl"><?php tp('Facility');?></div>
-	<form id="change" action="<?php echo $this->base_url;?>/facility/edit" method="get">
-	<div class="fieldInput"><select name="id"  id="id" onchange="if(this.value != '') this.form.submit();">
-	<option value="">-- <?php tp('choose');?> --</option>
-	<?php foreach ( $this->facilities as $facility) {
-		echo '<option value="'.($facility['id']).'" '.((@$this->facility['id']) == $facility['id']? 'SELECTED':'').' >'.($facility['facility_name']).'</option>';
-	}
-	?>
-	</select>
-	</div>
+
+<div  style="border: 1px solid black;padding-top:10px;">
+    
+         
+	<form id="change"  action="<?php echo $this->base_url;?>/facility/edit" method="get">
+	
+            <div class="row">
+               <div class="col-sm-3">
+                   <div class="fieldLabel" id="facility_name_lbl"><?php tp('Facility');?></div>
+               </div>
+               <div class="col-sm-9">
+                  <select name="id" class="form-control"  id="id" onchange="if(this.value != '') this.form.submit();">
+	               <option value="">-- <?php tp('choose');?> --</option>
+	                <?php foreach ( $this->facilities as $facility) {
+		             echo '<option value="'.($facility['id']).'" '.((@$this->facility['id']) == $facility['id']? 'SELECTED':'').' >'.($facility['facility_name']).'</option>';
+	                 }
+	                ?>
+	          </select>
+                </div>
+            </div>
+	
 	</form>
 
 	<form id="edit" action="" method="post">
@@ -140,8 +144,9 @@ print ScriptContainer::$instance->renderJSHead();
 	<div class="fieldLabel" id="facility_comments_lbl"><?php tp('Facility Comments');?></div>
 	<div class="fieldInput"><textarea name="facility_comments" id="facility_comments" size="40" maxlength="255" ><?php echo $this->facility['facility_comments'];?></textarea></div>
 <?php } ?>
-
-
+        
+    </div>
+   
 	<div class="clear" ></div>
 	
 	<!-- TA:17: 09/04/2014 START -->
@@ -333,6 +338,8 @@ if (isset($this->outputs)) {
   <input type="hidden" id="commodity_new_data" name="commodity_new_data"/>
   <input type="hidden" id="commodity_delete_data" name="commodity_delete_data"/>
   
+  <div style="border: 1px solid black;padding:20px;">
+  
   <?php echo (@$this->translation['Facility Commodity Column Table Commodity Name']);?>
   <?php echo "<select id='name' name='name'>";
 								echo "<option value='0'>" . t('Select...') . "</option>";
@@ -366,6 +373,8 @@ if (isset($this->outputs)) {
 		addAjaxSubmit('submitFacility','edit','<?php echo $this->base_url;?>/facility/edit/outputType/json');
 	</script>
 	</form>
+    
+
 	<div class="clear" ></div>
   </div>
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
