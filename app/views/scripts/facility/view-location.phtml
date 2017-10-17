@@ -1,15 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title><?php echo $this->translation['Application Name'];?> | <?php echo t('View').' '.t('Training').' '.t('Location');?></title>
-<?php
-require_once('views/helpers/Location.php');
-require_once('views/helpers/ScriptContainer.php');
-print ScriptContainer::$instance->renderCSSHead();
-print ScriptContainer::$instance->renderJSHead();
-?>
 
-</head>
       <style type="text/css">
   
           #region_c_id, #region_c_lbl, #showregionc_id{
@@ -21,16 +10,17 @@ print ScriptContainer::$instance->renderJSHead();
                     
   
   </style>
-<body class="yui-skin-sam" >
-<div id="pageHolder">
-  <div id="header"><?php require_once('views/scripts/header.phtml');?></div>
-  <div id="content">
+<?php
+                                        $fileInfo = pathinfo(__FILE__);
+                                        $fileID = $fileInfo['filename'];
+                                        require_once('views/scripts/template/template2.phtml');
+                                    ?>
+  
+ <div style="background-color:#f4f0ec;padding:5px;">
+
 
 		<h1><?php echo t('View').' '.t('Training').' '.t('Location');?></h1>
 
-		<div class="fieldLabel">
-		<?php tp('Location');?>
-		</div>
 		<div class="fieldInput">
 
     <?php
@@ -56,6 +46,8 @@ print ScriptContainer::$instance->renderJSHead();
       <?php endif; ?>
 
     <?php endif; ?>
+    
+ </div>
 
 
     <div class="clear"></div>
