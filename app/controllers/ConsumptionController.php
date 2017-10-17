@@ -57,7 +57,8 @@ class ConsumptionController extends ReportFilterHelpers {
     //Selected commodities, all locations - DONE
     //Selected commodities, selected locations - DONE
     public function consumptionAction(){
-        $helper = new Helper2();
+        
+         $helper = new Helper2();
         $cons = new Consumption();
         $methodNames = array();
         
@@ -387,7 +388,7 @@ class ConsumptionController extends ReportFilterHelpers {
 
    */
   public function newandcurrentfpusersAction(){
-        $helper = new Helper2();
+         $helper = new Helper2();
         $consumption = new Consumption();
         //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
         $selectedMethods = array();
