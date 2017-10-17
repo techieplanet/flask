@@ -24,6 +24,12 @@ class MenuController extends ReportFilterHelpers {
 	}
 
 	public function init() {
+            
+            parent::init();
+        
+        $burl = Settings::$COUNTRY_BASE_URL;
+        if (substr($burl, -1) != '/' && substr($burl, -1) != '\\')
+            $this->baseUrl = $burl . '/';
 	}
 
 	public function indexAction() {
