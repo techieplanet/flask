@@ -113,6 +113,7 @@ class StockoutController extends ReportFilterHelpers {
             $stockout = new Stockout();
 	    $helper = new Helper2();
             
+          
             //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
 	     list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
             $this->view->assign('monthDate',$monthDate);
@@ -171,8 +172,8 @@ class StockoutController extends ReportFilterHelpers {
 	    
             $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
 	    $this->viewAssignEscaped ('locations', Location::getAll(1));
-            
-            $this->view->assign('base_url', $this->baseUrl);$this->view->assign('base_url', $this->baseUrl);
+           
+            $this->view->assign('base_url', $this->baseUrl);
         }
         
         public function stockoutsAction(){
