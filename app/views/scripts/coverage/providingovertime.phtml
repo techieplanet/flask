@@ -24,57 +24,49 @@
         
                                               ?>
                                     
-                                           <div  class="col-sm-7 pull-right box-shadow clearfix"  style="height:500px;"  >
+                                           <div  class="col-sm-7 pull-right box-shadow clearfix"  style="height:auto;"  >
                                                
-                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                <?php echo  "Percent of facilities providing FP, $titleText"; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                               <div id="infobutton" class="infobutton ">
-                                                                            <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                            <div id="" class="infodiv" >
-                                                                                This chart, which shows the percentage of reporting facilities that provided 
+                                                 <?php
+                                                                       $chart_title = "Percent of facilities providing FP, $titleText";
+                                                                       
+                                                                       $info_text = "This chart, which shows the percentage of reporting facilities that provided 
                                                                                 at least one FP commodity over time, illustrates whether coverage of FP 
-                                                                                services is improving over time.
-                                                                            </div>
-                                                                        </div>
-                                                                            </div>
-                                                                             
-                                                                          </div>   
-                                             
+                                                                                services is improving over time.";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
+                                               
+                                    
                                                      
-									           <div id="chart11_div" style="width:100%;"></div>
+									           <div id="chart11_div" style="width:100%; height:auto;"></div>
                                          
 				                           </div>                           
                                     </div>
                                     
                                     <div  class="row" style="margin-top:50px;">
                                          
-                                           <div class="col-sm-7 box-shadow" style="height:500px;"  >
+                                           <div class="col-sm-7 box-shadow" style="height:auto;"  >
                                                
-                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                 <?php echo  "Percent of facilities providing at least 3 FP commodities, $titleText"; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                              <div id="infobutton" class="infobutton">
-                                                                                  <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                  <div id="" class="infodiv" >
-                                                                                       This chart, which shows the percentage of reporting facilities that provided 
+                                                                      <?php
+                                                                       $chart_title = "Percent of facilities providing at least 3 FP commodities, $titleText";
+                                                                       
+                                                                       $info_text = " This chart, which shows the percentage of reporting facilities that provided 
                                                                                        at least one FP commodity over time, illustrates whether coverage of FP 
-                                                                                       services is improving over time.
-                                                                                  </div>
-                                                                             </div>
-                                                                             
-                                                                          </div>   
-	
-			         	                          
-									           
-				
-                                           </div>
+                                                                                       services is improving over time.";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
                                                
-                                               <div id="chart12_div" style="width:100%;"></div>
+                                               
+                                               <div id="chart12_div" style="width:100%;height:auto;"></div>
                                                
                                            
                                                
@@ -85,28 +77,24 @@
                                     
                                      <div class="row" style="margin-top:50px;margin-bottom:45px;">
                                     
-                                           <div  class="col-sm-7 box-shadow" style="height:500px;"   >
+                                           <div  class="col-sm-7 box-shadow" style="height:auto;"   >
                                                
-                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                <?php echo  "Percent of facilities providing LARC, $titleText"; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                            <div id="infobutton" class="infobutton hidden">
-                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                               <div id="" class="infodiv" >
-                                                                                  This chart, which shows the percentage of reporting facilities that provided 
+                                                         <?php
+                                                                       $chart_title = "Percent of facilities providing LARC, $titleText";
+                                                                       
+                                                                       $info_text = "This chart, which shows the percentage of reporting facilities that provided 
                                                                                   at least one implant or IUCD over time, illustrates whether coverage of 
-                                                                                 LARC services is improving over time.  
-                                                                             </div>
-                                                                            </div>
-                                                                             
-                                                                          </div>   
-	
-				
-                                           </div>
+                                                                                 LARC services is improving over time.  ";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
                                                
-                                               <div id="chart13_div" style="width:100%;"></div>
+                                               
+                                                   <div id="chart13_div" style="width:100%;height:auto;"></div>
                                                
                                              
 				                           </div>  
