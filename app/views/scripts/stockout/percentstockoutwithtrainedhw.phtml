@@ -16,18 +16,12 @@
 				
                                            </div>
                                     
-                                           <div  class="col-sm-7 pull-right box-shadow clearfix"  style="height:500px;" >
+                                           <div  class="col-sm-7 pull-right box-shadow clearfix"  style="height:auto;" >
                                                
-                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                 <?php echo  "Percent of facilities with an FP trained HW stocked out of any FP commodity, $this->date"; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                              
-                                                                               <div id="infobutton" class="infobutton">
-                                                                              <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                              <div id="" class="infodiv" >
-                                                                                This chart shows the percentage of reporting facilities that have a 
+                                                  <?php
+                                                                       $chart_title = "Percent of facilities with an FP trained HW stocked out of any FP commodity, $this->date";
+                                                                       
+                                                                       $info_text = "This chart shows the percentage of reporting facilities that have a 
                                                                                 health worker trained in FP that report being stocked out of FP commodities for 
                                                                                 seven consecutive days in the most recent month. <br/><br/>
                                                                                 
@@ -36,53 +30,47 @@
                                                                                 have a trained health worker. <br/><br/>
                                                                                 
                                                                                 FP training includes Contraceptive Technology Update, FP Technology, Injectable 
-                                                                                Contraceptives for CHEWs, LARC, and Post Partum IUCD in-service trainings.<br/><br/>
-                                                                            </div>
-                                                                        </div>
-                                                                
-                                                                            </div>
-                                                                             
-                                                                          </div>   
-                                             
-                                               <div id="chart11_div" style="width:100%; height:350px;"></div>
+                                                                                Contraceptives for CHEWs, LARC, and Post Partum IUCD in-service trainings.<br/><br/>";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
+                                            
+                                               <div id="chart11_div" style="width:100%; height:auto;"></div>
                                          
 				                           </div>                           
                                     </div>
                                     
                                     <div  class="row" style="margin-top:50px;margin-bottom:45px;">
                                          
-                                           <div class="col-sm-7 box-shadow" style="height:500px;"  >
+                                           <div class="col-sm-7 box-shadow" style="height:auto;"  >
                                                
-                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                <?php echo  "Percent of facilities with a LARC trained HW stocked out of implants, $this->date"; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                             
-			         	                                                      <div id="infobutton" class="infobutton">
-                                                                                    <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                    <div id="" class="infodiv" >
-                                                                                        This chart shows the percentage of reporting facilities that have a 
-                                                                                        health worker trained in LARC that report being stocked out of implants 
-                                                                                        in the most recent month. <br/><br/>
-                                                                                        
-                                                                                        The chart helps to understand whether stock outs are a barrier to LARC 
-                                                                                        service provision at facilities that should be providing LARC because they 
-                                                                                        have a trained health worker. <br/><br/>
-                                                                                        
-                                                                                        LARC training includes LARC and Post Partum IUCD in-service trainings.
-                                                                                    </div>
-                                                                                </div>
-                                                                             
-                                                                          </div>   
-	
-										<div id="chart12_div" style="width:100%; height:350px;"></div>
+                                               <?php
+                                                                       $chart_title = "Percent of facilities with a LARC trained HW stocked out of implants, $this->date";
+                                                                       
+                                                                       $info_text = "This chart shows the percentage of reporting facilities that have a 
+                                                                                health worker trained in FP that report being stocked out of FP commodities for 
+                                                                                seven consecutive days in the most recent month. <br/><br/>
+                                                                                
+                                                                                The chart helps to understand whether stock outs are a barrier to 
+                                                                                FP service provision at facilities that should be providing FP because they 
+                                                                                have a trained health worker. <br/><br/>
+                                                                                
+                                                                                FP training includes Contraceptive Technology Update, FP Technology, Injectable 
+                                                                                Contraceptives for CHEWs, LARC, and Post Partum IUCD in-service trainings.<br/><br/>";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
+                                               
+                                             <div id="chart12_div" style="width:100%; height:auto;"></div>
 				
-                                           </div>
-                                               
-                                           <div class=" col-sm-6"  >
-                                               
-                                           </div>
                                                
                                            </div>
                                     </div>
