@@ -15,69 +15,53 @@
 				
                                            </div>
                                     
-                                           <div  class="col-sm-7 pull-right box-shadow clearfix"  style="height:500px;" >
+                                           <div  class="col-sm-7 pull-right box-shadow clearfix"  style="height:auto;" >
                                                
-                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                  Percent of facilities with an FP-trained HW as of <?php echo $this->date; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                                  <div id="infobutton" class="infobutton">
-                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                <div id="" class="infodiv" >
-                                                                                    The percentage of all facilities with at least one health worker trained in 
-                                                                                    FP demonstrates the current coverage of FP-trained health 
-                                                                                    workers and the gaps in coverage. FP training includes Contraceptive Technology Update, 
-                                                                                    FP Technology, Injectable Contraceptives for CHEWs, LARC, and Post Partum IUCD in-service 
-                                                                                    trainings. <br/><br/>
+                                               
+                                                          <?php
+                                                                       $chart_title = "Percent of facilities with an FP-trained HW as of  $this->date";
+                                                                       
+                                                                       $info_text = "The percentage of all facilities with at least one health worker trained in FP demonstrates the current coverage of FP-trained health workers and the gaps in coverage. FP training includes Contraceptive Technology Update,  FP Technology, Injectable Contraceptives for CHEWs, LARC, and Post Partum IUCD in-service
+      trainings. <br/><br/>  
                                                                                     Health workers who learned to provide FP through pre-service training, on-the-job 
                                                                                     training, or  other means may not be reflected here, though may indeed be competent and 
-                                                                                    actively providing the service.
+                                                                                    actively providing the service.";
 
-                                                                                </div>
-                                                                            </div>
-                                                                            </div>
-                                                                             
-                                                                          </div>   
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
                                              
-                                               <div id="chart11_div" style="width:100%; height: 300px;"></div>
+                                               <div id="chart11_div" style="width:100%; height:auto;"></div>
                                          
 				                           </div>                           
                                     </div>
                                     
                                     <div  class="row" style="margin-top:50px;padding-bottom:45px;">
                                          
-                                           <div class="col-sm-7 box-shadow" style="height:500px;"  >
+                                           <div class="col-sm-7 box-shadow" style="height:auto;"  >
                                                
-                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                  Percent of facilities with a LARC-trained HW as of <?php echo $this->date; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                                    <div id="infobutton" class="infobutton">
-                                                                                    <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                    <div id="" class="infodiv" >
-                                                                                        The percentage of all facilities with at least one health worker trained in 
-                                                                                        LARC demonstrates the current coverage of LARC-trained health 
-                                                                                        workers and the gaps in coverage. LARC training includes LARC and Post Partum IUCD 
-                                                                                        in-service trainings. <br/><br/>
-                                                                                        Health workers who learned to provide LARC through pre-service training, on-the-job 
-                                                                                        training, or  other means may not be reflected here, though may indeed be competent and 
-                                                                                        actively providing the service.
-                                                                                    </div>
-                                                                                </div>
-                                                                             
-                                                                          </div>   
-                                                   
-                                              <div id="chart12_div" style="width:100%; height: 300px;"></div>
+                                                       <?php
+                                                                       $chart_title = " Percent of facilities with a LARC-trained HW as of  $this->date";
+                                                                       
+                                                                       $info_text = "The percentage of all facilities with at least one health worker trained in FP demonstrates the current coverage of FP-trained health workers and the gaps in coverage. FP training includes Contraceptive Technology Update,  FP Technology, Injectable Contraceptives for CHEWs, LARC, and Post Partum IUCD in-service
+      trainings. <br/><br/>  
+                                                                                    Health workers who learned to provide FP through pre-service training, on-the-job 
+                                                                                    training, or  other means may not be reflected here, though may indeed be competent and 
+                                                                                    actively providing the service.";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
+                                               
+                                            <div id="chart12_div" style="width:100%; height:auto;"></div>
 	
 			      
-				
-                                           </div>
-                                               
-                                           <div class=" col-sm-6"  >
-                                               
-                                           </div>
                                                
                                            </div>
                                     </div>
