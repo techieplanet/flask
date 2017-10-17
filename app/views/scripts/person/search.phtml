@@ -1,20 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title><?php echo $this->translation['Application Name'];?> | <?php tp('Person Search');?></title>
-		<?php
-		require_once('views/helpers/Location.php');
-		require_once('views/helpers/ScriptContainer.php');
-		print ScriptContainer::$instance->renderCSSHead();
-		print ScriptContainer::$instance->renderJSHead();
-                
-                echo '<link rel="stylesheet" href="http://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" type="text/css">';
-		?>
-        
-                <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-                <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
-                <script src="http://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-	</head>
+ 
+
     <style>
         .grey {
             background-color: grey !important;
@@ -143,19 +128,19 @@
     }
     
     </script>
-	<body class="yui-skin-sam" >
-
-		<div id="pageHolder">
-
-			<div id="header"><?php require_once('views/scripts/header.phtml');?></div>
-			<div id="content">
+  <?php
+                  $fileInfo = pathinfo(__FILE__);
+                  $fileID = $fileInfo['filename'];
+                  require_once('views/scripts/template/template2.phtml');
+  ?>
+    
 				<h1><?php tp('People Search');?></h1>
 				<form action="" method="get" name="searchForm" id="personSearchForm">
 					<fieldset><legend><?php tp('Select Criteria');?></legend>
 
                                         <input type="hidden" value="" id="activeStatusText" name="activeStatusText" />
                                             
-					<?php region_filters_dropdown($this, $this->locations, $this->criteria, true, false); ?>
+					<?php region_filters_dropdown_db($this, $this->locations, $this->criteria, true, true); ?>
 
 					<div class="fieldLabel"  id="facilityInput_lbl"><?php tp('Facility');?></div><div class="fieldInput">
 
@@ -166,7 +151,7 @@
 					<!-- course taken -->
 					<div class="fieldLabel" id="training_title_option_id_lbl"><?php echo (@$this->translation['Training Name']); ?></div>
 					<div class="fieldInput">
-						<select id="training_title_option_id" name="training_title_option_id" >
+						<select id="training_title_option_id" name="training_title_option_id" class="form-control" >
 							<option value="">--<?php tp('All');?>--</option>
 							<?php
 							foreach ( $this->courses as $vals ) {
@@ -177,7 +162,7 @@
 						<div class="clear"></div>
 
 						<div class="fieldLabel" id="qualification_id_lbl"><?php tp('Cadre');?></div>
-						<div class="fieldInput"><select id="qualification_id" name="qualification_id">
+						<div class="fieldInput"><select id="qualification_id" name="qualification_id" class="form-control">
 							<option value="">--<?php tp('All');?>--</option>
 							<?php
 							$lastParent = null;
@@ -192,13 +177,13 @@
 							?>
 						</select></div>
 						<div  id="firstAutoComplete">
-							<div class="fieldLabel"><?php echo (@$this->translation['First Name']); ?></div><div class="fieldInput"><input id="first_name" type="text" name="first_name" value="<?php echo $this->criteria['first_name'];?>" /><div class="clear"></div><div id="firstContainer" class="autoComplete"></div></div>
+							<div class="fieldLabel"><?php echo (@$this->translation['First Name']); ?></div><div class="fieldInput"><input id="first_name" class="form-control" type="text" name="first_name" value="<?php echo $this->criteria['first_name'];?>" /><div class="clear"></div><div id="firstContainer" class="autoComplete"></div></div>
 						</div>
 						<script type="text/javascript">
 							var firstAuto = makeAutocomplete('first_name', 'firstContainer', '<?php echo $this->base_url;?>/person/firstList/outputType/text/' );
 						</script>
 						<div id="lastAutoComplete">
-							<div class="fieldLabel"><?php echo (@$this->translation['Last Name']); ?></div><div class="fieldInput"><input id="last_name" type="text" name="last_name" value="<?php echo $this->criteria['last_name'];?>" /><div class="clear"></div><div id="lastContainer" class="autoComplete"></div></div>
+							<div class="fieldLabel"><?php echo (@$this->translation['Last Name']); ?></div><div class="fieldInput"><input id="last_name" class="form-control" type="text" name="last_name" value="<?php echo $this->criteria['last_name'];?>" /><div class="clear"></div><div id="lastContainer" class="autoComplete"></div></div>
 						</div>
 						<script type="text/javascript">
 							var lastAuto = makeAutocomplete('last_name', 'lastContainer', '<?php echo $this->base_url;?>/person/lastList/outputType/text/' );
