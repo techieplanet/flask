@@ -42,13 +42,7 @@
     border-top: solid 2px; 
 }
     
-.small-tab{
-    background-color:white;
-    font-size:12px;
-    padding:2px;
-}
-    
-   
+  
 
 body {font-family: "Lato", sans-serif;}
 
@@ -81,6 +75,8 @@ print ScriptContainer::$instance->renderJSHead();
 
 <link rel="stylesheet" href="<?php echo $this->base_url; ?>css/cssfile.css"></link>
 
+
+
 <!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/prettify-bundle.js"></script>-->
 
 <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>-->
@@ -91,6 +87,7 @@ print ScriptContainer::$instance->renderJSHead();
 
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
+
 <script src="<?php echo $this->base_url; ?>bootstrap/js/bootstrap.min.js"></script>
 
                 
@@ -98,6 +95,8 @@ print ScriptContainer::$instance->renderJSHead();
 
 
 <script>
+    
+
   $(function() {
     //$( "#accordion" ).accordion({header: "h3", collapsible: true, active: false, animated:200, animated:"slide"});
     $( "#tabs").tabs();
@@ -135,43 +134,16 @@ print ScriptContainer::$instance->renderJSHead();
 
 </head>
     
-<body class="yui-skin-sam" style="background-color:#EEEEEE;overflow-x:hidden;" >
+<body  style="background-color:#EEEEEE;overflow-x:hidden;margin:0" >
     <?php
         
         //var_dump(array_keys($this->national_consumption_by_method)); exit;
     ?>
-	<div id="pageHolder" style="margin:0px;background-color:#EEEEEE;">
+	<div id="pageHolder" style="margin:0px;background-color:#EEEEEE;padding-left:10px;padding-right:10px;">
 
 		<div id="header"><?php require_once('views/scripts/headerhome.phtml');?></div>
-		<div id="content" style="padding:0px;background-color:white;">
+		<div id="content" style="padding:0px;background-color:white;height:20%;background-color:#EEEEEE;">
 
-			<!-------   /////////////////////////// get data ////////////////////// -->
-
-			<div>
-
-				<?php  //require_once('views/scripts/dashboard/load_data.phtml');?>
-
-
-
-			<!-------   /////////////////////////// make top buttons ////////////////////// -->
-
-			<div class="rightdiv" style="float: right;">
-				<?php  //require_once('views/scripts/dashboard/top_buttons.phtml');?>
-					
-			</div>
-			
-			<!-------   /////////////////////////// make left buttons ////////////////////// -->
-
-			
-			
-			<!-------   /////////////////////////// load scripts ////////////////////// -->
-            <div class="nav-buttons">
-				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');?>
-			</div>
-
-			<!-------   /////////////////////////// charts ////////////////////// -->
-
-			<!--<body class="docs slim framebox_body">-->
                             
                             
     <?php
@@ -183,8 +155,8 @@ print ScriptContainer::$instance->renderJSHead();
                                 
                                 
 				
-                            <div class="row sidebar" style="background-color:#EEEEEE;margin-top:20px;height:100%;">
-                                <div class="col-md-2">
+                            <div class="row sidebar" style="background-color:#EEEEEE;margin-top:20px;height:100%;margin-right:0px;">
+                                <div class="col-md-2" style='padding-left:20px;'>
 	
                                     <?php  
                                     
@@ -193,7 +165,7 @@ print ScriptContainer::$instance->renderJSHead();
         
                                 </div>
                                 
-                               <div class="col-sm-10" style="background-color:white;height:100%;padding-top:10px;">
+                               <div class="col-sm-10" style="background-color:white;height:100%;padding-top:10px;padding-left:30px;">
                                 
                                 
                                
