@@ -1,0 +1,17 @@
+
+        <?php 
+    if(isset($this->monthDate)){
+    ?>
+    <select name="lastPullDate" id="lastPullDate" style="margin-bottom:5px !important">
+        <?php 
+        for($i=0;$i<sizeof($this->monthDate); $i++){
+            $selected = ($this->monthDate[$i]==$this->selectedDate)?"selected":"";
+            echo "<option value='".$this->monthDate[$i]."' $selected>".$this->monthName[$i]."</option>";
+        }
+        ?>
+    </select><br/>
+<?php 
+    }
+  
+        ?>
+   
