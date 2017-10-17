@@ -168,6 +168,59 @@ class CoverageController extends ReportFilterHelpers {
 
     }
     
+    public function cdAction() {
+            
+            $coverage = new Coverage();
+            $helper = new Helper2();
+            
+            //get the parameters
+            list($geoList, $tierValue) = $this->buildParameters();
+            list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
+            $this->view->assign('monthDate',$monthDate);
+            $this->view->assign('monthName',$monthName);
+            
+            $lastPullDate = "";
+            if(isset($_POST['lastPullDate'])){
+                $lastPullDate = $_POST['lastPullDate'];
+            }
+            $this->view->assign('selectedDate',$lastPullDate);
+            //echo $lastPullDate;exit;
+            //If no GEO selection made 
+	    if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"])){ 
+                $cumm_data = $coverage->fetchCummulativeTrainedWorkers(3, $geoList, $tierValue,$lastPullDate);
+                $this->view->assign('cumm_data', $cumm_data);
+	    }
+            else{
+                $cumm_data = $coverage->fetchCummulativeTrainedWorkers(3, $geoList, $tierValue,$lastPullDate);
+                $this->view->assign('cumm_data', $cumm_data);
+                //var_dump($cumm_data); exit;
+                
+                $locationNames = $helper->getLocationNames($geoList);
+                $larc_cumm_location = $coverage->fetchCummulativeTrainedWorkersByLocation('larc',3, $geoList, $tierValue,$lastPullDate);
+                $fp_cumm_location = $coverage->fetchCummulativeTrainedWorkersByLocation('fp',3, $geoList, $tierValue,$lastPullDate);
+                
+                $this->view->assign('fp_cumm_location', $fp_cumm_location);
+                $this->view->assign('larc_cumm_location', $larc_cumm_location);
+                $this->view->assign('cumm_locations', $helper->getLocationNames($geoList));
+            }
+                
+            //GNR:use max commodity date
+            $sDate = $helper->fetchTitleDate($lastPullDate);
+            $this->view->assign('tp_date', $sDate['month_name'] . ' '.$sDate['year']);
+            
+            $this->view->assign('base_url', $this->baseUrl);            
+
+            //locations
+            $this->view->assign('cumm_data', $cumm_data);
+            $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
+            $this->viewAssignEscaped ('locations', Location::getAll(1));
+                        
+            //$this->sendMetricDetails();
+            //file_put_contents("vvlogs.txt", print_r(debug_backtrace()) . "\r\n", FILE_APPEND ); 
+
+    }
+    
+    
     
     public function facswithhwprovidingAction() {
 	    $coverage = new Coverage();
