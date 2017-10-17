@@ -85,9 +85,7 @@
     }
 </script>
 
-<?php //require_once('../../html/js/singlelocationselect.js');?>
 
-<form name="dashboardForm" id="consumptionForm" method="post" onsubmit="return checkCommoditySelection();"> 
 <?php
     
 
@@ -98,33 +96,9 @@ require_once('views/helpers/ScriptContainer.php');
 $current_view = '/'.$path[1].'/'. $path[2]; 
 ?>
 
-<?php  //file_put_contents('c:\wamp\logs\php_debug.log', 'top_buttons 1 >'.PHP_EOL, FILE_APPEND | LOCK_EX);	ob_start();   
-       //var_dump("current_view=", $current_view, "END");
-       //$result = ob_get_clean(); file_put_contents('c:\wamp\logs\php_debug.log', $result .PHP_EOL, FILE_APPEND | LOCK_EX); 
 
-?>
-
-<p3>
-    <div>
-        <?php 
-    if(isset($this->monthDate)){
-    ?>
-    <select name="lastPullDate" id="lastPullDate" style="margin-bottom:5px !important">
-        <?php 
-        for($i=0;$i<sizeof($this->monthDate); $i++){
-            $selected = ($this->monthDate[$i]==$this->selectedDate)?"selected":"";
-            echo "<option value='".$this->monthDate[$i]."' $selected>".$this->monthName[$i]."</option>";
-        }
-        ?>
-    </select><br/>
 <?php 
-    }
-    
-   
-   
-       
-        //var_dump($this->comms);
-        //var_dump($this->methods); 
+  
         
             $commsHtml = '';
             $selected = '';
@@ -143,39 +117,16 @@ $current_view = '/'.$path[1].'/'. $path[2];
                 <?php echo $commsHtml; ?>
         </select>
         
-          
-  <?php  
-     if(isset($this->monthDatemultiple)){
-    ?>
-    <select name="lastPullDatemultiple[]" id="lastPullDatemultiple" multiple="true" szize="5" style="margin-bottom:5px !important">
-        <?php 
-        for($i=0;$i<sizeof($this->monthDatemultiple); $i++){
-            $selected = (in_array($this->monthDatemultiple[$i],$this->selectedDatemultiple))?"selected":"";
-            echo "<option value='".$this->monthDatemultiple[$i]."' $selected>".$this->monthNamemultiple[$i]."</option>";
-        }
-        ?>
-    </select>
-   
-<?php 
-    }
-    
-    ?>
-    </div>
-  
+     
     <br/>
-    
-    <div>
+ 
         <?php region_filters_dropdown_db($this, $this->locations, $this->criteria, true, true); ?>
         <p>
             <strong>Maximum of six (6) locations allowed per filter</strong><br/>
             <!--<strong>Only one (1) location allowed when filtering ALL commodities</strong>-->
         </p>
-    </div>
+    
     
     <br/>
     <input type="submit" value="Preview" class="dbbutton dbbutton_leftmenu" onclick="return checkSelection();">
-    
-</p3>
-
-
- </form>
+ 
