@@ -1,23 +1,37 @@
-   <?php  
+  <?php
                                         $fileInfo = pathinfo(__FILE__);
                                         $fileID = $fileInfo['filename'];
-                                        require_once('views/scripts/template/template.phtml');
+                                        require_once('views/scripts/template/template2.phtml');
                                     ?>
 
+ <div class="row">
+    <div align="center">
 	<h1><?php echo t('Search').space.t('Facilities');?></h1>
+           
+            <form action="" method="get"   >
+		<fieldset  class="width" ><legend><?php tp('Select Criteria');?></legend>
+                    
+                <div class="row">
+                    <div class="col-sm-6">
 
-	<form action="" method="get">
-		<fieldset><legend><?php tp('Select Criteria');?></legend>
-
-		<div class="fieldLabel"><?php echo t('Facility').space.t('Name');?></div>
-		<div class="fieldInput">
-		<!-- TA:17:14: Replace drop down to text field searchable like 'text' it will be in SQL  "like %text% "-->	
-		<input type="text" id="facility_name" name="facility_name" value=<?php echo $this->facility_name_sel; ?>>
+		       <div class="form-group">
+                           <input type="text" class="form-control" id="facility_name" name="facility_name" placeholder="<?php echo t('Facility').space.t('Name');?>" >
+                        </div>
+                        
+                    </div>
+                </div>
+                    <div class="row">
+                       <div class="col-sm-12">
+                          <div class="form-group">
+		             <?php region_filters_dropdown_db($this, $this->locations, $this->criteria, true, true); ?>
+                          </div>                      
+                        </div>
+                    </div>
 		
-		</div>
+		
+		
 
-		<?php echo region_filters_dropdown( $this, $this->locations, $this->criteria, false, false ); ?>
-
+		
 		 <!-- TA:17: 09/04/2014 START-->
 <?php if($this->setting['display_facility_type']){?>
 		<div class="fieldLabel" id="type_id_lbl"><?php echo t('Facility').space.t('Type');?></div>
@@ -50,101 +64,112 @@
 		<input type="submit" class="submitNoArrow" name="go" value="<?php tp('Preview');?>" />
 	</fieldset>
 	</form>
+    </div>
 
+               
+ 
+	
 
 <?php if ( $this->criteria['go'] ) { ?>
 		    <div class="hrGrey"></div>
-		    <div class="fieldIndentNoMargin"><?php tp('Facilities');?> <span class="total"><?php echo $this->count;?>  <?php tp('Results');?></span><?php echo $this->printAndExport();?></div>
-		    
-		    <!-- TA;17:12: 10/05/2014 -->
-<?php if ($this->hasACL('add_new_facility') ) { ?>
-			<a href="<?php echo $this->base_url;?>/facility/add"><?php tp('Add New Facility');?></a><br/><br/>
-			<?php }?>
-		    <div id="facilities"></div>
-		    <script type="text/javascript">
-		var facilitiesData = [
-		<?php
-		$cnt = 0;
+		    <div class="fieldIndentNoMargin" style="background-color:#90EE90;"><?php tp('Facilities');?> <span class="total"><?php echo $this->count;?>  <?php tp('Results');?></span><?php echo $this->printAndExport();?></div>
+                    <div style="margin-bottom:40px;">  
+                        <table id="myTable" class="table-responsive"  >
+                        
+                           <thead>
+
+                             <tr>
+
+                                <th>ID</th>
+
+                                <th>Facility Name</th>
+            
+                                <th>Geopolitical Zone</th>
+            
+                                <th>State</th>
+            
+                                <th>Local Government Area</th>
+          
+
+                             </tr>
+
+                            </thead>  
+                            
+                            <tbody>
+                  
+         <?php
+		       $cnt = 0;
 		 	$isFirstRow = true;
 			foreach($this->results as $row) {
+                    
+                echo '
 
-		if ( ( $cnt < 100 ) or ( isset($_REQUEST['limit']) AND !$_REQUEST['limit'] ) ) {
-			if ( !$isFirstRow ) {
-					echo ',';
-			}
-				$isFirstRow = false;
+            
 
-			echo '[';
-				echo '"'.$row['id'];
-				echo '","'.str_replace('\\', '', $row['facility_name']);
-				echo '","'.$row['province_name'];
-				echo '","'.($this->setting['display_region_b']?$row['district_name'].'","':'');
-				echo ($this->setting['display_region_c']?$row['region_c_name'].'","':'');
-				echo ($this->setting['display_region_d']?$row['region_d_name'].'","':'');
-				echo ($this->setting['display_region_e']?$row['region_e_name'].'","':'');
-				echo ($this->setting['display_region_f']?$row['region_f_name'].'","':'');
-				echo ($this->setting['display_region_g']?$row['region_g_name'].'","':'');
-				echo ($this->setting['display_region_h']?$row['region_h_name'].'","':'');
-				echo ($this->setting['display_region_i']?$row['region_i_name'].'","':'');
-				echo $row['facility_type_phrase'];
-				echo '","'.$row['facility_sponsor_phrase'].'"';
-			echo ']';
-				$cnt++;
-			}
-			}
-?>];
+                     <tr>
 
-var formatViewUrl = function(elCell, oRecord, oColumn, sData) {
-			if ( (sData == null) || (sData.length == 0) )
-				sData = '&nbsp;&nbsp;&nbsp;';
-		    elCell.innerHTML = "<a href='<?php echo $this->base_url;?>/facility/view/id/" + oRecord.getData("id") + "' >" + sData + "</a>";
-}
+                         <td>
+                      
+                            
+                               '. $row['id'].'
+                            
+                         
+                        </td>
 
-var facilitiesColumnDefs = [
-			{key:"id", label: "<?php tp("ID");?>", sortable:false, resizable:false,
-			                formatter: formatViewUrl},
-		    {key:"facility_name", label: "<?php echo t('Facility').space.t('Name');?>", sortable:true, resizeable:true},
-		    {key:"province_name", label: "<?php echo (@$this->translation['Region A (Province)']); ?>", sortable:true, resizeable:true},
-			<?php if ( $this->setting['display_region_b'] ) { ?>
-					    {key:"district_name", label: "<?php echo (@$this->translation['Region B (Health District)']); ?>", sortable:true, resizeable:true},
-			<?php } ?>
-			<?php if ( $this->setting['display_region_c'] ) { ?>
-			        {key:"region_c_name", label: "<?php echo (@$this->translation['Region C (Local Region)']); ?>", sortable:true, resizeable:true},
-			<?php } ?>
-			<?php if ( $this->setting['display_region_d'] ) { ?>
-				{key:"region_d_name", label: "<?php echo (@$this->translation['Region D']); ?>", sortable:true, resizeable:true},
-			<?php } ?>
-			<?php if ( $this->setting['display_region_e'] ) { ?>
-				{key:"region_e_name", label: "<?php echo (@$this->translation['Region E']); ?>", sortable:true, resizeable:true},
-			<?php } ?>
-			<?php if ( $this->setting['display_region_f'] ) { ?>
-				{key:"region_f_name", label: "<?php echo (@$this->translation['Region F']); ?>", sortable:true, resizeable:true},
-			<?php } ?>
-			<?php if ( $this->setting['display_region_g'] ) { ?>
-				{key:"region_g_name", label: "<?php echo (@$this->translation['Region G']); ?>", sortable:true, resizeable:true},
-			<?php } ?>
-			<?php if ( $this->setting['display_region_h'] ) { ?>
-				{key:"region_h_name", label: "<?php echo (@$this->translation['Region H']); ?>", sortable:true, resizeable:true},
-			<?php } ?>
-			<?php if ( $this->setting['display_region_i'] ) { ?>
-				{key:"region_i_name", label: "<?php echo (@$this->translation['Region I']); ?>", sortable:true, resizeable:true},
-			<?php } ?>
-			<?php if($this->setting['display_facility_type']){?> //TA:17: 09/04/2014
-		    {key:"facility_type_phrase", label: "<?php tp('Type');?>", sortable:true, resizeable:true},
-		    <?php }?>
-		    <?php if($this->setting['display_facility_sponsor']){?>
-		    {key:"facility_sponsor_phrase", label: "<?php tp('Sponsor');?>", sortable:true, resizeable:true}
-		    <?php }?>
-];
+                        <td>
+            
+                            
+                           '.$row['facility_name'].'
+                            
+                        
+                        </td>
+            
+                        <td>
+                 
+                            
+                            '. $row['province_name'] .'
+                            
+                        
+                        </td>
+            
+                        <td>
+                        
+                            
+                         '. ($this->setting['display_region_b']?$row['district_name']:'') .'
+                            
+                          
+                        </td>
+            
+                        <td>
+                          
+                            
+                           '. ($this->setting['display_region_c']?$row['region_c_name']:'') .'
+                            
+                        
+                        </td>
+            
 
-makeDataTable("facilities", null, facilitiesData, facilitiesColumnDefs);
-</script>
-<?php if ($cnt < count($this->results)) { ?>
-[<?php tp('Limited to 100 rows');?>]  <a href="<?php echo str_replace('limit=1','limit=0',$_SERVER['REQUEST_URI']);?>"><?php tp('Full Results');?></a>
+                    </tr>
+
+                ';
+                
+                        }
+                
+                ?>
+                
+                </tbody>
+                   
+                </table>
+                        
+            </div>
+                    
+     
+		
 <?php } ?>
-<?php } ?>
-</div>
+
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
 </div>
+</div>
+
 </body>
 </html>
