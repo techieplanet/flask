@@ -24,13 +24,15 @@ class Settings {
 
 	//public static $COUNTRY_BASE_URL = 'http://techieplanetltd.com/chai/trainsmart/html';
     //public static $COUNTRY_BASE_URL = 'http://63.139.189.115';
-	public static $COUNTRY_BASE_URL = 'http://localhost/trainsmart/html';
+	public static $COUNTRY_BASE_URL = 'http://localhost/flask/html';
 
-    public static $DB_DATABASE = 'fpdb';
+    public static $DB_DATABASE = 'newdb';
     public static $DB_USERNAME = 'root';
+    
+     public static $DB_PWD = 'root';
 
-    public static $DB_PWD = 'password';
-
+  
+    
     public static $DB_SERVER = 'localhost';
 
 
