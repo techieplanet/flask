@@ -11,7 +11,9 @@
 		print ScriptContainer::$instance->renderJSHead();
 
 		$checkLabel = ( $this->mode == 'count' ) ? t('group') : t('show');
-
+                
+                    $quickDropDown = new DropDown();
+                    
 		?>
 <link href="../js/datepicker/jquery.datepick.css" rel="stylesheet"/>
 <script src="../js/datepicker/jquery.plugin.js"></script>
@@ -211,7 +213,7 @@ function dateConfirm() {
 											
 											<?php
 
-                                            $quickDropDown = new DropDown();
+                                                                                        
 											echo $quickDropDown->render_report_filter('training_organizer','showOrganizer',(@$this->translation['Partner']),$this->organizers,'training_organizer_phrase',$this->criteria['training_organizer_id'],$this->criteria['showOrganizer'],false,false,($this->expand_lists?true:false));
 											?>
 											<?php if ( ! isset($this->setting['display_training_partner']) ) { $this->setting['display_training_partner'] = false; } ?>
@@ -237,11 +239,13 @@ function dateConfirm() {
 
 											//TA:17: 09/03/2014 
 											if($this->setting['display_training_level']){
-												echo DropDown::render_report_filter('training_level', 'showLevel', @$this->translation['Training Level'], $this->levels, 'level_title', @$this->criteria['training_level_id'], $this->criteria['showLevel']);
+												echo DropDown::render_report_filter('training_level', 'showLevel', 
+                                                                                                        @$this->translation['Training Level'], $this->levels, 'level_title', 
+                                                                                                        @$this->criteria['training_level_id'], $this->criteria['showLevel']);
 											}
 											//TA:17: 09/12/2014  
 											if($this->setting['display_training_pepfar']){
-												echo DropDown::render_report_filter('training_pepfar', 'showPepfar', @$this->translation['PEPFAR Category'], $this->pepfars, 'pepfar_category_phrase', @$this->criteria['training_pepfar_id'], $this->criteria['showPepfar']);
+												echo $dropdown->render_report_filter('training_pepfar', 'showPepfar', @$this->translation['PEPFAR Category'], $this->pepfars, 'pepfar_category_phrase', @$this->criteria['training_pepfar_id'], $this->criteria['showPepfar']);
 											}
 											
 											if ( $this->setting['display_training_method'] && $this->mode != 'search') {

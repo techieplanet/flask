@@ -109,12 +109,12 @@ class StockoutHelper {
                             ->from(array('c' => 'commodity'),
                               array('COUNT(DISTINCT(c.facility_id)) AS fid_count'))
                             ->joinInner(array('cno' => 'commodity_name_option'), 'cno.id = c.name_id', array())
-                            ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = c.facility_id', array('lga', 'state',  'geo_zone'))
+                            ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = c.facility_id', array($tierText))
                             ->where($mainWhereClause . ' AND c.facility_id IN (' . $subselect . ')')
                             ->group($tierFieldName)
                             ->order(array($tierText));
 
-              //echo $select->__toString() . '<br/><br/>'; exit;
+               //echo $select->__toString() . '<br/><br/>'; exit;
 
                $result = $db->fetchAll($select);
                

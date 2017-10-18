@@ -63,40 +63,15 @@ class StockoutController extends ReportFilterHelpers {
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
                 $fp_stockout = $stockout->fetchPercentStockOutFacsWithTrainedHW('fp', $geoList, $tierValue, true,false,$lastPullDate);
                 $larc_stockout = $stockout->fetchPercentStockOutFacsWithTrainedHW('larc', $geoList, $tierValue, true,false,$lastPullDate);
-                
-                list($fp_numerator,$fp_denominator) = $stockout->fetchPercentStockOutFacsWithTrainedHWNumeratorDenominator('fp', $geoList, $tierValue, true,false,$lastPullDate);
-                list($larc_numerator,$larc_denominator) = $stockout->fetchPercentStockOutFacsWithTrainedHWNumeratorDenominator('larc', $geoList, $tierValue, true,false,$lastPullDate);
             }
             else{
                 $fp_stockout = $stockout->fetchPercentStockOutFacsWithTrainedHW('fp', $geoList, $tierValue, false,false,$lastPullDate);
                 $larc_stockout = $stockout->fetchPercentStockOutFacsWithTrainedHW('larc', $geoList, $tierValue, false,false,$lastPullDate);
-                
-                $tempGeoList = implode(",",$helper->getLocationTierIDs(1));
-               
-               list($generalNumFP,$generalDenomFP) = $stockout->fetchPercentStockOutFacsWithTrainedHWNumeratorDenominator('fp', $tempGeoList, 1, false,false,$lastPullDate);
-               list($generalNumLARC,$generalDenomLARC) =  $stockout->fetchPercentStockOutFacsWithTrainedHWNumeratorDenominator('larc', $tempGeoList, 1, false,false,$lastPullDate);
-               
-               
-                list($fp_numerator,$fp_denominator) = $stockout->fetchPercentStockOutFacsWithTrainedHWNumeratorDenominator('fp', $geoList, $tierValue, false,false,$lastPullDate);
-                list($larc_numerator,$larc_denominator) = $stockout->fetchPercentStockOutFacsWithTrainedHWNumeratorDenominator('larc', $geoList, $tierValue, false,false,$lastPullDate);
-                
-               $fp_numerator['National'] = $generalNumFP['National'];
-               $fp_denominator['National'] = $generalDenomFP['National'];
-               
-               $larc_numerator['National'] = $generalNumLARC['National'];
-               $larc_denominator['National'] = $generalDenomLARC['National'];
             }
             
-            $this->view->assign('larc_data', $larc_stockout);
-	    $this->view->assign('fp_data', $fp_stockout);
+            $this->view->assign('larc_data', json_encode($larc_stockout));
+	    $this->view->assign('fp_data', json_encode($fp_stockout));
             
-            $this->view->assign('larc_numerator',$larc_numerator);
-            $this->view->assign('larc_denominator',$larc_denominator);
-            
-            $this->view->assign('fp_numerator',$fp_numerator);
-            $this->view->assign('fp_denominator',$fp_denominator);
-	    
-	    //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
 	    //GNR:use max commodity date	    
 	    $sDate = $helper->fetchTitleDate($lastPullDate);
 	    $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
@@ -128,43 +103,17 @@ class StockoutController extends ReportFilterHelpers {
             
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
                 $fp_stockout = $stockout->fetchPercentFacsProvidingButStockedOut('fp', $geoList, $tierValue, true, false,$lastPullDate);
-                $larc_stockout = $stockout->fetchPercentFacsProvidingButStockedOut('larc', $geoList, $tierValue, true, false,$lastPullDate);
-                
-                list($fp_numerator,$fp_denominator) = $stockout->fetchPercentFacsProvidingButStockedOutNumeratorDenominator('fp', $geoList, $tierValue, true, false,$lastPullDate);
-                list($larc_numerator,$larc_denominator) = $stockout->fetchPercentFacsProvidingButStockedOutNumeratorDenominator('larc', $geoList, $tierValue, true, false,$lastPullDate);
+                $larc_stockout = $stockout->fetchPercentFacsProvidingButStockedOut('larc', $geoList, $tierValue, true, false,$lastPullDate);                
             }
             else{
                 $fp_stockout = $stockout->fetchPercentFacsProvidingButStockedOut('fp', $geoList, $tierValue, false, false,$lastPullDate);
                 $larc_stockout = $stockout->fetchPercentFacsProvidingButStockedOut('larc', $geoList, $tierValue, false, false,$lastPullDate);
-                
-                $tempGeoList = implode(",",$helper->getLocationTierIDs(1));
-                
-                list($generalNumFP,$generalDenomFP) = $stockout->fetchPercentFacsProvidingButStockedOutNumeratorDenominator('fp', $tempGeoList, 1, false, false,$lastPullDate);
-                list($generalNumLARC,$generalDenomLARC) = $stockout->fetchPercentFacsProvidingButStockedOutNumeratorDenominator('larc', $tempGeoList, 1, false, false,$lastPullDate);
-                
-                list($fp_numerator,$fp_denominator) = $stockout->fetchPercentFacsProvidingButStockedOutNumeratorDenominator('fp', $geoList, $tierValue, false, false,$lastPullDate);
-                list($larc_numerator,$larc_denominator) = $stockout->fetchPercentFacsProvidingButStockedOutNumeratorDenominator('larc', $geoList, $tierValue, false, false,$lastPullDate);
-                
-                
-               $fp_numerator['National'] = $generalNumFP['National'];
-               $fp_denominator['National'] = $generalDenomFP['National'];
-               
-               $larc_numerator['National'] = $generalNumLARC['National'];
-               $larc_denominator['National'] = $generalDenomLARC['National'];
                
             }
             
-            $this->view->assign('larc_data', $larc_stockout);
-	    $this->view->assign('fp_data', $fp_stockout);
+            $this->view->assign('larc_data', json_encode($larc_stockout));
+	    $this->view->assign('fp_data', json_encode($fp_stockout));
             
-            $this->view->assign('larc_numerator',$larc_numerator);
-            $this->view->assign('larc_denominator',$larc_denominator);
-            
-            $this->view->assign('fp_numerator',$fp_numerator);
-            $this->view->assign('fp_denominator',$fp_denominator);
-            
-	    
-	    //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
 	    //GNR:use max commodity date	    
 	    $sDate = $helper->fetchTitleDate($lastPullDate);
 	    $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
@@ -194,39 +143,20 @@ class StockoutController extends ReportFilterHelpers {
             list($geoList, $tierValue) = $this->buildParameters();
             
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
-                //$facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedout($geoList, $tierValue, true);
-                $fp_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
-               // print_r($fp_facsProvidingStockedout);exit;
-                
+                $fp_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('fp', $geoList, $tierValue, true,$lastPullDatemultiple);                
                 $larc_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
-                
-                //list($fp_numerator,$fp_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
-                //list($larc_numerator,$larc_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
                 $freshVisit = true;
             }
             else{
                 //$facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedout($geoList, $tierValue, false);
                 $fp_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('fp', $geoList, $tierValue, false,$lastPullDatemultiple);
                 $larc_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('larc', $geoList, $tierValue, false,$lastPullDatemultiple);
-                
-                //list($fp_numerator,$fp_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('fp', $geoList, $tierValue, false,$lastPullDatemultiple);
-                //list($larc_numerator,$larc_denominator) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('larc', $geoList, $tierValue, false,$lastPullDatemultiple);
-                
-                
-                
                 $freshVisit = false;
             }
                 
             //$this->view->assign('facs_providing_stockedout', $facsProvidingStockedout);
             $this->view->assign('fp_facs_providing_stockedout', json_encode($fp_facsProvidingStockedout));
             $this->view->assign('larc_facs_providing_stockedout', json_encode($larc_facsProvidingStockedout));
-            
-            //$this->view->assign('fp_numerator',$fp_numerator);
-            //$this->view->assign('fp_denominator',$fp_denominator);
-            
-            //$this->view->assign('larc_numerator',$larc_numerator);
-            //$this->view->assign('larc_denominator',$larc_denominator);
-            
             
             $title_date = $helper->fetchTitleDate();
             $monthNameDisplay = $helper->formatMonthNameYear($lastPullDatemultiple);
@@ -246,11 +176,17 @@ class StockoutController extends ReportFilterHelpers {
                // echo 'It is not empty';
              $overTimeDates = $lastPullDatemultiple;   
             }
-           // echo $implodeDates;exit;
-            //print_r($overTimeDates);exit;
-            $this->view->assign('end_date', date('F', strtotime($overTimeDates[0])). ' ' . date('Y', strtotime($overTimeDates[0]))); 
-            $this->view->assign('start_date', date('F', strtotime($overTimeDates[11])) . ' ' . date('Y', strtotime($overTimeDates[11])));
-            //print_r($lastPullDatemultiple);exit;
+           
+            $overtimeLength = count($overTimeDates) - 1;
+            //var_dump($overTimeDates);
+            //echo '$overtimeLength: ' . $overtimeLength;exit;
+            $this->view->assign('end_date', 
+                    date('F', strtotime($overTimeDates[0])). ' ' . 
+                    date('Y', strtotime($overTimeDates[0]))); 
+            $this->view->assign('start_date', 
+                    date('F', strtotime($overTimeDates[$overtimeLength])) . ' ' . 
+                    date('Y', strtotime($overTimeDates[$overtimeLength])));
+            
             $locationName = $helper->getLocationNames($geoList);            
             reset($locationName); $key = key($locationName);  $location_name = $locationName[$key];
             $this->view->assign('location_name', $location_name); 

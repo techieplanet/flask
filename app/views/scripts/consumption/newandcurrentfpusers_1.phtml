@@ -3,269 +3,217 @@
 <head>
 <style>
 #homecontent {
-	background: url("images/content-bg.png") repeat-x scroll 0 0 #FAFAFA;
 	position: relative;
 }
 
 #homecontent-mid {
-	background: url("images/bg-stage.png") repeat-y scroll right top #FFFFFF;
-	height: 100%;
+	min-height: 100%;
 	outline: medium none;
 	top: -40px;
 }
 
 #homebanner {
-	background: url("images/bg-stage-shade.png") repeat-x scroll 0 0 transparent;
 	padding-right: 20px;
 	position: relative;
 }
 
 .rounded {
-	border-radius: 10px 10px 10px 10px;
+	border-radius: 10px 10px 10px 10px; 
 }
 
 .sliderdiv {
-	background: none repeat scroll 0 0 FFFFFF;
 	float: left;
 }
 
 .main-search {
-	background: none repeat scroll 0 0 #FFFFFF;
 	float: left;
 	overflow: hidden;
 }
-    
- 
-.hometabs.ui-widget-header {
-    background: #eeeeee !important;
-    font-size: 12px;
-    border-top: solid 2px; 
+
+.nav-buttons {
+	float: left;
+	overflow: hidden;
 }
-    
-.small-tab{
-    background-color:white;
-    font-size:12px;
-    padding:2px;
-}
-    
-   
 
-body {font-family: "Lato", sans-serif;}
-
-
-    
-    
 
 </style>
 
- <?php
+<!--<link href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">-->
+
+<?php
 require_once('views/helpers/ScriptContainer.php');
 print ScriptContainer::$instance->renderCSSHead();
 print ScriptContainer::$instance->renderJSHead();
 ?>
+
+
+      <!--<link rel="stylesheet" type="text/css" href="https://google-developers.appspot.---com/_static/f7a896e076/css/screen-docs.css" />-->
+       <!--<link rel="stylesheet" href="//www.google.com/cse/style/look/default.css" type="text/css" />-->
+    <!--<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400" type="text/css">-->
+
     
-<link href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
-
-
-
-<!--<link rel="stylesheet" type="text/css" href="https://google-developers.appspot.---com/_static/f7a896e076/css/screen-docs.css" />-->
-<link rel="stylesheet" href="//www.google.com/cse/style/look/default.css" type="text/css" />
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400" type="text/css"></link>
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
-
-
-<link rel="stylesheet" href="<?php echo $this->base_url; ?>bootstrap/css/bootstrap.min.css"></link>
-<!--<link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css"></link>-->
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"></link>
-
-<link rel="stylesheet" href="<?php echo $this->base_url; ?>css/cssfile.css"></link>
-
+<style>
+    
+    .infobutton {
+        padding-right: 13px;
+    }
+    
+</style>        
+    
+    
 <!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/prettify-bundle.js"></script>-->
 
-<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>-->
-<!--<script id="jqueryui" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js" ></script>-->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+<script id="jqueryui" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js" defer async></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
 
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
+<!--<script src="//www.google.com/jsapi?key=AIzaSyCZfHRnq7tigC-COeQRmoa9Cxr0vbrK6xw"></script>-->
+<!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+<!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/framebox.js"></script>-->
 
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+    function checkCommoditySelection(){
+//        console.log(combo.options);
+//        console.log(combo.options[combo.selectedIndex]);
+//        console.log(combo.options[combo.selectedIndex].value);
 
-<script src="<?php echo $this->base_url; ?>bootstrap/js/bootstrap.min.js"></script>
-
+        //var combo = document.getElementById("comm_id");
+        //var selectedValue = combo.options[combo.selectedIndex].value;
+        //alert('submitting: ' + selectedValue); 
+        
+        //if(selectedValue != 0) return true;
                 
-
-
+        //return false;
+    }
+</script>
 
 <script>
   $(function() {
-    //$( "#accordion" ).accordion({header: "h3", collapsible: true, active: false, animated:200, animated:"slide"});
-    $( "#tabs").tabs();
-    
+    $( "#accordion" ).accordion({active: 1});
     //set high charts global color scheme for all high charts instances on this page
     Highcharts.setOptions({
             colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#AAAA11', '#B77322']
         });
   });
-  
-  $(document).ready(function(){
-       $( "#tabs" ).tabs({
-        activate: function( event, ui ) {
-            var selectedTab = $("#tabs").tabs('option', 'active');
-            if(selectedTab == 1){
-                //redrawChart(chart11Options, chart11Data, chart11Div); 
-                $("#chart11_div").highcharts().reflow();
-            }
-        }
-      });
-//      
-//      $('.infobutton').click(function(){
-//        console.log("inside click");
-//      });
-  });
-  
-//  function redrawChart(chartOptions, chartData, chartDiv) {      
-//    var chart = new google.visualization.ColumnChart(document.getElementById(chartDiv));
-//     chart.draw(chartData, chartOptions);
-//  }
-  
   </script>
-
-           
-
 </head>
+<body class="yui-skin-sam">
     
-<body class="yui-skin-sam" style="background-color:#EEEEEE;overflow-x:hidden;" >
-    <?php
-        
-        //var_dump(array_keys($this->national_consumption_by_method)); exit;
+    <?php   
+            //echo 'high<br/><br/>' ;
+            //var_dump($this->consumption_by_method); 
+            //var_dump($this->consumption_bsmandlocation_first); 
     ?>
-	<div id="pageHolder" style="margin:0px;background-color:#EEEEEE;padding-bottom:0px;">
+    
+	<div id="pageHolder">
 
-		<div id="header"><?php require_once('views/scripts/headerhome.phtml');?></div>
-		<div id="content" style="padding:0px;background-color:#EEEEEE;">
+		<div id="header"><?php require_once('views/scripts/header.phtml');?></div>
+		<div id="content">
 
 			<!-------   /////////////////////////// get data ////////////////////// -->
 
 			<div>
-
 				<?php  //require_once('views/scripts/dashboard/load_data.phtml');?>
-
-
+			</div>
 
 			<!-------   /////////////////////////// make top buttons ////////////////////// -->
 
 			<div class="rightdiv" style="float: right;">
-				<?php  //require_once('views/scripts/dashboard/top_buttons.phtml');?>
-					
+                                <?php require_once('views/scripts/consumption/top_buttons2.phtml');?>
 			</div>
-			
-			<!-------   /////////////////////////// make left buttons ////////////////////// -->
+			<div class="hrNav"></div>
 
-			
-			
+			<!-------   /////////////////////////// make left buttons ////////////////////// -->
+			<div class="nav-buttons">
+				<?php  
+                                    $fileInfo = pathinfo(__FILE__);
+                                    $fileID = $fileInfo['filename'];
+                                    require_once('views/scripts/dashboard/left_buttons.phtml');
+                                ?>
+			</div>
 			<!-------   /////////////////////////// load scripts ////////////////////// -->
             <div class="nav-buttons">
-				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');?>
+				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');
+                             // print_r($this->consumptionArray);
+                                ?>
 			</div>
-
+			
 			<!-------   /////////////////////////// charts ////////////////////// -->
 
-			<!--<body class="docs slim framebox_body">-->
-              	
-                            <div class="row sidebar" style="background-color:#EEEEEE;margin-top:20px;height:100%;">
-                                <div class="col-sm-2" style="height:100%;">
-	
-                                      <?php  
-                                        $fileInfo = pathinfo(__FILE__);
-                                        $fileID = $fileInfo['filename'];
-                                        $activationBar = 'consumption';
-                                        require_once('views/scripts/dashboard/left_buttonshome.phtml');
-                                        $variable = 'Multiple';
-                                    ?>				
-        		
-        
-                                </div>
-                                <div class="col-sm-10 " style="background-color:white;height:100%;padding-top:10px;">
-                                    
-                                    
-                                    
-                                     <div class="row">
-                                         
-                                           <div class=" col-sm-5 pull-right"  >
-	
-			         	                      <?php require_once('views/scripts/dashboard/top_buttons.phtml');?>
-				
-                                           </div>
-                                    
-                                           <div  class="col-sm-7 pull-right box-shadow clearfix"  style="height:500px;"  >
-                                               
-                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                <?php echo "Current FP users and New FP acceptors, $this->date"; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                            
-                                                                           
-                                                                            </div>
-                                                                             
-                                                                          </div>   
-                                             
-                                               <div id="chart11_div" style="width:100%; height: 460px;"></div>
-                                         
-				                           </div>                           
-                                    </div>
-                                    
-                                    <div  class="row" style="margin-top:50px;margin-bottom:45px;">
-                                         
-                                           <div class="col-sm-7 box-shadow" style="height:510px;"  >
-                                               
-                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                 <?php 
-                                                                                     if(isset($this->selectedDatemultiple) && !empty($this->selectedDatemultiple)){
-                                                                                              $textTitle = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
-                                                                                     }else{
-                                                                                           $textTitle = $this->start_date.' to '.$this->end_date;    
-                                                                                         }
-                                                                                     $textHook = $this->geoListSelectionMade ? 'in selected geographies' : ''; ?>
-        
-                                                                                    <?php echo "Current FP users and New FP Acceptors $textHook, $textTitle"; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                           
-                                                                            </div>   
-	
-				
-                                           </div>
-                                               
-			         	                       <div id="chart13_div" style="width:100%;height:350px;"></div>
-                                               
-                                           <div class=" col-sm-6"  >
-                                               
-                                           </div>
-                                               
-                                           </div>
-                                    </div>
-                                  
-                                   
-                                </div>
+			<body class="docs slim framebox_body">
 
-		
+				<div id="allCharts" class="container">
+				
+				<div class="hrNav" id="hrr"></div>
+				<div class="hrNav"></div>
+				
+				
+				    <div id="toprow" class="container">
+						<div id="homecontent" class="container">
+							<div id="homecontent-mid" class="row rounded">
+								<div id="homebanner" class="rounded">
+								<div class="sliderdiv">
+                                                                    <div id="infobutton" class="infobutton hidden"">
+                                                                        <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                        <div id="" class="infodiv" >
+                                                                            ...
+                                                                        </div>
+                                                                    </div>
+								    <div class="hrNav"></div>
+									<div id="chart11_div" style="width: 630px; height: 460px;"></div>
+									</div>
+									
+								</div>
+							</div>
+						</div>			
+					</div>
+					
+					<!-------   /////////////////////////// chart 2,1 ////////////////////// -->
+					
+					<div id="bottomrow" class="container">
+						<div id="homecontent" class="container">
+							<div id="homecontent-mid" class="row rounded">
+								<div id="homebanner" class="rounded">
+								<div class="sliderdiv">
+                                                                            <div id="infobutton" class="infobutton hidden">
+                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                <div id="" class="infodiv" >
+                                                                                    ...
+                                                                                </div>
+                                                                            </div>
+                                                                        <div class="hrNav"></div>
+    									<div id="chart13_div" style="width: 630px; height: 370px;"></div>
+									</div>
+									
+								</div>
+							</div>
+						</div>
+								<!-------   /////////////////////////// chart 2,2 ////////////////////// -->
+                                                <div class="main-search"></div>
+					</div>
+					
+				</div>
+				
+				
+	</div>
+
+		<div class="hrNav"></div>
 		<div class="clear"></div>
-                </div>
-          
-           </div><!-- content -->
-           <br/><br/><br/>
+		
+                
+		<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
 
+		<!-------   /////////////////////////// main gnr ////////////////////// -->
 
 
 <script type="text/javascript">
     
-  var newFPCurrentMonth = "This chart shows number of clients who accepted a modern family planning method for the first time in their lives in the most recent month for the selected geography.";
-  var newFPOvertime = "This chart shows the number of clients who accepted a modern family planning method for the first time in their lives over a period of 12 months for the selected geography.";
-  var currentFPCurrentMonth = "This chart shows the number of clients who have ever used an FP method at any point before returning to receive any family planning method in the most recent month for the selected geography.";
-  var currentFPOvertime = "This chart, which shows the number of clients who have ever used an FP method at any point before returning to receive any family planning method, illustrates use over a period of 12 months for the selected geography.";
+  var newFPCurrentMonth = "This chart shows number of clients who accepted a modern family planning method for the first time in their lives in the most recent month or selected date(s) for the selected geography.";
+  var newFPOvertime = "This chart shows the number of clients who accepted a modern family planning method for the first time in their lives over a period of 12 months or selected date(s) for the selected geography.";
+  var currentFPCurrentMonth = "This chart shows the number of clients who have ever used an FP method at any point before returning to receive any family planning method in the most recent month or selected date(s) for the selected geography.";
+  var currentFPOvertime = "This chart, which shows the number of clients who have ever used an FP method at any point before returning to receive any family planning method, illustrates use over a period of 12 months or selected date(s) for the selected geography.";
   
   var currentMonthText ="";
   var overtimeText = "";
@@ -282,8 +230,7 @@ print ScriptContainer::$instance->renderJSHead();
 //  google.setOnLoadCallback(apiLoaded);
   
     $(function() {
-        
-	 // document.getElementById("allCharts").style.marginLeft="130px";
+	  document.getElementById("allCharts").style.marginLeft="130px";
 
           
         //drawTest();
@@ -296,7 +243,7 @@ print ScriptContainer::$instance->renderJSHead();
                 <?php if(!isset($this->geoListSelectionMade)) { //line chart only available if no geo selection made?>
                     drawDefaultLineChart();
                 <?php } else { ?>
-                    $('#chart13_div').html('<div style="font-weight:bold; padding:5px;background: #eeeeee;border:1px solid #cccccc;">The consumption chart for the last 12 months will not be displayed when multiple locations are selected. Please either select a single commodity and multiple locations or single commodity and single location to display this chart.</div>');
+                    $('#chart13_div').html('<div style="font-weight:bold; padding:5px;background: #eeeeee;border:1px solid #cccccc;">The consumption chart for the last 12 months will not be displayed when multiple locations are selected. Please either select a single user type and multiple locations or single user type and single location to display this chart.</div>');
                 <?php } ?>
         <?php } else if(isset($this->commodityOnly)) { ?>
                 console.log("commodityOnly");
@@ -320,25 +267,46 @@ print ScriptContainer::$instance->renderJSHead();
   
 
  function drawBarChart() {
-        var dataArray = new Array();
-        var consumptionData = <?= 
-                                isset($this->default_option) ?
-                                $this->currentMonthConsumptionArray :
-                                '{}'  //empty json object
-                             ?>;
+     var dataArray = new Array();
+<?php
+    if(isset($this->default_option) && !empty($this->default_option)) { 
         
-        commodityNames = {'new_acceptors': 'New FP acceptors', 'current_users':'Current FP Users'};
-        locationNames = Object.keys(consumptionData);
         
-        for(alias in commodityNames){
-            var obj = {name: commodityNames[alias], data: []};
-            
-            for(loc in locationNames){
-                loopLocation = locationNames[loc];
-                obj.data.push(parseInt(consumptionData[loopLocation][alias]));
-            }
-            dataArray.push(obj);
+        $commNames = array('new_acceptors'=>'New FP acceptors', 'current_users'=>'Current FP Users');
+     
+       
+        $consumptionArray = end($this->consumptionArrays);
+       // print_r($consumptionArray);
+        if(!empty($this->selectedDate)){
+         $fKey = date('F',strtotime($this->selectedDate));
+         $consumptionArray = $this->consumptionArrays[$fKey];
         }
+       // echo '<br/><br/>';
+       // print_r($consumptionArray);exit;
+        $locationNames = array_keys($consumptionArray);
+        
+        
+
+        foreach($commNames as $alias=>$commName){
+            //if(substr($commName, 0, 6) == 'Female') $commName = 'Current FP Users';
+            //if(substr($commName, 0, 3) == 'New') $commName = 'New FP acceptors';
+?>
+            var obj = {name: '<?php echo $commName; ?>', data: []};
+            
+<?php   foreach($locationNames as $location){ ?>
+                obj.data.push(<?php echo $consumptionArray[$location][$alias]; ?>);
+<?php                
+            }//end location
+?>
+        //JS
+        dataArray.push(obj);
+<?php        
+        }//end commodity
+        
+        if(!empty($this->selectedDate)){
+              $this->date = date('F Y',strtotime($this->selectedDate));
+          }
+?>
           
           var title_data = '';
           <?php if(isset($this->default_option) && !empty($this->default_option)) { ?>
@@ -348,8 +316,7 @@ print ScriptContainer::$instance->renderJSHead();
               title_data = <?php echo "'Consumption by method, $this->single_location, $this->date'"; ?>;
               subtitleText = <?php echo "'($this->single_location, $this->date)'"; ?>;
           <?php } ?>
-          
-          //$('#bar-title').text(title_data);
+              
               
           $("#chart11_div").highcharts({
                     chart: {
@@ -380,7 +347,7 @@ print ScriptContainer::$instance->renderJSHead();
                       text: 'Geography',
                       style:{ "fontWeight": "bold" }
                       },
-                        categories: locationNames
+                        categories: <?php echo json_encode($locationNames); ?>
                     },
                     yAxis: {
                         title: {
@@ -415,44 +382,63 @@ print ScriptContainer::$instance->renderJSHead();
                     series:dataArray
 
               });
-                            
+              
+    <?php }//end big if ?>              
+              
 }//end drawbarchart
 
 
 function drawLocationBarChart() {
-        var values = new Array();
-        var allow = false;
-        
-        <?php if(isset($this->commodityAndLocation) || isset($this->commodityOnly)) { ?>
-                allow = true
-        <?php } ?>
-            
-        var consumptionData = allow === true ? <?= $this->currentMonthConsumptionArray; ?> : {};
-        var commodityName = allow === true ? '<?= $this->commodityObject['commodity_name']; ?>' : '';
-        var commodityAlias = allow === true ? '<?= $this->commodityObject['commodity_alias']; ?>' : '';
-        commodityNames = {'new_acceptors': 'New FP acceptors', 'current_users':'Current FP Users'};
-        locationNames = Object.keys(consumptionData);
+       
+      <?php 
+                $allow = isset($this->commodityAndLocation) || isset($this->commodityOnly) ? true : false;
+                $commodityName = '';
                 
-        for(loc in consumptionData){
-            consumption = consumptionData[loc];
-            var value = loc.toUpperCase() === 'National'.toUpperCase() ?
-                                  {y: parseInt(consumption[commodityAlias]), color: '#000000'} :
-                                  parseInt(consumption[commodityAlias]);
-            
-            values.push(value);
-        }
+                if($allow) {
+                    $commodityName = $this->commodityObject['commodity_name']; 
+                    if(substr($commodityName, 0, 6) == 'Female') $commodityName = 'Current FP Users';
+                    if(substr($commodityName, 0, 3) == 'New') $commodityName = 'New FP acceptors';
+                }
+        ?>
+                //console.log(<?php //echo json_encode($this->consumptionArray);?>);
+<?php
+      if($allow){
+        $commNames = array('new_acceptors'=>'New family planning acceptors', 'current_users'=>'Female 15-49 years using modern contraceptives');
         
-               
+       
+        $consumptionArray = end($this->consumptionArrays);
+         if(!empty($this->selectedDate)){
+         $fKey = date('F',strtotime($this->selectedDate));
+         $consumptionArray = $this->consumptionArrays[$fKey];
+        }
+        $locationNames = array_keys($consumptionArray);
+        reset($consumptionArray); 
+        $firstKey = key($consumptionArray);  
+        
+        
+        //echo $firstKey;exit;
+        $color = ''; $consumptionString = "";
+        foreach ($consumptionArray as $location=>$indicators){ 
+            $consumptionString .= $location == $firstKey ?
+                                  "{y:" . $indicators[$this->commodityObject['commodity_alias']] . ", color: '#000000'},":
+                                  $indicators[$this->commodityObject['commodity_alias']] . ",";
+        }
+        $consumptionString = substr($consumptionString, 0, -1);
+       
+?>    
+	  <?php //echo  " var title_date = 'Monthly Consumption by Method$this->title_date ' " ?>;
+          
           var title_data = '';
           
-          <?php 
-            if(!empty($this->selectedDate)){
-                $this->date = date('F Y',strtotime($this->selectedDate));
-            }
+          <?php //if(isset($this->commodityAndLocation) && !empty($this->commodityAndLocation)) { ?>
+          <?php //if($allow) {
+          if(!empty($this->selectedDate)){
+              $this->date = date('F Y',strtotime($this->selectedDate));
+          }
           ?>
-          
-          title_data = commodityName + ', <?= $this->date; ?>';
-          
+              title_data = <?php echo "'$commodityName, $this->date'"; ?>;
+              subtitleText = <?php echo "'($this->date)'"; ?>;
+          <?php //} ?>
               
           $("#chart11_div").highcharts({
                     chart: {
@@ -483,7 +469,7 @@ function drawLocationBarChart() {
                       text: 'Geography',
                       style:{ "fontWeight": "bold" }
                       },
-                        categories: locationNames
+                        categories: <?php echo json_encode($locationNames); ?>
                     },
                     yAxis: {
                         title: {
@@ -516,42 +502,53 @@ function drawLocationBarChart() {
                     },
                     credits: {enabled: false},
                     series: [{
-                        data: values
+                        data: [<?php echo $consumptionString; ?>]
                     }]
                     
 
               });
           
+    <?php
+        }
+    ?>
 }
 
 
 function drawDefaultLineChart() {
-                    
-        var dataArray = new Array();
-        var consumptionData = <?= isset($this->default_option) ? $this->consumptionArray : '{}'  //empty json object ?>;
-        commodityNames = {'new_acceptors': 'New FP acceptors', 'current_users':'Current FP Users'};
-        
-        for(alias in commodityNames){
-            var obj = {name: commodityNames[alias], data: []};
-                
-                for(month in consumptionData){
-                    monthTotal = 0;
-                    locationNames = Object.keys(consumptionData[month]);
-                    
-                    for(loc in locationNames){
-                        loopLocation = locationNames[loc];
-                        monthTotal += parseInt(consumptionData[month][loopLocation][alias]);
-                    }
-                    
-                    obj.data.push(monthTotal);
-                }
-            
-            dataArray.push(obj);
-        }
-        
+  
         selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
         startDate = <?php echo json_encode($this->end_date); ?>;
         monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+        
+        var dataArray = new Array();
+        
+            <?php 
+                if(isset($this->default_option) && !empty($this->default_option)) { 
+                    //$commNames = array('new_acceptors'=>'New family planning acceptors', 'current_users'=>'Female 15-49 years using modern contraceptives');
+                    $commNames = array('new_acceptors'=>'New FP acceptors', 'current_users'=>'Current FP Users');
+                    $monthNames = array_keys($this->consumptionArray);
+                    
+                    foreach($commNames as $alias=>$commName){
+            ?>
+                        //JS
+                        var obj = {name: '<?php echo $commName; ?>', data: []};
+            <?php
+                        foreach($this->consumptionArray as $monthName=>$locationData){
+                            $monthTotal = 0;
+                            foreach($locationData as $indicators){
+                                $monthTotal += (int)$indicators[$alias];
+                            }
+            ?>
+                            //push the value for the current month in the loop
+                            obj.data.push(<?php echo $monthTotal; ?>);
+            <?php
+                        }
+            ?>
+                        dataArray.push(obj);
+            <?php
+                    }
+            ?>
+                    
 
 
         <?php 
@@ -631,49 +628,62 @@ function drawDefaultLineChart() {
                     series: dataArray
                 });
                 
-    <?php //}//end big if ?>
+    <?php }//end big if ?>
 
-}//end drawDefaultLineChart
-
-
-
-function drawCommodityOvertimeChart() {
+    }//end drawDefaultLineChart
+    
+    
+    
+    function drawCommodityOvertimeChart() {
         selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
         startDate = <?php echo json_encode($this->end_date); ?>;
         monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
         
+        <?php 
+                $commodityName = '';
+                if(isset($this->commodityOnly)) {
+                    $commodityName = $this->commodityObject['commodity_name']; 
+                    if(substr($commodityName, 0, 6) == 'Female') $commodityName = 'Current FP Users';
+                    if(substr($commodityName, 0, 3) == 'New') $commodityName = 'New FP acceptors';
+                }
+        ?>
+                
         var dataArray = new Array();
-        var allow = false;
-        <?php if(isset($this->commodityAndLocation) || isset($this->commodityOnly)) { ?>
-                allow = true
-        <?php } ?>
-        
-        var consumptionData = allow === true ? <?= $this->consumptionArray; ?> : {};
-        var commodityName = allow === true ? '<?= $this->commodityObject['commodity_name']; ?>' : '';
-        var commodityAlias = allow === true ? '<?= $this->commodityObject['commodity_alias']; ?>' : '';
-        
-        commodityNames = {'new_acceptors': 'New FP acceptors', 'current_users':'Current FP Users'};
-        locationNames = Object.keys(consumptionData);
-        console.log('consumptionData', consumptionData, 'locationNames', locationNames);
-        var obj = {name: commodityName, data: []};
-        
-        for(month in consumptionData){
-            monthData = consumptionData[month];
-            totalCommoditySum = 0;
-            
-            for(loc in monthData){
-                locationData = monthData[loc];
-                totalCommoditySum += parseInt(locationData[commodityAlias]);
-            }
-            obj.data.push(totalCommoditySum);
+        var obj = {name: '<?php echo $commodityName; ?>', data: []};
+            <?php 
+                $consumptionArray = array();
+                if(isset($this->commodityOnly) && !empty($this->commodityOnly)) { 
+                 $monthNames = array_keys($this->consumptionArray);
+                 
+                 foreach($this->consumptionArray as $monthName=>$monthArray){                     
+                     $totalCommoditySum = 0;
+                     
+                     foreach($monthArray as $location=>$indicators){
+                         $totalCommoditySum += (int)$indicators[$this->commodityObject['commodity_alias']];
+                     }
+            ?>
+                    obj.data.push(<?php echo $totalCommoditySum; ?>);
+                     
+            <?php
+                    }//end foreach
+                    
+                      if(isset($this->selectedDatemultiple) && !empty($this->selectedDatemultiple)){
+         $textTitle = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
+        }else{
+         $textTitle = $this->start_date.' to '.$this->end_date;    
         }
-        
+            ?>
+
         dataArray.push(obj); 
-        console.log('dataArray', dataArray);
         
-          var title_data = commodityName + ', <?= $textTitle; ?>';
+        
+          var title_data = <?php echo "'$commodityName, $textTitle'"; ?>;
           var subtitleText = <?php echo "'($textTitle)'"; ?>;
         
+          
+                
+            
+                
                 $('#chart13_div').highcharts({
                     chart: {
                         //type: 'line',
@@ -739,45 +749,71 @@ function drawCommodityOvertimeChart() {
                     },
                     series: dataArray
                 });
+                
+     <?php
+                
+                } //end if
+     ?>     
 
-}
-    
-    
+    }
     
 
-function drawCommodityAndLocationLineChart() {
+
+    function drawCommodityAndLocationLineChart() {
         selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
         startDate = <?php echo json_encode($this->end_date); ?>;
         monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
         
         var dataArray = new Array();
-        var consumptionData = <?= isset($this->commodityAndLocation) ? $this->consumptionArray : '{}'  //empty json object ?>;
-        var commodityName = '<?= isset($this->commodityAndLocation) ? $this->commodityObject['commodity_name'] : ''; ?>';
-        var commodityAlias = '<?= isset($this->commodityAndLocation) ? $this->commodityObject['commodity_alias'] : ''; ?>';
-        commodityNames = {'new_acceptors': 'New FP acceptors', 'current_users':'Current FP Users'};
-        monthNames = Object.keys(consumptionData);
-        locationNames = Object.keys(consumptionData[monthNames[0]]);
         
-        for(loc in locationNames){
-            loopLocation = locationNames[loc];
-            console.log('loopLocation', loopLocation);
-            var obj = {name: loopLocation, data: []};
-                
-                for(month in monthNames){
-                    loopMonth = monthNames[month];
-                    obj.data.push(parseInt(consumptionData[loopMonth][loopLocation][commodityAlias]));
-                    if(loopLocation.toUpperCase() === 'National'.toUpperCase()){
-                        obj.color = '#000000';
-                        obj.dashStyle = 'dot';
-                        obj.marker = {enabled: true};
-                    }
+            <?php 
+                $commodityName = ''; $commodityAlias="";
+                if(isset($this->commodityAndLocation)) {
+                    $commodityName = $this->commodityObject['commodity_name']; 
+                    if(substr($commodityName, 0, 6) == 'Female') $commodityName = 'Current FP Users';
+                    if(substr($commodityName, 0, 3) == 'New') $commodityName = 'New FP acceptors';
+                    $commodityAlias = $this->commodityObject['commodity_alias']; 
                 }
             
-            dataArray.push(obj);
-        }
-        
+                if(isset($this->commodityAndLocation) && !empty($this->commodityAndLocation)) { 
+                    $monthNames = array_keys($this->consumptionArray);
+                    $firstLocation = '';
+                    
+                    $locationNames = array();
+                    if(isset($this->geoLocations)) {
+                        reset($this->consumptionArray);
+                        $firstElement = current($this->consumptionArray);
+                        $locationNames = array_keys($firstElement);
+                        //$firstLocation = $locationNames[0];
+                    }
+                    
+                    foreach($locationNames as $key=>$location){
+            ?>
+                        //JS
+                        //console.log('The arraty');
+                        //console.log(<?php //echo json_encode($locationNames); ?>);
+                        //return;
+                        //console.log(<?php //echo json_encode($this->consumptionArray); ?>);
+                        var obj = {name: '<?php echo $location; ?>', data: []};
             
-            <?php   
+           <?php       foreach($monthNames as $monthName){ ?>
+                
+                            obj.data.push(<?php echo $this->consumptionArray[$monthName][$location][$commodityAlias]; ?>);                            
+                            
+            <?php
+                        }
+                        if($key == 0){
+            ?>
+                            obj.color = '#000000';
+                            obj.dashStyle = 'dot';
+                            obj.marker = {enabled: true};
+            <?php
+                        }
+            ?>
+                        dataArray.push(obj);
+            <?php
+                    }
+                    
                     if(isset($this->selectedDatemultiple) && !empty($this->selectedDatemultiple)){
          $textTitle = (sizeof($this->selectedDatemultiple)>1)?"across selected dates":"across selected date";
         }else{
@@ -785,7 +821,7 @@ function drawCommodityAndLocationLineChart() {
         }
             ?>
             
-            var title_data = commodityName + ' in selected geographies, ' + '<?= $textTitle; ?>';
+            var title_data = <?php echo "'$commodityName in selected geographies, $textTitle'"; ?>;
             var subtitleText = <?php echo "'($textTitle)'"; ?>;
 
             $('#chart13_div').highcharts({
@@ -853,6 +889,10 @@ function drawCommodityAndLocationLineChart() {
                     },
                     series: dataArray
                 });
+                
+    <?php } ?>
+
+
     }
     
 </script>
@@ -867,6 +907,7 @@ function drawCommodityAndLocationLineChart() {
 
 <script src="../js/tp/functions.js"></script>
 <script src="../js/tp/overtime-ops.js"></script>
+
 </body>
 
 </html>

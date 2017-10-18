@@ -203,7 +203,7 @@ class Helper2 {
                         ->from(array('fwtc' => 'facility_worker_training_counts_view'),
                             array('COUNT(DISTINCT(facid)) AS fid_count'))
                         ->joinInner(array('frr'=>'facility_report_rate'), 'facid = frr.facility_id', array('MONTHNAME(date) as month_name', 'YEAR(date) as year'))
-                        ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = facility_id', array('lga', 'state', 'geo_zone'))
+                        ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = facility_id', array($tierText))
                         ->where($longWhereClause)
                         ->group(array($tierFieldName, 'date'))
                         ->order(array($tierText,'date'));
@@ -637,9 +637,17 @@ class Helper2 {
         }
         
         //divide national avg by length of national zones
-        $nationalAvg = (($numerSum>0 && $denomSum>0)?($numerSum / $denomSum):0);
+        $nationalAvgPercent = $numerSum>0 && $denomSum>0?
+                       round($numerSum / $denomSum * 100, 1):
+                       0;
         
-        return array('output'=>$output, 'nationalAvg' => $nationalAvg);
+        return array('output'=>$output, 
+                     'nationalAvg' => [
+                        'numer' => $numerSum,
+                        'denom' => $denomSum,
+                        'location' => 'National',
+                        'percent' => $nationalAvgPercent
+                     ]);
     }
     
     
@@ -657,7 +665,7 @@ class Helper2 {
         foreach ($numerators as $location=>$numer){
             $output[$location] = array(
                 'location' => $location,
-                'num' => $numer,
+                'numer' => $numer,
                 'denom' => $denominators[$location],
                 'percent' => round((($numer>0 && $denominators[$location])?($numer / $denominators[$location]):0) * 100, 1)
             );
@@ -675,7 +683,7 @@ class Helper2 {
             'output'=>$output,
             'national' => array(       
                 'location' => 'National',
-                'num' => $numerSum,
+                'numer' => $numerSum,
                 'denom' => $denomSum,
                 'percent' => $nationalAvg
             )

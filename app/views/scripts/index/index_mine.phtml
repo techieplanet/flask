@@ -34,157 +34,8 @@
 	float: left;
 	overflow: hidden;
 }
-    
-.small-box{
-   background-color:#00E3E3;
-   padding:24px;   
-}
-    
-.img-box{
 
-  width:25px;
-  height:25px;
-  margin-right:5px;
-        
-}
 
-.big-box{
-    background-color:white;
-    color:black;
-    font-size:12px;
-    text-transform:uppercase;
-    height:74px;
-    padding-top:5px;
-}
-    
-
-.font-20{
-  font-size:16px;
-}
-    
-.green{
-    
-    background-color:#06A259;
-        
-}
-
-.red{
-    
-   background-color:#DD4C39;
-        
-}
-    
-.total-participant-color{
-    background-color: #F39C11;  
-}
-    
-.line-color-pie-chart{
-     background-color:#262F31;   
-}
-    
-.hometabs.ui-widget-header {
-    background: #eeeeee !important;
-    font-size: 12px;
-    border-top: solid 2px; 
-}
-    
-.small-tab{
-    background-color:white;
-    font-size:12px;
-    padding:2px;
-}
-    
-    .title-bar{
-        width: 100%;
-        
-        margin-bottom:10px;
-    }
-    
-    .border-hr{
-        border-top: solid 2px #E36856;
-    }
-    
-    
-    
-    .title-bar-info-btn{
-        background-color:white;
-        border-left:solid 1px #FAFAFA;
-        padding-top:3px;
-        padding-bottom:13px;
-        
-    }
-    
-    .border-fa{
-        border-top: solid 2px #E36856;
-    }
-    
-    .border-st{
-        border-top: solid 2px #289D6C;
-    }
-    
-
-body {font-family: "Lato", sans-serif;}
-
-/* Style the tab */
-div.tab {
-    overflow: hidden;
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
-}
-
-/* Style the buttons inside the tab */
-div.tab button {
-    background-color: inherit;
-    float: right;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 8px;
-    padding-top:8px;
-    transition: 0.3s;
-    font-size: 10px;
-    width:50px;
-    height:0px;
-}
-
-/* Change background color of buttons on hover */
-div.tab button:hover {
-    background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-div.tab button.active {
-    background-color: #ccc;
-}
-
-/* Style the tab content */
-.tabcontent {
-    display: none;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-top: none;
-}
-
-    .box-shadow{
-        box-shadow: 5px 5px 5px #cccccc;
-    }
-    
-    @media screen and (max-width: 1000px) and (min-width: 300px) {
-    .big-box{
-    background-color:white;
-    color:black;
-    font-size:10px;
-    text-transform:uppercase;
-    height:74px;
-}
-        
-        .font-20{
-            font-size:12px;
-        }
-    
-}
-    
-    
 
 </style>
 
@@ -220,9 +71,6 @@ print ScriptContainer::$instance->renderJSHead();
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
 <script src="bootstrap/js/bootstrap.min.js"></script>
-
-<link rel="stylesheet" href="css/cssfile.css"></link>
-
 
                 
 
@@ -264,15 +112,15 @@ print ScriptContainer::$instance->renderJSHead();
 
 </head>
     
-<body class="yui-skin-sam" style="background-color:#EEEEEE;overflow-x:hidden;" >
+<body class="yui-skin-sam">
     <?php
         
         //var_dump(array_keys($this->national_consumption_by_method)); exit;
     ?>
-	<div id="pageHolder" style="margin:0px;background-color:#EEEEEE;">
+	<div id="pageHolder">
 
 		<div id="header"><?php require_once('views/scripts/headerhome.phtml');?></div>
-		<div id="content" style="padding:0px;background-color:white;">
+		<div id="content">
 
 			<!-------   /////////////////////////// get data ////////////////////// -->
 
@@ -301,14 +149,9 @@ print ScriptContainer::$instance->renderJSHead();
 			<!-------   /////////////////////////// charts ////////////////////// -->
 
 			<!--<body class="docs slim framebox_body">-->
-                            
-                            
-                          
-                                
-                                
-                                
+                            <div align="right" ><font size="4"><label><?php echo 'National Contraceptive Prevalence Rate 15% Target 36%'; ?></label></font></div>
 				
-                            <div class="row sidebar" style="background-color:#EEEEEE;margin-top:20px;height:100%;">
+                            <div class="row sidebar" style="margin-top: 30px;">
                                 <div class="col-md-2">
 	
                                     <?php  
@@ -319,120 +162,17 @@ print ScriptContainer::$instance->renderJSHead();
         
                                 </div>
                                 
-                              <div class="col-md-10" style="background-color:white;padding-right:30px;">
+                              <div class="col-md-10" style="margin-top: 10px;" >
+                                    <div class="row" style="margin-bottom: 25px;margin-top: -15px;text-align:center; ">
+                                        <div id="" class="col-md-1" style=""></div>
+                                        <div id="" class="col-md-4" style="display:block !important;"><span class="chart-title hidden">Consumption by method, <?php echo $this->title_date; ?></span></div>
+                                        <div id="" class="col-md-2" style=""></div>
+                                        <div id="" class="col-md-5" style="display:block !important;"><span class="chart-title hidden">HR Summary, <?php echo $this->title_date; ?></span></div>
+                                    </div>
                                   
-                                    <div class="row" style="text-align:center; ">
-                                        
-                                         <div class="col-sm-12" style="padding-top:10px;" >
-                                             
-                                             <div class="row" style="margin:0">
-                                                 
-                                                  <div class="col-sm-3" style="" >
-                                                 
-                                               <div class="row box-shadow" style="margin:0">
-                                                   
-                                                   <div class="col-sm-4 text-center small-box"  >
-                                                    
-                                                      <img src="images/map of 9ja.png" class="img-box" />
-                                        
-                                                   </div>
-                                    
-                                                  <div class="col-sm-8 text-left big-box" >
-                                                     National Contraceptive Prevalence Rate <br>
-                                                    <b class="font-20" > 15% (NDHS 2013) </b>
-                                                
-                                                  </div>
-                                    
-                                                </div>
-                                    
-                                             </div>
-                                             
-                                             <div class="col-sm-3" style="">
-                                                 
-                                                 <div class="row box-shadow" style="margin:0">
-                                                     
-                                                     <div class="col-sm-4 text-center small-box green">
-                                                    
-                                                     <img src="images/map of 9ja.png" class="img-box" />
-                                        
-                                                    </div>
-                                    
-                                                   <div class="col-sm-8 text-left big-box" >
-                                                       2018 Contraceptive Prevalence Rate Target
-                                                     
-                                                       <br>
-
-                                                        <b class="font-20" >36% </b>
-                                                
-                                                      </div>
-                                    
-                                                    </div>
-                                    
-                                              </div>
-                                             
-                                               <div class="col-sm-3" style="">
-                                                   
-                                                    <div class="row box-shadow" style="margin:0">
-                                                        
-                                                          <div class="col-sm-4 text-center small-box red">
-                                                    
-                                                              <img src="images/icon_x.png" class="img-box" />
-                                        
-                                                          </div>
-                                    
-                                                         <div class="col-sm-8 text-left big-box" >
-                                                            Total number of trainings conducted
-                                                            <br>
-                                                            <b class="font-20" >6000</b>
-                                                    
-                                                        </div>
-                                                        
-                                                   </div>
-                                    
-                                    
-                                               
-                                              </div>
-                                             
-                                             <div class="col-sm-3" style="">
-                                                 
-                                                 <div class="row box-shadow" style="margin:0">
-                                                     
-                                                      <div class="col-sm-4 text-center small-box total-participant-color">
-                                                    
-                                                        <img src="images/multiple-users-silhouette.png" class="img-box" />
-                                        
-                                                     </div>
-                                    
-                                                    <div class="col-sm-8 text-left big-box ">
-                                                        Total Health Workers Trained
-                                                        <br>
-                                                       <b class="font-20" >7000 </b> 
-                                                   
-                                                     </div>
-                                    
-                                                 </div>
-                                    
-                                              </div>
-                                                 
-                                             </div>
-                                        </div>
-                                        
-                                  </div>
-                                    
-                                
-                                    <div class="row">
-                                             
-                                            
-                                                 
-                                           <div class="col-sm-12" style="padding-left:0px;padding-right:0px;margin-top:15px;" >      
-                                             
-                                                 <div class="col-sm-6 " style="padding-right:3px; margin-top:14px;">
-                                                     
-                                                  
-
-                                              
-                                               <div id="tabs" class="box-shadow"    style="overflow:visible !important; min-height: 450px; border: 0;">
-                                                   <div style="z-index:5000;margin-bottom:-23px;margin-left:100px;font-size:13px;">Consumption by method, <?php echo $this->title_date; ?></div>
+                                  <div class="row">
+						
+                                                                     <div id="tabs" class="col-md-6" style="overflow:visible !important; min-height: 450px; border: 0;">
                                                                          <div id="infobutton" class="infobutton hidden info11 align-left" style="margin-bottom: -47px;width: 55%;margin-left: 50%;">
                                                                                     <span class="infowrap" ><i class="fa fa-info-circle"></i></span>
                                                                                         <div id="" class="infodiv" style="margin-top:26px !important;">
@@ -443,146 +183,64 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                         </div>
                                                                                     </div><br/>
                                                                          
-                                                                         
-                                                                         
-                                                                             <ul class="hometabs hidden" >
-                                                                                 <li class=""><a href="#tab1">Pie</a></li>
-                                                                                 <li class=""><a href="#tab2">Bar</a></li>
-                                                                             </ul>
-                                                                             
-                                                                           
+                                                                          <ul class="hometabs hidden">
+                                                                              <li class=""><a href="#tab1">Pie</a></li>
+                                                                              <li class=""><a href="#tab2">Bar</a></li>
+                                                                          </ul>     
                                                                          
                                                                             <div id="tab1" class="sliderdiv" style="overflow:visible !important;width: 100%;"> 
                                                                                 <div class="hrNav"></div>
-                                                                                <div id="piechart" class="box-shadow" style="width: 100%; height: 0px; margin-top: -30px"></div>
+                                                                                <div id="piechart" style="width: 100%; height: 300px; margin-top: -30px"></div>
                                                                                 <!--<div id="chart11_div" style="width: 100%; height: 430px;"></div>-->
                                                                             </div>
                                                                          
                                                                             <div id="tab2" class="sliderdiv" style="overflow:visible !important;width: 100%; margin-top:0px;"> 
                                                                                 <div class="hrNav"></div>
-                                                                                <div id="chart11_div" class="box-shadow" style="width: 100%; height: 0px;overflow:visible !important;margin-top: -30px;margin-left: -20px;"></div>
+                                                                                <div id="chart11_div" style="width: 100%; height: 350px;overflow:visible !important;margin-top: -30px;margin-left: -20px;"></div>
                                                                             </div>
                                                                          
                                                                             
                                                                      </div>
-                                                       </div>
-                                               
-                                               <?php
-        $cs_fp_trained_facility_count = $this->csummary['cs_fp_trained_facility_count'];
-        $cs_fp_consumption_facility_count = $this->csummary['cs_fp_consumption_facility_count'];
-        $cs_fp_stock_out_facility_count = $this->csummary['cs_fp_stock_out_facility_count'];
-
-        $cs_larc_trained_facility_count = $this->csummary['cs_larc_trained_facility_count'];
-        $cs_larc_consumption_facility_count = $this->csummary['cs_larc_consumption_facility_count'];
-        $cs_larc_stock_out_facility_count = $this->csummary['cs_larc_stock_out_facility_count'];
-     ?> 
                                     
-                                                 <div class="col-sm-6 " style="margin-top:5px;" >
-                                                                         <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
-                                                                                HR Summary, <?php echo $this->title_date; ?>
-                                                                            </div>
-                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
-                                                                             <div id="infobutton" class="infobutton" style="margin-left:4px;">
-                                                                             
+                                                                     <div class="col-md-6">
+                                                                        
+                                                                    <div class="main-search" style="width: 100%; margin: 0px !important;">
+                                                                       
+                                                                            <div id="infobutton" class="infobutton hidden" style="margin-bottom: -25px;padding-right:15px;">
                                                                                 <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                 <div id="" class="infodiv" >
-                                                                                    The blue bars show the percent of all facilities in the country that have at 
-                                                                                    least one trained health worker in FP or LARC as of the most recent month.<br/><br/>
+                                                                                    <b>FP Chart</b> 
+                                                                                   <br/>The blue bar shows the number of all facilities in the country that have at least one trained health worker in FP as of the most recent month. <br/><br/>
+                                                                                   The red bar shows the number of facilities with an FP-trained health worker that reported in the most recent month and consumed at least one FP commodity in the most recent month. <br/><br/>
+                                                                                   The yellow bar shows the number of facilities with an FP-trained health worker that reported in the most recent month and that were stocked out of any FP commodity for seven consecutive days in that month. FP training includes Contraceptive Technology Update, FP Technology, Injectable Contraceptives for CHEWs, LARC, and Post Partum IUCD in-service trainings. <br/><br/>
+                                                                                    <br/>
                                                                                     
-                                                                                    The red bars show the percentage of facilities with a trained health 
-                                                                                    worker that reported in the most recent month and consumed at least one FP/LARC 
-                                                                                    commodity in the most recent month. <br/><br/>
+                                                                                    <b>LARC Chart</b>
+                                                                                    <br/>The blue bar shows the number of all facilities in the country that have at least one trained health worker in LARC as of the most recent month. <br/><br/>
+                                                                                    The red bars show the number of facilities with a LARC-trained health worker that reported in the most recent month and consumed at least one LARC commodity in the most recent month. <br/><br/>
                                                                                     
-                                                                                    The yellow bars show the  percentage of facilities with a trained health 
-                                                                                    worker that reported in the most recent month and are stocked out of any FP commodity or implants. <br/><br/>
-                                                                                    
-                                                                                    FP training includes Contraceptive Technology Update, FP Technology, Injectable Contraceptives for CHEWs, 
-                                                                                    LARC, and Post Partum IUCD in-service trainings. <br/><br/>
-                                                                                    
-                                                                                    LARC training includes LARC and Post Partum IUCD in-service trainings. 
+                                                                                    The yellow bar shows the number of facilities with a LARC-trained health worker that reported in the most recent month and that were stocked out of implants. LARC training includes LARC and Post Partum IUCD in-service trainings.
                                                                                     <br/><br/>
                                                                                     
-                                                                                    Together, these charts can provide a snapshot of barriers to service delivery 
-                                                                                    (lack of training, lack of commodity availability, or lack of service provision due to some other barrier).
                                                                                 </div>
                                                                             </div>
-                                                                            </div>
-                                                                             
-                                                                          </div>   
-                                               
-                                                                         
-                                                                          
-                                                                    <div class="main-search box-shadow" style="width: 100%;height:425px;">
-                                                                       
-                                                                            <div id="infobutton" class="infobutton hidden" style="margin-bottom: 0;padding-right:15px;margin-top:-15px;">
-                                                                                <br>
-                                                                                
-                                                                                <div id="" class="infodiv" >
-                                                                                    The blue bars show the percent of all facilities in the country that have at 
-                                                                                    least one trained health worker in FP or LARC as of the most recent month.<br/><br/>
-                                                                                    
-                                                                                    The red bars show the percentage of facilities with a trained health 
-                                                                                    worker that reported in the most recent month and consumed at least one FP/LARC 
-                                                                                    commodity in the most recent month. <br/><br/>
-                                                                                    
-                                                                                    The yellow bars show the  percentage of facilities with a trained health 
-                                                                                    worker that reported in the most recent month and are stocked out of any FP commodity or implants. <br/><br/>
-                                                                                    
-                                                                                    FP training includes Contraceptive Technology Update, FP Technology, Injectable Contraceptives for CHEWs, 
-                                                                                    LARC, and Post Partum IUCD in-service trainings. <br/><br/>
-                                                                                    
-                                                                                    LARC training includes LARC and Post Partum IUCD in-service trainings. 
-                                                                                    <br/><br/>
-                                                                                    
-                                                                                    Together, these charts can provide a snapshot of barriers to service delivery 
-                                                                                    (lack of training, lack of commodity availability, or lack of service provision due to some other barrier).
-                                                                                </div>
-                                                                            </div>
-                                                                        <div class="hrNav" ></div>
-                                                                       <div id="chart12_div" style="width: 100%;margin-top: 20px;height:320px;"></div>
+                                                                        <div class="hrNav"></div>
+                                                                       <div id="chart12_div" style="width: 100%; height: 430px;margin-top: 20px;"></div>
                                                                     
                                                                      
-						                      </div>	
-                                                         
-                                                 
-                                             </div>
-                                               
-                                     </div>   
-                                                 
-                                    </div>
-                                             
-                                    <div class="row">
-                                               
-                                             
-                                             <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
-                                             
-                                                   <div class="col-sm-6 " style="padding-right:3px;margin-top:5px;">
-                                                       
-                 
-                                                       
-                                                        <div class="title-bar border-fa col-xs-12"  style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font"  >
-                                                                                Facilities Providing(%), <?php echo $this->start_date . ' to ' . $this->end_date; ?>
-                                                                            </div>
-                                                                            <div class="col-xs-1 title-bar-info-btn" style="min-height:20px;">
-                                                                                <div id="infobutton" class="infobutton " style="margin-left:4px;">
-                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
-                                                                                <div id="" class="infodiv" >
-                                                                                    The red line shows the percentage of reporting facilities that consumed at 
-                                                                                    least one implant or IUCD in the given month. <br/><br/>
-                                                                                    The blue line shows the percentage of reporting facilities that consumed at 
-                                                                                    least one FP commodity in the given month. <br/><br/>
-                                                                                    Together, these lines illustrate the gap between the availability of LARC 
-                                                                                    services and short-acting FP services and whether this is improving over time.
-                                                                                </div>
-                                                                            </div>
-                                                                            </div>
-                                                                         </div>
-                                                       
+						</div>		</div>	
+				
+					
+					<!-------   /////////////////////////// chart 2,1 ////////////////////// -->
+                                </div>
+                                 <div class="row">
+                                    
+					
+						
+                                                                    <div class="col-md-6">
                                                                         <div class="sliderdiv" style="width: 100%;">
                                                                             <div id="infobutton" class="infobutton hidden" style="margin-bottom: -30px;padding-right:20px;">
-                                                                               
+                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                 <div id="" class="infodiv" >
                                                                                     The red line shows the percentage of reporting facilities that consumed at 
                                                                                     least one implant or IUCD in the given month. <br/><br/>
@@ -593,19 +251,14 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                 </div>
                                                                             </div><br/>
                                                                         <div class="hrNav"></div>
-                                                                        <div id="chart13_div" class="box-shadow" style="width: 100%; height: 430px;"></div>
+                                                                        <div id="chart13_div" style="width: 100%; height: 300px;"></div>
                                                                     </div>
                                                                     </div>
-                                                 
-                                    
-                                                                    <div class="col-sm-6" style="margin-top:5px;">
-
-                                                                         <div class="title-bar border-st col-xs-12" style="padding:0px;" >
-                                                                            <div class="col-xs-11 text-left small-tab title-bar-font"  >
-                                                                                <?php echo  "Stock outs, $this->start_date to $this->end_date"; ?>
-                                                                            </div>
-                                                                            <div class="col-xs-1 title-bar-info-btn" style="min-height:20px;">
-                                                                                <div id="infobutton" class="infobutton" style="margin-left:4px;">
+                                        
+                                                                    <div class="col-md-6">
+                                                                       
+                                                                        <div class="sliderdiv" style="width: 100%;padding-left:15px;">
+                                                                                <div id="infobutton" class="infobutton hidden" style="margin-bottom: -30px;padding-right: 60px;">
                                                                                     <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                     <div id="" class="infodiv" >
                                                                                         This chart shows stock out rates over time at facilities that have provided 
@@ -620,44 +273,11 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                         implants in the given month.
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
-                                                                         </div>
-                                                                       
-                                                                        <div class="sliderdiv" style="width: 100%;">
-                                                                                <div id="infobutton" class="infobutton hidden" style="margin-bottom: -30px;">
-                                                                                    
-                                                                                    <div id="" class="infodiv" >
-                                                                                        This chart shows stock out rates over time at facilities that have provided 
-                                                                                        any FP services or implants specifically in the past. <br/><br/>
-
-                                                                                        For FP, this is the percentage of facilities reporting in the given month that 
-                                                                                        have provided any FP commodities any time in the last six months that were 
-                                                                                        stocked out of any FP commodity for at least seven days in the given month. <br/><br/>
-
-                                                                                        For implants, this is the percentage of facilities reporting in the given month that 
-                                                                                        have consumed implants any time in the last six months that are stocked out of 
-                                                                                        implants in the given month.
-                                                                                    </div>
-                                                                                </div>
                                                                             <div class="hrNav"></div>
-                                                                            <div id="chart14_div" class="box-shadow" style="width: 100%; height: 430px;margin-top: 20px;"></div>
+                                                                            <div id="chart14_div" style="width: 90%; height: 300px;margin-top: 20px;"></div>
                                                                         </div>
                                                                     </div>
-                                                 
-                                             </div>
-                                    </div>
-                                             
-                                              
-                            
-                            
-                                       
-                                             
-                                        </div>
-                                      
-                                       
-                                    </div>
-                                
-                                                              
+
 						
                                  </div>
 								<!-------   /////////////////////////// chart 2,2 ////////////////////// -->
@@ -667,7 +287,7 @@ print ScriptContainer::$instance->renderJSHead();
                                       
                                 </div>
 
-		
+		<div class="hrNav"></div>
 		<div class="clear"></div>
                 </div>
            
@@ -695,13 +315,12 @@ print ScriptContainer::$instance->renderJSHead();
 //  var chart11Options = "", chart11Data ="", chart11Div =""; 
   
   $(function() {
-	  //document.getElementById("allCharts").style.marginLeft="130px";
-
+	//document.getElementById("allCharts").style.marginLeft="130px";
 	drawChart11();
 	drawChart12();
 	drawChart13();
 	drawChart14();
-     drawPieChart();
+        drawPieChart();
         //drawColumnChart();
 
 	//var currentLevel;
@@ -1186,7 +805,6 @@ print ScriptContainer::$instance->renderJSHead();
 <script src="js/highcharts/modules/exporting.js"></script>
 <script src="js/tp/functions.js"></script>
 <script src="js/tp/overtime-ops.js"></script>
-<script src="css/sidebar.css"></script>
 <div id="footer"><?php //require_once('views/scripts/footer.phtml');?></div>
 
 

@@ -226,7 +226,7 @@ class Coverage extends IndicatorGroup {
                    // var_dump($denominators);
                     $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
                     $output = array_merge($output, $sumsArray['output']);
-                    $output[0]['percent'] = $sumsArray['nationalAvg'];
+                    $output[0] = $sumsArray['nationalAvg'];
                     //echo 'after sums<br>';  var_dump($output); exit;
                     
                     //do cache insert
@@ -256,7 +256,7 @@ class Coverage extends IndicatorGroup {
                         //get month national data and put in first array element
                         $cacheValue = json_decode($cacheValue, true);
                         if($cacheValue)
-                            $output[0]['percent'] = $cacheValue[0]['percent'];
+                            $output[0] = $cacheValue[0]; //national
                     }
                 }
                 //echo $latestDate;
@@ -264,82 +264,6 @@ class Coverage extends IndicatorGroup {
                 //var_dump($output); exit;
                 return $output;
         }
-        
-        
-         public function fetchPercentFacHWTrainedNumeratorDenominator($training_type, $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDate=""){            
-                $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
-                $output = array(array('location'=>'National', 'percent'=>0));
-               
-                $helper = new Helper2();
-                
-                $cacheManager = new CacheManager();
-              // echo $lastPullDate;
-                //$latestDate = $helper->getLatestPullDate();
-                if(empty($lastPullDate) || $lastPullDate==""){
-                $latestDate = $helper->getLatestPullDate();
-                }else{
-                $latestDate = $lastPullDate;
-                 }
-           
-//                $freshVisit=false;
-//               $updateMode = true;
-                
-                //echo $latestDate;
-              
-                   
-                    //needed variables
-                    $tierText = $helper->getLocationTierText($tierValue);
-                    $tierFieldName = $helper->getTierFieldName($tierText);
-                    
-                    if(empty($lastPullDate) || $lastPullDate==""){
-                    $latestDate = $helper->getLatestPullDate();
-                    }else{
-                    $latestDate = $lastPullDate;
-                    }
-                    //echo "This is the new fetch place not using the freshvisit".$lastPullDate.$latestDate;
-                    //$latestDate = $helper->getLatestPullDate();
-
-//                    //where clauses
-//                    if($training_type == 'fp')
-//                        $tt_where = "fptrained > 0";
-//                    else if($training_type == 'larc')
-//                        $tt_where = 'larctrained > 0';
-
-                    $locationWhere = $tierFieldName . ' IN (' . $geoList . ')';
-                    $highestDate = date('Y-m-t', strtotime($latestDate));
-                    $endDateWhere = "t.training_end_date <= '" . $highestDate . "'";
-                    
-                    if($training_type == 'fp') 
-                        $trainingTypeWhere = "(tto.system_training_type = 'fp' OR tto.system_training_type = 'larc') AND tto.is_deleted=0";
-                    else if($training_type == 'larc') 
-                        $trainingTypeWhere = "tto.system_training_type = '" . $training_type . "' AND tto.is_deleted=0";
-                    
-                    //$trainingTypeWhere = "tto.system_training_type = '" . $training_type . "' AND tto.is_deleted=0";
-                    $trainingWhere = "t.is_deleted = 0";
-                    $personWhere = "p.is_deleted = 0";
-                    
-                    $longWhereClause = $endDateWhere . ' AND ' . $trainingTypeWhere . ' AND ' . 
-                                       $trainingWhere . ' AND ' . $personWhere . ' AND ' . $locationWhere;
-                    
-                    //$longWhereClause = $tt_where . ' AND ' . $locationWhere;
-               // echo $longWhereClause;
-                    $coverageHelper = new CoverageHelper();                
-                    $facility = new Facility();
-                    
-                    $numerators = $coverageHelper->getFacWithTrainedHWCountByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
-                    
-                   // var_dump($numerators); echo '<br><br>'; 
-                    //echo 'after numerator<br>';
-                    //$denominators = $coverageHelper->getFacWithTrainedHWCountByLocation($locationWhere, $geoList, $tierText, $tierFieldName);
-                    $denominators = $facility->getFacilityCountByLocation($locationWhere, $geoList, $tierText, $tierFieldName);
-                   // var_dump($denominators);
-                   //$sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
-                   list($finalNum,$finalDenom) = $helper->addNationalNumersAndDenoms($numerators,$denominators);
-                    
-                return array($finalNum,$finalDenom);
-        }
-        
-        
         
         
         public function fetchPercentFacHWTrainedPerState($training_type){
@@ -508,7 +432,7 @@ class Coverage extends IndicatorGroup {
                     //set output                    
                     $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
                     $output = array_merge($output, $sumsArray['output']);
-                    $output[0]['percent'] = $sumsArray['nationalAvg'];
+                    $output[0] = $sumsArray['nationalAvg'];
 
                     //this is the test of the coverage file here .
                    // Helper2::jLog('THis is the output daa '.$output[0]['percent'].'inside the else');
@@ -543,7 +467,7 @@ class Coverage extends IndicatorGroup {
                         //get month national data and put in first array element
                         $cacheValue = json_decode($cacheValue, true);
                         if($cacheValue)
-                            $output[0]['percent'] = $cacheValue[0]['percent'];
+                            $output[0] = $cacheValue[0];
                     }
             }
 
@@ -969,7 +893,7 @@ $reportingWhere = 'facility_reporting_status = 1';
                     //set output       
                     $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
                     $output = array_merge($output, $sumsArray['output']);
-                    $output[0]['percent'] = $sumsArray['nationalAvg'];
+                    $output[0] = $sumsArray['nationalAvg'];
                     
                     //do cache insert
                     if($training_type == 'fp')
@@ -996,7 +920,7 @@ $reportingWhere = 'facility_reporting_status = 1';
                         //get month national data and put in first array element
                         $cacheValue = json_decode($cacheValue, true);
                         if($cacheValue)
-                            $output[0]['percent'] = $cacheValue[0]['percent'];
+                            $output[0] = $cacheValue[0];
                     }
                 }
                     

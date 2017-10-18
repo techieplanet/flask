@@ -339,13 +339,14 @@ class Consumption extends IndicatorGroup {
                 $output = json_decode($cacheValue, true);
             }
             else{
-            if(empty($lastPullDatemultiple)){
-                    
-             $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
-            }else{
-                   
-             $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
-             }
+                if(empty($lastPullDatemultiple)){
+
+                 $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+                } else if (!empty($lastPullDatemultiple) && is_array($lastPullDatemultiple)){
+
+                    $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+                }
+                
                 
                 //$dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
                 
