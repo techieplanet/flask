@@ -1786,9 +1786,14 @@ table {
 .width{
         width:50%;
  }
+ 
+ .fac-name{
+    width:48%; 
+ }
   
-
-@media screen and (max-width: 700px) and (min-width: 300px) {
+ 
+ 
+@media screen and (max-width: 700px) and (min-width: 50px) {
     
     #lastd{
         margin-top:70px;
@@ -1806,10 +1811,27 @@ table {
     .fieldLabel{
         float:right;
     }
-  
     
-  
+    .fac-name{
+      width:100%; 
+    }
+    
+    .text-right{
+        text-align:center;
+    }
+    
+    
+    .select{
+       margin-left:0px;
+       margin-top:0px;
+       margin-bottom:10px;
+    }
+    
+    
     
 }
+
+
+
     
     

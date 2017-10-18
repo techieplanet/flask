@@ -28,8 +28,8 @@
 	<form id="change"  action="<?php echo $this->base_url;?>/facility/edit" method="get">
 	
             <div class="row">
-               <div class="col-sm-3">
-                   <div class="fieldLabel" id="facility_name_lbl"><?php tp('Facility');?></div>
+               <div class="col-sm-3 text-right">
+                   <?php tp('Facility');?>
                </div>
                <div class="col-sm-9">
                   <select name="id" class="form-control"  id="id" onchange="if(this.value != '') this.form.submit();">
@@ -43,21 +43,60 @@
             </div>
 	
 	</form>
+        
+    <br>
 
 	<form id="edit" action="" method="post">
-	<div class="fieldLabel" id="facility_name_lbl"><?php tp('Facility name');?></div>
-	<div class="fieldInput"><input type="text" name="facility_name"  id="facility_name" value="<?php echo $this->facility['facility_name'];?>" size="40" maxlength="128"/></div>
-	<input type="hidden" name="id" value="<?php echo $this->facility['id'];?>"></input>
+            
+            <div class="row">
+               <div class="col-sm-3 text-right">
+                   <?php tp('Facility name');?>
+               </div>
+               <div class="col-sm-9">
+                  <input type="text" name="facility_name" class="form-control fac-name"  id="facility_name" value="<?php echo $this->facility['facility_name'];?>" size="40" maxlength="128" style=""/>
+                </div>
+            </div>
+            
+            <input type="hidden" name="id" value="<?php echo $this->facility['id'];?>"></input>
 	
+
+	
+            <br>
 	<!-- TA:17: 09/03/2014 -->
 	<?php if($this->setting['display_facility_address']) { ?>
-	<div class="fieldLabel" id="facility_address1_lbl"><?php tp('Address ');?></div>
-	  <div class="fieldInput"><input type="text" name="facility_address1" id="facility_address1" value="<?php echo $this->facility['address_1'];?>" size="40" maxlength="128"/></div>
-	<div class="fieldLabel" id="facility_address2_lbl"><?php tp('Address 2');?></div>
-	  <div class="fieldInput"><input type="text" name="facility_address2" id="facility_address2" value="<?php echo $this->facility['address_2'];?>" size="40" maxlength="128"/></div>
+        
+         <div class="row">
+               <div class="col-sm-3 text-right" >
+                   <?php tp('Address ');?>
+               </div>
+               <div class="col-sm-9">
+                  <input type="text" class="form-control fac-name" name="facility_address1" id="facility_address1" value="<?php echo $this->facility['address_1'];?>" size="40" maxlength="128"/>
+                </div>
+         </div>
+        
+        <br>
+        
+        <div class="row">
+            <div class="col-sm-3 text-right">
+	        <?php tp('Address 2');?>
+            </div>
+            <div class="col-sm-9">
+                <input type="text" class="form-control fac-name" name="facility_address2" id="facility_address2" value="<?php echo $this->facility['address_2'];?>" size="40" maxlength="128"/>
+            </div>
+        </div>
+	  
 	<?php }?>
-	
-<?php region_filters_dropdown($this, $this->locations, $this->facility, false, false, 'facility'); ?>
+        
+        <br>
+        
+        <div class="row text-center" style="width:90%;" >
+            <div class="col-sm-12">           	
+               <?php region_filters_dropdown_db($this, $this->locations, $this->facility, false, false, 'facility'); ?>
+            </div>
+        </div>
+        
+        <br>
+
 
 <!-- TA:17: 09/03/2014 -->
 	<?php if($this->setting['display_facility_city']) { ?>
@@ -163,7 +202,7 @@
 if (isset($this->output)) {
 	if (count ($this->output) == 0){
            echo '  <br/><h2><b>Commodity Summary: Monthly consumption by method for last 12 months</b></h2>';
-		echo "				<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"display tablegrid\" id=\"\" style=\"width:100%\">\n";
+		echo "				<table id='myTable' class='table-responsive' cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"display tablegrid\" id=\"\" style=\"width:100%\">\n";
 		echo "					<thead>\n";
 		echo "						<tr>\n";
 		echo "							<th>".t('Output')."</th>\n";
@@ -218,7 +257,7 @@ if (isset($this->outputs)) {
             echo 
             '<br/>
             <h2><b>Stock Out Summary: Stock outs over last 12 months</b></h2>';
-		echo "				<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"display tablegrid\" id=\"\" style=\"width:100%\">\n";
+		echo "				<table id='myTable' class='table-responsive' cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"display tablegrid\" id=\"\" style=\"width:100%\">\n";
 		echo "					<thead>\n";
 		echo "						<tr>\n";
 		echo "							<th>".t('Output')."</th>\n";
@@ -339,15 +378,25 @@ if (isset($this->outputs)) {
   <input type="hidden" id="commodity_delete_data" name="commodity_delete_data"/>
   
   <div style="border: 1px solid black;padding:20px;">
-  
-  <?php echo (@$this->translation['Facility Commodity Column Table Commodity Name']);?>
-  <?php echo "<select id='name' name='name'>";
+      
+      <div class="row" style="width:70%;" >
+          <div class="col-sm-2" style="padding-left:30px;padding-right:0px;">
+              <?php echo (@$this->translation['Facility Commodity Column Table Commodity Name']);?>
+          </div>
+          <div class="col-sm-10" style="padding-left:0px;">
+              <?php
+              
+                    echo "<select id='name' name='name' class='form-control select'  >";
+                    
 								echo "<option value='0'>" . t('Select...') . "</option>";
 								foreach ($this->commodity_names as $name){
 									echo "<option value='" . $name['id'] . "'>" . $name['commodity_name'] . "</option>";
 								}
-								echo "</select>";
-  ?>
+		    echo "</select>";
+              ?>
+          </div>
+      </div>
+      <br>
   
   &nbsp;&nbsp;&nbsp;&nbsp;<?php echo (@$this->translation['Facility Commodity Column Table Date']);?>
   <input type="number" id="dateMM"  min="1" max="12" placeholder="MM" style="width:3em;"/>/
