@@ -9,6 +9,17 @@
  */
 
 /**
+ * STOP PUTTING DATE AND TIME RELATED FUNCTIONS IN THIS CLASS.
+ * THE DATEFUNCTIONS CLASS IS TO BE USED INSTEAD.
+ * ALL DATE AND TIME FUNCTIONS IN THIS CLASS WILL BE MOVED THERE ULTIMATELY
+ * 
+ * STOP PUTTING COMMODITY RELATED FUNCTIONS IN THIS CLASS
+ * THE COMMODITY CLASS IS TO BE USED INSTEAD.
+ * ALL COMMODITY FUNCTIONS IN THIS CLASS WILL BE MOVED THERE ULTIMATELY
+ * 
+ */
+
+/**
  * Description of Helper2
  *
  * @author Swedge
@@ -651,6 +662,35 @@ class Helper2 {
     }
     
     
+    public function sumNumersAndDenomsOvertime($numerators, $denominators, $monthNames, $locationNames){
+        $output = []; $nationalOutput = [];
+        for($i=0; $i<count($monthNames); $i++){                
+            $monthName = $monthNames[$i];
+            $output[$monthName] = array();
+            $j = $i;
+
+            $numerSum = $denomSum = 0;
+            $output[$monthName]['National'] = [];
+            foreach($locationNames as $location){   
+                $output[$monthName][$location]['percent'] = round($numerators[$j]['fid_count'] / $denominators[$j]['fid_count'] * 100, 1);
+                $output[$monthName][$location]['numer'] = $numerators[$j]['fid_count'];
+                $output[$monthName][$location]['denom'] = $denominators[$j]['fid_count'];
+
+                $numerSum += $numerators[$j]['fid_count'];
+                $denomSum += $denominators[$j]['fid_count'];
+                
+                $j += sizeof($monthNames);
+            }
+            
+            //national values 
+            $output[$monthName]['National']['percent'] = round($numerSum / $denomSum * 100, 1);
+            $output[$monthName]['National']['numer'] = $numerSum;
+            $output[$monthName]['National']['denom'] = $denomSum;
+        }
+        
+        return $output;
+    }
+    
     /**
      * Calculates the percentages for each location found in numerator
      * This version adds the denominators and numerators
@@ -1054,6 +1094,11 @@ class Helper2 {
         static function jLog($logMessage){
             $logMessage = date('Y-m-d H:i:s') . ' ' . $logMessage . "\n";
             //file_put_contents("jlogs.txt", $logMessage, FILE_APPEND);
+        }
+        
+        public static function printArray($arr, $exit=true){
+            print("<pre>".print_r($arr,true)."</pre>"); 
+            if($exit) exit;
         }
 }
 

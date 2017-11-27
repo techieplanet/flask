@@ -9,15 +9,13 @@
 
 ini_set('max_execution_time','300');
 ini_set('memory_limit', '1024M');
-ini_set("error_log", "/Users/swedge-mac/dev/php/trainsmart/php_error.log");
+//ini_set("error_log", "C:/www/trainsmart/php_error.log");
 
 define('space',  " ");
 
 
 class Globals {
-	//public static $BASE_PATH = '/home/techie17/public_html/chai/trainsmart/';
-	//public static $BASE_PATH = '/web/www/trainsmart/';
-    public static $BASE_PATH = '/Users/swedge-mac/dev/php/trainsmart/';
+	public static $BASE_PATH = '/home/techie17/public_html/chai/trainsmart-live/';
 	public static $WEB_FOLDER = 'html';
 	public static $COUNTRY = 'test';
 
@@ -31,7 +29,6 @@ class Globals {
 					(Globals::$BASE_PATH).'app'.PATH_SEPARATOR.
 					(Globals::$BASE_PATH.'ZendFramework'.DIRECTORY_SEPARATOR.'library').PATH_SEPARATOR.
 					ini_get('include_path'));
-               // echo ini_get('include_path');exit;
 		//echo $iReturn; exit;
 
 		require_once 'Zend/Loader.php';

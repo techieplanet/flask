@@ -17,10 +17,10 @@ function getLastTwelveMonthsWithYears(latestDate){
     lastYearEndIndex = currentYearStartIndex - 1;
     
     for(i=0; i<=lastYearEndIndex; i++)
-        monthNames[i] += ", " + (currentYear - 1);
+        monthNames[i] += " " + (currentYear - 1);
     
     for(i=currentYearStartIndex; i<12; i++)
-        monthNames[i] += ", " + currentYear;
+        monthNames[i] += " " + currentYear;
     
     return monthNames;
 }
@@ -245,7 +245,7 @@ function processMonthNamesWithYears(selectedDatemultiple, startDate){
                 monthArray = selectedDatemultiple[key].split("-");
                 monthNumber = parseInt(monthArray[1]);
                 console.log('monthNumber: ' + monthNumber);
-                monthAndYear = monthNumberToName(monthNumber) + ", " + parseInt(monthArray[0]);
+                monthAndYear = monthNumberToName(monthNumber) + " " + parseInt(monthArray[0]);
                 monthNamesWithYears.push(monthAndYear);
             }
         }

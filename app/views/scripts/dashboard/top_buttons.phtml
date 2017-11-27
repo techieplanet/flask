@@ -3,12 +3,13 @@
         var LGASelections = $('#region_c_id').val();
         var stateSelections = $('#district_id').val();
         var zoneSelections = $('#province_id').val();
+        var dateSelections = $('#lastPullDatemultiple').length ? $('#lastPullDatemultiple').val() : $('#lastPullDate').val();
         var selectionMade = false;
-        console.log('zoneSelections: ' + stateSelections, stateSelections.length);
+        //console.log('zoneSelections: ' + stateSelections, stateSelections.length);
         //return false;
         
-        if(LGASelections == null && stateSelections == null && zoneSelections == null){
-            alert("Please select one or more locations to filter");
+        if(LGASelections == null && stateSelections == null && zoneSelections == null && dateSelections == null){
+            alert("Please select one or more locations or dates to filter");
             return false;
         }
         else if(LGASelections != null){
@@ -55,7 +56,7 @@
     }
 </script>
 
-<form name="dashboardForm" id="dashboardForm" method="post" s> 
+<form name="dashboardForm" id="dashboardForm" method="post">
     <?php 
     if(isset($this->monthDate)){
     ?>
@@ -72,8 +73,10 @@
     
    
     if(isset($this->monthDatemultiple)){
+        //var_dump($this->monthDatemultiple); echo '<br/><br/>';
+        //var_dump($this->selectedDatemultiple);
     ?>
-    <select name="lastPullDatemultiple[]" id="lastPullDatemultiple" multiple="true" szize="5" style="margin-bottom:5px !important">
+    <select name="lastPullDatemultiple[]" id="lastPullDatemultiple" multiple="true" size="5" style="margin-bottom:5px !important">
         <?php 
         for($i=0;$i<sizeof($this->monthDatemultiple); $i++){
             $selected = (in_array($this->monthDatemultiple[$i],$this->selectedDatemultiple))?"selected":"";

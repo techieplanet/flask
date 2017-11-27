@@ -14,7 +14,16 @@ class Training extends ITechTable
 	protected $_primary = 'id';
 	protected $_name = 'training';
 
-	/**
+        public function getAll(){
+            $select = $this->select()
+                        ->from(array('t'=> $this->_name))
+                        ->where("is_deleted = 0");
+            //echo $select->__toString(); exit;
+            $result = $this->fetchAll($select);
+            return $result;
+        }
+
+        /**
 	* Returns course name
 	*/
 	public function getCourseName($training_id) {

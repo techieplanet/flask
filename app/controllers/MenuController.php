@@ -23,8 +23,14 @@ class MenuController extends ReportFilterHelpers {
 		parent::__construct ( $request, $response, $invokeArgs );
 	}
 
-	public function init() {
-	}
+	public function init(){
+            parent::init();
+
+            $burl = Settings::$COUNTRY_BASE_URL;
+            if (substr($burl, -1) != '/' && substr($burl, -1) != '\\')
+                $this->baseUrl = $burl . '/';
+
+        }
 
 	public function indexAction() {
 $this->_forward ( 'info' );
@@ -107,6 +113,7 @@ $this->_forward ( 'info' );
     function percentfrrAction(){
             $helper = new Helper2();
             $consumption = new Consumption();
+            $freshVisit = false;
             
 	    list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
             $this->view->assign('monthDatemultiple',$monthDate);
@@ -121,16 +128,19 @@ $this->_forward ( 'info' );
             
             list($geoList, $tierValue) = $this->buildParameters();
             
-            if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
+            if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
                 $frr = $consumption->fetchFacsReportingRateOvertime($geoList, $tierValue, true, false,$lastPullDatemultiple);
-                
+                $freshVisit = true;
+                echo 'fresh'; exit;
             }
             else {
                 $frr = $consumption->fetchFacsReportingRateOvertime($geoList, $tierValue, false, false,$lastPullDatemultiple);
+                echo 'NO fresh'; exit;
             }
             
             $monthNameDisplay = $helper->formatMonthName($lastPullDatemultiple);
             $this->view->assign('frr_data', json_encode($frr));
+            $this->view->assign('freshVisit', $freshVisit);
                         
             $this->view->assign('latestPullDatemultipleMonthName',$monthNameDisplay);
             $sDate = $helper->fetchTitleDate();

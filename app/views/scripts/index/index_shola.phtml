@@ -3,7 +3,7 @@
                                         $fileID = $fileInfo['filename'];
                                         require_once('views/scripts/template/template.phtml');
                                     ?>
-                                  
+
                                     <div class="row" style="text-align:center; ">
                                         
                                          <div class="col-sm-12" style="padding-top:10px;" >
@@ -66,7 +66,7 @@
                                                          <div class="col-sm-8 text-left big-box" >
                                                             Total number of trainings conducted
                                                             <br>
-                                                            <b class="font-20" ><?= number_format($this->trainingsCount); ?></b>
+                                                            <b class="font-20" >6000</b>
                                                     
                                                         </div>
                                                         
@@ -87,9 +87,9 @@
                                                      </div>
                                     
                                                     <div class="col-sm-8 text-left big-box ">
-                                                        Total Health Workers <br/>Trained
+                                                        Total Health Workers Trained
                                                         <br>
-                                                       <b class="font-20" ><?= number_format($this->uniqueTrainedPersonsCount); ?> </b> 
+                                                       <b class="font-20" >7000 </b> 
                                                    
                                                      </div>
                                     
@@ -115,7 +115,7 @@
 
                                               
                                                <div id="tabs" class="box-shadow"    style="overflow:visible !important; min-height: 450px; border: 0;">
-                                                   <!--<div style="z-index:5000;margin-bottom:-18px;margin-left:100px;font-weight:bold;">Consumption by method, <?php //echo $this->title_date; ?></div>-->
+                                                   <div style="z-index:5000;margin-bottom:-23px;margin-left:100px;font-size:13px;">Consumption by method, <?php echo $this->title_date; ?></div>
                                                                          <div id="infobutton" class="infobutton hidden info11 align-left" style="margin-bottom: -47px;width: 55%;margin-left: 50%;">
                                                                                     <span class="infowrap" ><i class="fa fa-info-circle"></i></span>
                                                                                         <div id="" class="infodiv" style="margin-top:26px !important;">
@@ -128,7 +128,7 @@
                                                                          
                                                                          
                                                                          
-                                                                             <ul class="hometabs hidden" style="border-top: 2px solid #E36856;" >
+                                                                             <ul class="hometabs hidden" >
                                                                                  <li class=""><a href="#tab1">Pie</a></li>
                                                                                  <li class=""><a href="#tab2">Bar</a></li>
                                                                              </ul>
@@ -161,6 +161,36 @@
      ?> 
                                     
                                                  <div class="col-sm-6 " style="margin-top:5px;" >
+                                                     
+                                                                                      <?php
+                                                                       $chart_title = "HR Summary,  $this->title_date";
+                                                                       
+                                                                       $info_text = "The blue bars show the percent of all facilities in the country that have at 
+                                                                                    least one trained health worker in FP or LARC as of the most recent month.<br/><br/>
+                                                                                    
+                                                                                    The red bars show the percentage of facilities with a trained health 
+                                                                                    worker that reported in the most recent month and consumed at least one FP/LARC 
+                                                                                    commodity in the most recent month. <br/><br/>
+                                                                                    
+                                                                                    The yellow bars show the  percentage of facilities with a trained health 
+                                                                                    worker that reported in the most recent month and are stocked out of any FP commodity or implants. <br/><br/>
+                                                                                    
+                                                                                    FP training includes Contraceptive Technology Update, FP Technology, Injectable Contraceptives for CHEWs, 
+                                                                                    LARC, and Post Partum IUCD in-service trainings. <br/><br/>
+                                                                                    
+                                                                                    LARC training includes LARC and Post Partum IUCD in-service trainings. 
+                                                                                    <br/><br/>
+                                                                                    
+                                                                                    Together, these charts can provide a snapshot of barriers to service delivery 
+                                                                                    (lack of training, lack of commodity availability, or lack of service provision due to some other barrier).";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
+                                               
                                                                          <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
                                                                             <div class="col-xs-11 text-left small-tab title-bar-font" >
                                                                                 
@@ -170,33 +200,7 @@
                                                                              
                                                                                 <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                 <div id="" class="infodiv" >
-                                                                                    <strong><u>FP Chart</u></strong><br/>
-                                                                                    The blue bar shows the numberof allfacilities in the country that 
-                                                                                    have at least one trained health worker in FP as of the most recent month. <br/><br/>
                                                                                     
-                                                                                    The red bar shows thenumberof facilities with an FP-trained health 
-                                                                                    worker that reported in the most recent month and consumed at least 
-                                                                                    one FP commodity in the most recent month. <br/><br/>
-                                                                                    
-                                                                                    The yellow bar shows the numberof facilities with an FP-trained health 
-                                                                                    worker that reported in the most recent month and that werestocked out 
-                                                                                    of any FP commodity for seven consecutive days in that month. 
-                                                                                    FP training includes Contraceptive Technology Update, FP Technology, 
-                                                                                    Injectable Contraceptives for CHEWs, LARC, and Post Partum IUD in-service trainings. 
-                                                                                    <br/><br/><br/>
-                                                                                    
-                                                                                    
-                                                                                    <strong><u>LARC Chart</u></strong><br/>
-                                                                                    The blue bar shows the numberof all facilities in the country that have at least one 
-                                                                                    trained health worker in LARC as of the most recent month. <br/><br/>
-                                                                                    
-                                                                                    The red bars show the numberof facilities with aLARC-trained health worker that reported 
-                                                                                    in the most recent month andconsumed at least one LARC commodity in the most 
-                                                                                    recent month. <br/><br/>
-                                                                                    
-                                                                                    The yellow bar shows the numberof facilities with a LARC-trained health worker that 
-                                                                                    reported in the most recent month and that werestocked out of implants. LARC training 
-                                                                                    includes LARC andPost Partum IUD in-service trainings.
                                                                                 </div>
                                                                             </div>
                                                                             </div>
@@ -205,13 +209,13 @@
                                                
                                                                          
                                                                           
-                                                                    <div class="main-search box-shadow" style="width: 100%;">
+                                                                    <div class="main-search box-shadow" style="width: 100%;height:425px;">
                                                                        
-                                                                            <!--<div id="infobutton" class="infobutton hidden" style="margin-bottom: 0;padding-right:15px;margin-top:-15px;">-->
-                                                                                <!--<br>-->
+                                                                            <div id="infobutton" class="infobutton hidden" style="margin-bottom: 0;padding-right:15px;margin-top:-15px;">
+                                                                                <br>
                                                                                 
-<!--                                                                                <div id="" class="infodiv" >
-                                                                                    zzzThe blue bars show the percent of all facilities in the country that have at 
+                                                                                <div id="" class="infodiv" >
+                                                                                    The blue bars show the percent of all facilities in the country that have at 
                                                                                     least one trained health worker in FP or LARC as of the most recent month.<br/><br/>
                                                                                     
                                                                                     The red bars show the percentage of facilities with a trained health 
@@ -229,10 +233,10 @@
                                                                                     
                                                                                     Together, these charts can provide a snapshot of barriers to service delivery 
                                                                                     (lack of training, lack of commodity availability, or lack of service provision due to some other barrier).
-                                                                                </div>-->
-                                                                            <!--</div>-->
+                                                                                </div>
+                                                                            </div>
                                                                         <div class="hrNav" ></div>
-                                                                       <div id="chart12_div" style="width: 100%;"></div>
+                                                                       <div id="chart12_div" style="width: 100%;margin-top: 20px;height:320px;"></div>
                                                                     
                                                                      
 						                      </div>	
@@ -249,12 +253,13 @@
                                              
                                              <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
                                              
-                                                   <div class="col-sm-6 " style="padding-right:3px;margin-top:5px;">
+                                                   <div class="col-sm-6 " style="padding-right:3px;margin-top:5px;height:auto">
                                                        
                  
                                                        
                                                         <div class="title-bar border-fa col-xs-12"  style="padding:0px;" >
                                                                             <div class="col-xs-11 text-left small-tab title-bar-font"  >
+                                                                                Facilities Providing(%), <?php echo $this->start_date . ' to ' . $this->end_date; ?>
                                                                             </div>
                                                                             <div class="col-xs-1 title-bar-info-btn" style="min-height:20px;">
                                                                                 <div id="infobutton" class="infobutton " style="margin-left:4px;">
@@ -284,16 +289,16 @@
                                                                                 </div>
                                                                             </div><br/>
                                                                         <div class="hrNav"></div>
-                                                                        <div id="chart13_div" class="box-shadow" style="width: 100%; height: 430px;"></div>
+                                                                        <div id="chart13_div" class="box-shadow" style="width: 100%; height:auto;"></div>
                                                                     </div>
                                                                     </div>
                                                  
                                     
-                                                                    <div class="col-sm-6" style="margin-top:5px; height: 430px;">
+                                                                    <div class="col-sm-6" style="margin-top:5px;height:auto;">
 
-                                                                         <div class="title-bar border-fa border-st col-xs-12" style="padding:0px;" >
+                                                                         <div class="title-bar border-st col-xs-12" style="padding:0px;" >
                                                                             <div class="col-xs-11 text-left small-tab title-bar-font"  >
-                                                                                
+                                                                                <?php echo  "Stock outs, $this->start_date to $this->end_date"; ?>
                                                                             </div>
                                                                             <div class="col-xs-1 title-bar-info-btn" style="min-height:20px;">
                                                                                 <div id="infobutton" class="infobutton" style="margin-left:4px;">
@@ -331,7 +336,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                             <div class="hrNav"></div>
-                                                                            <div id="chart14_div" class="box-shadow" style="width: 100%; height: 430px;margin-top: 20px;"></div>
+                                                                            <div id="chart14_div" class="box-shadow" style="width: 100%; height:auto;"></div>
                                                                         </div>
                                                                     </div>
                                                  
@@ -362,7 +367,7 @@
 		<div class="clear"></div>
                 </div>
            
-           </div><!-- content -->
+        <!-- content -->
            <br/><br/><br/>
            <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
         </div> <!-- pagehoder -->
@@ -418,8 +423,7 @@
                  $methodString = substr($methodString, 0, strlen($methodString)-1);
                  $consumptionString = substr($consumptionString, 0, strlen($consumptionString)-1);
             ?>
-                    
-            var title = 'Consumption by method, ' + '<?php echo $this->title_date; ?>';
+
             $('#chart11_div').highcharts({
                 chart: {
                     type: 'column',
@@ -432,15 +436,12 @@
                             $("text:contains(Highcharts.com)").css("display","none");
                         }
                     },
-                    height: 430
+                    
+                     height:420
+                    
                 },
                 title: {
-                    text: title,
-                    style: {
-                        fontFamily: 'Arial',
-                        fontSize: '12pt',
-                        fontWeight: 'bold'
-                    }
+                    text: ''
                 },
                 tooltip: {
                     formatter: function () {
@@ -459,7 +460,7 @@
                 },
                 yAxis: {
                     title: {
-                        text: '#Commodities Consumed',
+                        text: 'Number of Commodities Consumed',
                         style:{ "fontWeight": "bold" }
                     }
                 },
@@ -481,25 +482,8 @@
     }
   
   
-   function drawPieChart() {
-          var consumptionByMethod = <?= json_encode($this->consumption_by_method); ?>;
-          var dataArray = new Array();
-          
-          for(key in consumptionByMethod){
-              row = consumptionByMethod[key];
-              consumption = parseInt(row['consumption']);
-              method = row['method'];
-              
-              if(key == 1){
-                   consumption = parseInt(consumption/10);
-                   method = row['method'] + "<br/>(unit x10)";
-               }
-               
-               dataArray.push({name: method, y: consumption});
-          }
-                     
-          var title = 'Consumption by method, ' + '<?php echo $this->title_date; ?>';
-          
+    function drawPieChart() {
+
 	  $('#piechart').highcharts({
                 chart: {
                     plotBackgroundColor: null,
@@ -514,24 +498,11 @@
                     },
                 },
                 title: {
-                    text: title,
-                    style: {
-                        fontFamily: 'Arial',
-                        fontSize: '12pt',
-                        fontWeight: 'bold'
-                    }
+                    text: ''
                 },
                 tooltip: {
                     //pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                    //pointFormat: '<b>{point.percentage:.1f}%</b>'
-                    formatter: function () {
-                        //var maleCondomsInPieChart = parseInt(consumptionByMethod[1] / 10);
-                        //var maleCondomsRealValue = consumptionByMethod[1];
-                        
-                        return '<strong>' + this.key + ':</strong> ' + this.percentage.toFixed(1) + '%<br/>' +
-                               '<strong>Numerator:</strong> ' + thousandSeparator(this.y) + '<br/>' +
-                               '<strong>Denominator:</strong> ' + thousandSeparator(this.total);
-                    }
+                    pointFormat: '<b>{point.percentage:.1f}%</b>'
                 },
                 plotOptions: {
                     pie: {
@@ -556,7 +527,25 @@
                 series: [{
                     name: 'Methods',
                     colorByPoint: true,
-                    data: dataArray
+                    data: [
+                            <?php
+                                foreach ($this->consumption_by_method as $key=>$row){
+                                           $consumption = $row['consumption'];
+                                           $malecondoms = 0;
+                                           $method = $row['method'];
+                                           $color = 'blue';
+
+                                           if($key == 1){
+                                               //$malecondoms = $consumption;
+                                               $consumption = round($consumption/10,0);  
+                                               $method = $row['method'] . '<br/>(unit x10)';
+                                           } 
+                            ?>
+                                          {<?php echo "name: '$method', y: $consumption"; ?>},
+                            <?php
+                                }
+                            ?>
+                    ]
                 }]
             });
                   
@@ -579,21 +568,19 @@
         //var categories = "'FP', 'LARC'";
         var dataArray = [ 
                             {
-                                name: 'No. of facilities with FP-trained HW / No. of FP facilities with LARC-trained HW',
+                                //name: 'Facilities with FP-trained HW',
                                 data: [<?php echo $cs_fp_trained_facility_count . "," . $cs_larc_trained_facility_count; ?>]
                             },
                             {
-                                name: 'No. of FP-trained facilities providing FP / No. of LARC-trained facilities providing LARC',
+                                //name: 'FP-trained facilities providing FP',
                                 data: [<?php echo $cs_fp_consumption_facility_count . "," . $cs_larc_consumption_facility_count; ?>]
                             },
                             {
-                                name: 'No. of FP-trained facilities stocked out of any FP commodity / No. of LARC-trained facilities stocked <br/>out of Implants',
-                                //name: 'Stockout',
+                                //name: 'FP-trained facilities stocked out of FP or implants',
                                 data: [<?php echo $cs_fp_stock_out_facility_count . "," . $cs_larc_stock_out_facility_count; ?>]
                             }                                                       
                         ];
       
-      var title = 'HR Summary, ' + '<?php echo $this->title_date; ?>';
       
       $("#chart12_div").highcharts({
             chart: {
@@ -604,16 +591,12 @@
                             $("text:contains(Highcharts.com)").css("display","none");
                             $("#chart12_div").siblings("#infobutton").removeClass("hidden");
                         }
-                    }
+                    },
+                height:375
             },
 
             title: {
-                text: title,
-                style: {
-                    fontFamily: 'Arial',
-                    fontSize: '12pt',
-                    fontWeight: 'bold'
-                }
+                text: null
             },
 
             xAxis: {
@@ -625,7 +608,7 @@
             },
             yAxis: {
                 title: {
-                    text: '# Facilities',
+                    text: 'Number of Facilities',
                     style:{ "fontWeight": "bold" }
                 },
                 labels: {
@@ -638,13 +621,13 @@
                 formatter: function () {
                     var seriesName='';
                     if(this.x == 'FP'){
-                        if(this.series.index == 0) seriesName = 'No. of facilities with FP-trained HW';
-                        if(this.series.index == 1) seriesName = 'No. of FP-trained facilities providing FP';
-                        if(this.series.index == 2) seriesName = 'No. of FP trained facilities stocked out of any FP commodity';
+                        if(this.series.index == 0) seriesName = 'Facilities with FP-trained HW';
+                        if(this.series.index == 1) seriesName = 'FP-trained facilities providing FP';
+                        if(this.series.index == 2) seriesName = 'FP-trained facilities stocked out of FP or implants';
                     } else if(this.x == 'LARC'){
-                        if(this.series.index == 0) seriesName = 'No. of FP facilities with LARC-trained HW';
-                        if(this.series.index == 1) seriesName = 'No. of LARC-trained facilities providing LARC';
-                        if(this.series.index == 2) seriesName = 'No. of LARC-trained facilities stocked out of implants';
+                        if(this.series.index == 0) seriesName = 'Facilities with LARC-trained HW';
+                        if(this.series.index == 1) seriesName = 'LARC-trained facilities providing LARC';
+                        if(this.series.index == 2) seriesName = 'LARC-trained facilities stocked out of LARC or implants';
                     }
                     
                     return '<b>' + this.x + '</b><br/>' +
@@ -660,25 +643,21 @@
                 }
             },
             legend: {
-             
-             layout: 'vertical',
-             //align: 'right',
-             verticalAlign: 'bottom',
-           
-            floating: false,
-            borderWidth: 1,
-            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-            shadow: true,
-            itemStyle: {
-                 fontSize: '7pt'
-             }
+                //layout: 'vertical',
+                //align: 'right',
+                //verticalAlign: 'middle',
+                //borderWidth: 0,
+                layout: 'horizontal',
+                align: 'right',
+                //verticalAlign: 'top',
+                //x: 40,
+                //y: 40,
+                //width:100,
+                //floating: true,
+                borderWidth: 1,
+                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                shadow: true
             },
-//              legend: {
-//                        layout: 'horizontal',
-//                        borderWidth: 1,
-//                        shadow: true
-//                        
-//                    },
             credits: {enabled: false},
             series:dataArray
       });
@@ -687,30 +666,63 @@
   
   
   function drawChart13() {
-        var FPProviding = <?= $this->fp_facs_providing; ?>;
-        var LARCProviding = <?= $this->larc_facs_providing; ?>;
+	var jNumData = new Array();
+        var jDenomData = new Array();
+         
+         jNumData['FP'] = [];
+         jDenomData['FP'] = [];
+         
+         jNumData['LARC'] = [];
+         jDenomData['LARC'] = [];
          
         var FPObject = {name: "FP", data: []};
         var LARCObject = {name: "LARC", data: []};
-             
-        for(key in FPProviding){
-            monthName = FPProviding[key]['month'];
-            FPObject.data.push(FPProviding[key]['percent']);
-            LARCObject.data.push(LARCProviding[key]['percent'])
-        }
+                    
+        <?php 
+            //$locationNamesArray = explode(',', $locationNames);
+            $month = $fpList = $larcList = "";
+            if(!empty($this->fp_facs_providing)){
+                foreach ($this->fp_facs_providing as $key=>$value){ 
+                    $month .= "'" . $this->fp_facs_providing[$key]['month'] . "',";
+                    $monthName = $this->fp_facs_providing[$key]['month'];
+                    
+                    
+                    $numeratorFP = $this->fp_numerator_facsprov[$monthName];
+                    $denominatorFP = $this->fp_denominator_facsprov[$monthName];
+                        
+                    $numeratorLARC = $this->larc_numerator_facsprov[$monthName];
+                    $denominatorLARC = $this->larc_denominator_facsprov[$monthName];
+                    
+                    $fp_percent = round($this->fp_facs_providing[$key]['percent'] * 100,1);
+                    $larc_percent = round($this->larc_facs_providing[$key]['percent'] * 100,1);
+            ?>
+                    jNumData['FP']['<?php echo $monthName; ?>'] = <?php echo $numeratorFP ?>;
+                    
+                    jDenomData['FP']['<?php echo $monthName; ?>'] = <?php echo $denominatorFP ?>;
+                    
+                    jNumData['LARC']['<?php echo $monthName; ?>'] = <?php echo $numeratorLARC ?>;
+                    
+                    jDenomData['LARC']['<?php echo $monthName; ?>'] = <?php echo $denominatorLARC ?>;
+                    
+                    //set PHP values into JS objects
+                    FPObject.data.push(<?php echo $fp_percent; ?>);
+                    LARCObject.data.push(<?php echo $larc_percent; ?>);
+            <?php
+                   }//end foreach
+                } //end if
+                
+                //strip trailing commas
+                $month = substr($month, 0, strlen($month)-1);
+            ?>
         
-        var startDate = '<?= $this->start_date; ?>';
-        var monthNamesWithYears = getLastTwelveMonthsWithYears(<?= "'$this->end_date'"; ?>);
-        
-        var titleText = 'Percent of facilities providing FP and LARC,<br/> <?php echo $this->start_date . ' to ' . $this->end_date; ?>';
+        var titleText = '';
         var subtitleText = '(<?php echo $this->start_date . ' to ' . $this->end_date; ?>)';
-        //Facilities Providing(%), <?php //echo $this->start_date . ' to ' . $this->end_date; ?>
         
               $('#chart13_div').highcharts({
                     chart: {
                         //type: 'line',
-                        height: 400,
-                        width: 500,
+                        height: 430,
+                        
                         spacingLeft: 0,
                         events: {
                             load:function(){
@@ -724,19 +736,20 @@
                         style: {
                             fontWeight: 'bold',
                             fontFamily: 'Arial',
-                            fontSize: '12pt'
+                            fontSize: '16px'
                         },
+                        //x: -20 //center
                     },
                     xAxis: {
                         title: {
                             text: 'Month',
                             style:{ "fontWeight": "bold" }
                         },
-                        categories: monthNamesWithYears
+                        categories: [<?php echo $month; ?>]
                     },
                     yAxis: {
                         title: {
-                            text: '% Facilities',
+                            text: 'Percent Facilities',
                             style:{ "fontWeight": "bold" }
                         },
                         labels: {
@@ -750,26 +763,8 @@
                     },
                     tooltip: {
                         formatter: function () {
-                            monthArray = this.x.split(" ");
-                            month = monthArray[0];
-                            
-                            if(this.series.name.includes("FP"))
-                                dataObj = FPProviding;
-                            else 
-                                dataObj = LARCProviding;
-                            
-                            index = -1;
-                            for(key in dataObj) {
-                                if(dataObj[key]['month'].toUpperCase() === month.toUpperCase()){
-                                    index = key;
-                                    break;
-                                }
-                            }
-                            
                             return '<b>' + this.x + '</b><br/>' +
-                                   '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>' +
-                                   '<b>Numerator</b>:' + thousandSeparator(dataObj[key]['numer'])+'<br/>' +
-                                   '<b>Denominator</b>:' + thousandSeparator(dataObj[key]['denom']);
+                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
                         }
                     },
                     legend: {
@@ -785,30 +780,61 @@
     
     
     function drawChart14() {
-        var FPSO = <?= $this->fp_facs_providing_stockedout; ?>;
-        var LARCSO = <?= $this->larc_facs_providing_stockedout; ?>;
-        var monthNamesWithYears = getLastTwelveMonthsWithYears(<?= "'$this->end_date'"; ?>);
-        var startDate = '<?= $this->end_date; ?>';
-
+        var jNumData = new Array();
+        var jDenomData = new Array();
+         
+         jNumData['Percent FP facilities stocked out of any FP commodity for 7 days'] = [];
+         jDenomData['Percent FP facilities stocked out of any FP commodity for 7 days'] = [];
+         
+         jNumData['Percent implant facilities stocked out of implants'] = [];
+         jDenomData['Percent implant facilities stocked out of implants'] = [];
+        
         var sevenObject = {name: 'Percent FP facilities stocked out of any FP commodity for 7 days', data: []};
         var implantsObject = {name: 'Percent implant facilities stocked out of implants', data: []};
-        
-        monthNames = new Array();
-        for(key in FPSO){
-            var monthName = FPSO[key]['month'];
-            monthNames.push(monthName);
-            sevenObject.data.push(FPSO[key]['percent']);
-            implantsObject.data.push(LARCSO[key]['percent']);
-        }
+                                    
+       <?php 
+            $month = "";
+            if(!empty($this->fp_facs_providing_stockedout)){
+                foreach ($this->fp_facs_providing_stockedout as $key=>$monthProviders){ 
+                    $month .= "'" . $monthProviders['month'] . "',";
+                    $monthName = $monthProviders['month'];
+                    
+                    $numeratorFP = $this->fp_numerator_stockout[$monthName];
+                    $denominatorFP = $this->fp_denominator_stockout[$monthName];
+                        
+                    $numeratorLARC = $this->larc_numerator_stockout[$monthName];
+                    $denominatorLARC = $this->larc_denominator_stockout[$monthName];
+                        
+                    $seven_days_percent = round($monthProviders['seven_days_percent'] * 100,1);
+                    $implant_percent = round($this->larc_facs_providing_stockedout[$key]['implant_percent'] * 100,1);
+        ?>                    
+                  jNumData['Percent FP facilities stocked out of any FP commodity for 7 days']['<?php echo $monthName; ?>'] = <?php echo $numeratorFP ?>;
+                    
+                    jDenomData['Percent FP facilities stocked out of any FP commodity for 7 days']['<?php echo $monthName; ?>'] = <?php echo $denominatorFP ?>;
+                    
+                    jNumData['Percent implant facilities stocked out of implants']['<?php echo $monthName; ?>'] = <?php echo $numeratorLARC ?>;
+                    
+                    jDenomData['Percent implant facilities stocked out of implants']['<?php echo $monthName; ?>'] = <?php echo $denominatorLARC ?>;
+                    //set PHP values into JS objects
+                    sevenObject.data.push(<?php echo $seven_days_percent; ?>);
+                    implantsObject.data.push(<?php echo $implant_percent; ?>);
+        <?php
+                        
+                    }//end foreach
+                } //end if
+                
+                //strip trailing commas
+                $month = substr($month, 0, strlen($month)-1);
+        ?>
                 
 
-        var titleText = '<?php echo  "Stock outs, $this->start_date to $this->end_date"; ?>';
+        var titleText = '';
         var subtitleText = '(<?php echo $this->start_date . ' to ' . $this->end_date; ?>)';
-        
+
               $('#chart14_div').highcharts({
                     chart: {
                         //type: 'line',
-                        //height: 440,
+                        height: 430,
                         //spacingLeft: -20,
                         events: {
                             load:function(){
@@ -822,7 +848,7 @@
                         style: {
                             fontWeight: 'bold',
                             fontFamily: 'Arial',
-                            fontSize: '12pt'
+                            fontSize: '16px'
                         },
                         //x: -20 //center
                     },
@@ -831,11 +857,11 @@
                             text: 'Month',
                             style:{ "fontWeight": "bold" }
                         },
-                        categories: monthNamesWithYears
+                        categories: [<?php echo $month; ?>]
                     },
                     yAxis: {
                         title: {
-                            text: '% Facilities',
+                            text: 'Percent Facilities',
                             style:{ "fontWeight": "bold" }
                         },
                         labels: {
@@ -849,29 +875,8 @@
                     },
                     tooltip: {
                         formatter: function () {
-                            var monthArray = (this.x).split(" ");
-                            var month = monthArray[0];
-                            
-                            dataObj = new Array();
-                            if((this.series.name).includes('FP')){
-                                dataObj = FPSO;
-                            }
-                            else if((this.series.name).includes('implant')){
-                                dataObj = LARCSO;
-                            }
-                            
-                            index = -1; 
-                            for(key in dataObj){
-                                if ((dataObj[key]['month']).toUpperCase() === month.toUpperCase()){
-                                    index = key;
-                                    break;
-                                }
-                            }
-                        
                             return '<b>' + this.x + '</b><br/>' +
-                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>' +
-                                '<b>Numerator</b>:'+thousandSeparator(dataObj[index]['numer'])+'<br/>' + 
-                                '<b>Denominator</b>:'+thousandSeparator(dataObj[index]['denom']);
+                                '<b>' + this.series.name + '</b>: ' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
                         }
                     },
                     legend: {
@@ -899,7 +904,7 @@
 
 <script src="js/highcharts/highcharts.js"></script>
 <script src="js/highcharts/modules/exporting.js"></script>
-<script src="js/tp/overtime-ops.js"></script>
+<script src="js/tp/functions.js"></script>
 <script src="css/sidebar.css"></script>
 <div id="footer"><?php //require_once('views/scripts/footer.phtml');?></div>
 

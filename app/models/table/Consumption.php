@@ -434,12 +434,13 @@ class Consumption extends IndicatorGroup {
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             
             $helper = new Helper2();
+            $dateFunctions = new DateFunctions();
             $latestDate = $helper->getLatestPullDate();
                     
             $cacheManager = new CacheManager();
             $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_REPORTING_RATE_OVERTIME, $latestDate);
 
-            if($cacheValue && $freshVisit){
+            if(!$cacheValue && $freshVisit){
                 $output = json_decode($cacheValue, true);
             }
             else{
@@ -453,9 +454,11 @@ class Consumption extends IndicatorGroup {
                         $dateWhere = "c.date BETWEEN '" . 
                                 date("Y-m-d", strtotime("$latestDate -11 months")) . "' AND '$latestDate'";
                         $subDateWhere = str_replace('c.', 'c_sub.', $dateWhere);
+                        $dateWhereArray = $dateFunctions->getPreviousMonthDates(12, $dateFunctions->getLatestPullDate());
                     }else{
                         $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
                         $subDateWhere = str_replace('c.', 'c_sub.', $dateWhere);
+                        $dateWhereArray = $lastPullDatemultiple;
                     }
                     
                     $sixMonthsDateWhere = "(date BETWEEN '" . 
@@ -463,18 +466,18 @@ class Consumption extends IndicatorGroup {
                     
                     $reportingWhere = 'facility_reporting_status = 1';
                     $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
-                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
-                                       $ct_where . ' AND ' . $locationWhere;
+                    $longWhereClause = $reportingWhere . ' AND ' . $locationWhere;
                     
                     $facility = new Facility();
                     
-                    $numerators = $facility->getFPFacilities(
+                    $numerators = $facility->getFPFacilitiesOvertime(
                             $longWhereClause, 
                             $geoList, 
                             $tierNameField, 
                             $tierIDField, 
                             $ct_where, 
-                            $sixMonthsDateWhere
+                            $dateWhereArray,
+                            'date'
                     );
                     
                     $locationNames = $helper->getLocationNames($geoList); 
@@ -503,23 +506,25 @@ class Consumption extends IndicatorGroup {
                             $tierNameField, 
                             $tierIDField
                     );
-                    
+                     
                     /*********************************************************************************
                      * denominator for FP facilites: consumed 1 FP commodity in last 6 months
                      ********************************************************************************/
                     $reportingWhere = 'facility_reporting_status = 1';
                     $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
-                    $longWhereClause = $dateWhere . ' AND ' . 
-                                       $ct_where . ' AND ' . $locationWhere;
+                    $longWhereClause = $reportingWhere . ' AND ' . $locationWhere;
                     
-                    $FPFacsDenominators = $facility->getFPFacilities(
+                    $FPFacsDenominators = $facility->getFPFacilitiesOvertime(
                             $longWhereClause, 
                             $geoList, 
                             $tierNameField, 
                             $tierIDField, 
                             $ct_where,
-                            $sixMonthsDateWhere
+                            $dateWhereArray,
+                            'date'
                     );
+                    //Helper2::printArray($FPFacsDenominators);
+                    
                     //var_dump($FPFacsDenominators); exit;
                     $output['allfacs'] = $this->setUpOvertimeOutput($monthNames, $locationNames, $numerators, $denominators);
                     $output['fpfacs'] = $this->setUpOvertimeOutput($monthNames, $locationNames, $numerators, $FPFacsDenominators);
@@ -535,7 +540,7 @@ class Consumption extends IndicatorGroup {
                             'value' => json_encode($output)
                             //'timestamp_created' => date('');
                         );
-                        $cacheManager->setIndicator($dataArray);
+                        //$cacheManager->setIndicator($dataArray);
                     }
                     else if($updateMode){
                         $dataArray = array('value' => json_encode($output));

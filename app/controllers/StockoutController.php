@@ -45,6 +45,7 @@ class StockoutController extends ReportFilterHelpers {
     public function percentStockoutWithTrainedHWAction() {
 	    $stockout = new Stockout();
 	    $helper = new Helper2();
+            $freshVisit = false;
             
             //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
 	      list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
@@ -63,6 +64,7 @@ class StockoutController extends ReportFilterHelpers {
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
                 $fp_stockout = $stockout->fetchPercentStockOutFacsWithTrainedHW('fp', $geoList, $tierValue, true,false,$lastPullDate);
                 $larc_stockout = $stockout->fetchPercentStockOutFacsWithTrainedHW('larc', $geoList, $tierValue, true,false,$lastPullDate);
+                $freshVisit = true;
             }
             else{
                 $fp_stockout = $stockout->fetchPercentStockOutFacsWithTrainedHW('fp', $geoList, $tierValue, false,false,$lastPullDate);
@@ -75,6 +77,7 @@ class StockoutController extends ReportFilterHelpers {
 	    //GNR:use max commodity date	    
 	    $sDate = $helper->fetchTitleDate($lastPullDate);
 	    $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
+            $this->view->assign('freshVisit', $freshVisit); 
 	    
             $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
 	    $this->viewAssignEscaped ('locations', Location::getAll(1));
@@ -87,6 +90,7 @@ class StockoutController extends ReportFilterHelpers {
         public function percentFacsProvidingButStockedoutAction(){
             $stockout = new Stockout();
 	    $helper = new Helper2();
+            $freshVisit = false;
             
             //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
 	     list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
@@ -104,6 +108,7 @@ class StockoutController extends ReportFilterHelpers {
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
                 $fp_stockout = $stockout->fetchPercentFacsProvidingButStockedOut('fp', $geoList, $tierValue, true, false,$lastPullDate);
                 $larc_stockout = $stockout->fetchPercentFacsProvidingButStockedOut('larc', $geoList, $tierValue, true, false,$lastPullDate);                
+                $freshVisit = true;
             }
             else{
                 $fp_stockout = $stockout->fetchPercentFacsProvidingButStockedOut('fp', $geoList, $tierValue, false, false,$lastPullDate);
@@ -117,6 +122,7 @@ class StockoutController extends ReportFilterHelpers {
 	    //GNR:use max commodity date	    
 	    $sDate = $helper->fetchTitleDate($lastPullDate);
 	    $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
+            $this->view->assign('freshVisit', $freshVisit); 
 	    
             $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
 	    $this->viewAssignEscaped ('locations', Location::getAll(1));
@@ -138,6 +144,7 @@ class StockoutController extends ReportFilterHelpers {
                 $lastPullDatemultiple = $_POST['lastPullDatemultiple'];
             }
             $this->view->assign('selectedDatemultiple',$lastPullDatemultiple); 
+            $this->view->assign('freshVisit',$freshVisit); 
             
             //get the parameters
             list($geoList, $tierValue) = $this->buildParameters();
