@@ -166,34 +166,14 @@
   });
 
   function drawChart11() {
-<<<<<<< HEAD
-       var jNumData = new Array();
-       var jDenomData = new Array();
-       
-    <?php
-        reset($this->fp_data); 
-        $firstKey = key($this->fp_data); 
-        $locationsString = ""; $valuesString = "";
-	foreach ($this->fp_data as $key=>$row){ 
-            $locationsString .= "'" . $row['location'] . "',";
-            $location = $row['location'];
-            
-            $numerator = $this->fp_numerator[''.$location.''];
-            $denominator = $this->fp_denominator[''.$location.''];
-                    
-            if($firstKey == $key)
-                $valuesString .= "{y:" . round($row['percent']['percent'], 1) . ", color: '#000000'},"; 
-            else
-                $valuesString .= round($row['percent'], 1) . ",";  
-            
-=======
+
        var FPData = <?= $this->fp_data; ?>;
        var locations = new Array(); var values = new Array();
 
         for(key in FPData){
             row = FPData[key];
             locations.push(row['location']);
->>>>>>> 05a2d36335fd777f1b3ecc52bbd48740fd46b9d5
+
             
             if(key == 0)
                 values.push({y: row['percent'], color: '#000000'}); 

@@ -502,12 +502,10 @@ class Coverage extends IndicatorGroup {
                             'value' => json_encode($output)
                             //'timestamp_created' => date('');
                         );
-<<<<<<< HEAD
+
                         $cacheManager->setIndicator($dataArray);
                         //print_r($dataArray);exit;
-=======
-                        //$cacheManager->setIndicator($dataArray);
->>>>>>> 05a2d36335fd777f1b3ecc52bbd48740fd46b9d5
+
                     }
                     else if($updateMode){
                         $dataArray = array('value' => json_encode($output));
