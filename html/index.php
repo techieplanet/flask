@@ -32,7 +32,7 @@ try {
     $frontController->setDefaultControllerName('index');
     $frontController->setDefaultAction('index');
     
- 	$frontController->returnResponse(true);
+    $frontController->returnResponse(true);
     $response = $frontController->dispatch();
     $response->sendHeaders();
     $response->outputBody();

@@ -589,7 +589,6 @@ class UserController extends ReportFilterHelpers {
         
 	public function addAction() {
 
-            
 		if ((! $user_id = $this->isLoggedIn ()) or (! $this->hasACL ( 'add_edit_users' ))) {
 			$this->doNoAccessError ();
 		}
@@ -606,12 +605,13 @@ class UserController extends ReportFilterHelpers {
 
 		$status = ValidationContainer::instance ();
 		$userArray = $userRow->toArray ();
+                
 		$userArray['acls'] = User::getACLs ( $user_id ); //set acls
 		$this->viewAssignEscaped ( 'user', $userArray );
                 
                 $locations = Location::getAll();
 		$this->viewAssignEscaped('locations', $locations);
-                //var_dump($locations); exit;
+                
                 
 		if ($request->isPost()) {
                     //echo 'post requesttttt'; exit;

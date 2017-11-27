@@ -118,11 +118,12 @@ class CoverageHelper {
                              ->joinInner(array('ptt'=>'person_to_training'), 'p.id = ptt.person_id', array())
                              ->joinInner(array('t'=>'training'), 't.id = ptt.training_id AND t.is_deleted=0', array())
                              ->joinInner(array('tto'=>'training_title_option'), 't.training_title_option_id = tto.id', array())
-                             ->joinInner(array('flv'=>'facility_location_view'), 'p.facility_id = flv.id', array('lga', 'state',  'geo_zone'))
+                             ->joinInner(array('flv'=>'facility_location_view'), 'p.facility_id = flv.id', array($tierText))
                              ->where($longWhereClause)
                              ->group($tierFieldName)
                              ->order(array($tierText));
-
+                
+                //echo $select->__toString(); exit;
                 
               $result = $db->fetchAll($select);
                
@@ -170,7 +171,8 @@ class CoverageHelper {
                                  ->from(array('p'=>'person'), 'COUNT(DISTINCT(p.facility_id)) AS fid_count')
                                  ->joinInner(array('ptt'=>'person_to_training'), 'p.id = ptt.person_id', array())
                                  ->joinInner(array('t'=>'training'), 't.id = ptt.training_id', array())
-                                 ->joinInner(array('tto'=>'training_title_option'), 't.training_title_option_id = tto.id', array('MONTHNAME(training_end_date) AS month_name', 'YEAR(training_end_date) AS year'))
+                                 ->joinInner(array('tto'=>'training_title_option'), 't.training_title_option_id = tto.id', 
+                                         array('MONTHNAME(MAX(training_end_date)) AS month_name', 'YEAR(MAX(training_end_date)) AS year'))
                                  ->joinInner(array('flv'=>'facility_location_view'), 'p.facility_id = flv.id', array())
                                  ->where($longWhereClause);
                     
@@ -230,7 +232,7 @@ class CoverageHelper {
                             ->group($tierFieldName)
                             ->order(array($tierText));   
 
-              //echo 'Providing: ' . $select->__toString() . '<br/>'; exit;
+              //echo $select->__toString() . '<br/>'; exit;
 
                $result = $db->fetchAll($select);
 //               if($tierText=="lga"){
@@ -249,19 +251,20 @@ class CoverageHelper {
        
        
        public function getCoverageCountFacWithHWProviding($longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName){
+                
                 $db = Zend_Db_Table_Abstract::getDefaultAdapter();               
                 
                 $select = $db->select()
                         ->from(array('c' => 'commodity'),
                           array('COUNT(DISTINCT(c.facility_id)) AS fid_count'))
                         ->joinInner(array('cno' => 'commodity_name_option'), 'cno.id = c.name_id', array())
-                        ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = c.facility_id', array('lga', 'state',  'geo_zone'))
+                        ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = c.facility_id', array($tierText))
                         ->joinInner(array('fwtc' => 'facility_worker_training_counts_view'), 'c.facility_id = fwtc.facid', array())
                         ->where($longWhereClause)
                         ->group($tierFieldName)
                         ->order(array($tierText)); 
 
-               // echo $sql = $select->__toString(); echo '<br/>';
+               //echo $sql = $select->__toString(); exit;
                 
                $result = $db->fetchAll($select);
                
@@ -498,7 +501,7 @@ class CoverageHelper {
                             ->group(array($tierFieldName, 'date'))
                             ->order(array($tierText, 'date'));   
                 
-             // echo 'Providing: ' . $select->__toString() . '<br/>'; 
+             //echo 'Providing: ' . $select->__toString() . '<br/>'; 
                 
               $result = $db->fetchAll($select);
               

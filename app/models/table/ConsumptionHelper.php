@@ -11,9 +11,29 @@
  * @author Swedge
  */
 require_once 'Helper2.php';
+require_once 'Commodity.php';
 
 class ConsumptionHelper {
     //put your code here
+    
+    /**
+     * Consumption by commodities array and single date only
+     * @param type $longWhereClause
+     */
+    function getConsumptionByCommodity($longWhereClause){
+        $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+        
+        $select = $db->select()
+                     ->from(array('c'=>'commodity'), array('COALESCE(SUM(consumption),0) AS consumption'))
+                     ->joinInner(array('cno' => 'commodity_name_option'), 'c.name_id = cno.id', array('commodity_name as method'))
+                     ->where($longWhereClause)
+                     ->group('c.name_id')
+                     ->order(['display_order']);
+         
+        //echo $select->__toString(); exit;
+        
+        return $result = $db->fetchAll($select);
+    }
     
     public function getCommConsumptionByCommodity($commID=0, $longWhere, $geoList){
         $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
@@ -168,7 +188,7 @@ class ConsumptionHelper {
        }
        
        
-       public function getConsumptionByCommodityOverTime($longWhere, $commNames){
+       public function getConsumptionByCommodityOverTime($longWhere, $commNames, $lastPullDatemultiple){
            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $helper = new Helper2(); $output = array();
 
@@ -177,18 +197,19 @@ class ConsumptionHelper {
                                  array('SUM(consumption) AS consumption', 'MONTHNAME(date) as month_name', 'YEAR(date) as year'))
                          ->joinInner(array('cno' => 'commodity_name_option'), 'c.name_id = cno.id', array('commodity_name as method'))
                          ->where($longWhere)
-                         ->group(array('commodity_name', 'date'))
+                         ->group(array('commodity_name', 'date', 'display_order'))
                          ->order(array('display_order', 'date'));       
 
             //echo $select->__toString(); exit;
 
             $result = $db->fetchAll($select);
+            sort($lastPullDatemultiple);
             //var_dump($result); exit;
+            
             //get the month names
             $monthNames = array();  $i =0;
-            while($i<12){
-                $monthNames[] = $result[$i]['month_name'];
-                $i++;
+            foreach($lastPullDatemultiple as $pullDate){
+                $monthNames[] = date('F', strtotime($pullDate));
             }
             
             for($i=0; $i<count($monthNames); $i++){
@@ -197,7 +218,7 @@ class ConsumptionHelper {
                 $j = $i;
                 foreach($commNames as $comm){
                     $output[$monthName][$comm] = $result[$j]['consumption'];
-                    $j += 12;
+                    $j += count($monthNames);
                 }
             }
             
@@ -209,7 +230,9 @@ class ConsumptionHelper {
            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $helper = new Helper2(); $output = array();
 
-            $sql = 'SELECT DISTINCT(commodity_name), commodity_type, c.name_id, COALESCE(SUM(c.consumption),0) as consumption, c.date, MONTHNAME(c.date) as month_name, YEAR(c.date) ' .
+            //$sql = 'SELECT DISTINCT(commodity_name), commodity_type, c.name_id, COALESCE(SUM(c.consumption),0) as consumption, c.date, MONTHNAME(c.date) as month_name, YEAR(c.date) ' .
+            $sql = 'SELECT DISTINCT(commodity_name), COALESCE(SUM(c.consumption),0) as consumption, c.date, ' .
+                   'MONTHNAME(c.date) as month_name, YEAR(c.date), display_order ' .
                    'FROM  commodity_name_option  cno ' .
                    'LEFT JOIN ( ' .
                                 'SELECT c.* FROM commodity c ' .
@@ -217,12 +240,11 @@ class ConsumptionHelper {
                                 'WHERE (' . $locationWhere . ' AND ' . $dateWhere . ')' .
                                ') as c ' .
                    'ON cno.id = c.name_id WHERE (' . $commodityWhere . ') ' .
-                   'GROUP BY commodity_name, date ' .
+                   'GROUP BY commodity_name, date, display_order ' .
                    'ORDER BY display_order, date';
 
-            //echo $select->__toString() . '<br><br>'; exit;
             //echo $sql; exit;
-            $helper->plog($sql);
+            //$helper->plog($sql);
             $result = $db->fetchAll($sql);
             
             $commNames = explode(',',$helper->getCommodityNames('', false));
@@ -348,7 +370,10 @@ class ConsumptionHelper {
        
        
        
-       public function getConsumptionByCommodityAndLocationOverTime($commodityIDList, $longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName){
+       public function getConsumptionByCommodityAndLocationOverTime(
+               $commodityIDList, $longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName, 
+               $lastPullDatemultiple=[]){
+           
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $output = array();
             $helper = new Helper2();
@@ -360,9 +385,9 @@ class ConsumptionHelper {
                          ->from(array('c'=>'commodity'), 
                                  array('SUM(consumption) AS consumption', 'MONTHNAME(date) as month_name', 'YEAR(date) as year'))
                          ->joinInner(array('cno' => 'commodity_name_option'), 'c.name_id = cno.id', array('commodity_name as method', 'id as comm_id'))
-                         ->joinInner(array('flv'=>'facility_location_view'), 'flv.id = c.facility_id', array('lga','state','geo_zone'))
+                         ->joinInner(array('flv'=>'facility_location_view'), 'flv.id = c.facility_id', array($tierText))
                          ->where($longWhereClause)
-                         ->group(array($tierFieldName, 'c.date', 'method'))
+                         ->group(array($tierFieldName, 'c.date', 'method', 'comm_id'))
                          ->order(array($tierText, 'c.date', 'method'));
 
             //echo $select->__toString(); exit;
@@ -371,9 +396,13 @@ class ConsumptionHelper {
             //var_dump($result); exit;
             
             //get the month names
-            $prevMonths = $helper->getPreviousMonthDates(12);
+            if(empty($lastPullDatemultiple))
+                $prevMonths = $helper->getPreviousMonthDates(12);
+            else 
+                $prevMonths = $lastPullDatemultiple;
+            
             $i = 0;
-            while($i<12){
+            while($i < count($prevMonths)){
                 $monthNames[] = date('F', strtotime($prevMonths[$i]));
                 $i++;
             }
@@ -383,7 +412,6 @@ class ConsumptionHelper {
             $i = 0;
             foreach ($locationNames as $location){
                 foreach ($monthNames as $monthName){
-                    //if($monthName == $result[$i]['month_name']){
                         foreach($commodityIDList as $commodityID){
                             $commodityName = $helper->getCommodityName($commodityID);
                             foreach($result as $key=>$row){

@@ -136,7 +136,7 @@ class DashboardHelper {
                                 ->group(array('date'))
                                 ->order(array('date'));
 
-                  //echo $select->__toString() . '<br/><br/>'; exit;
+                   //echo $select->__toString() . '<br/><br/>'; exit;
 
                    $result = $db->fetchAll($select);
                    //var_dump($result); exit;

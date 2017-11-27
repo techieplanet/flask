@@ -80,10 +80,11 @@ class Stockout {
                     //$denominators = $stockoutHelper->getStockoutFacsWithTrainedHWCountByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
                     $denominators = $helper->getReportingFacsWithTrainedHWOvertimeByLocation($longWhereClause, $geoList, $tierText, $tierFieldName);
                     
-                    $sumsArray = $helper->sumNumersAndDenoms($numerators, $denominators);
+                    $sumsArray = $helper->sumNumersAndDenomsWithValues($numerators, $denominators);
                     $output = array_merge($output, $sumsArray['output']);
-                    $output[0]['percent'] = $sumsArray['nationalAvg'];
-
+                    
+                    $output[0] = $sumsArray['national'];
+                    
                     //do cache insert
                     if($training_type == 'fp')
                         $alias = CacheManager::PERCENT_FACS_HW_STOCKED_OUT_FP;
@@ -108,7 +109,7 @@ class Stockout {
                     else{
                         //get month national data and put in first array element
                         $cacheValue = json_decode($cacheValue, true);
-                        if($cacheValue) $output[0]['percent'] = $cacheValue[0]['percent'];
+                        if($cacheValue) $output[0] = $cacheValue[0];
                     }
                     
                     
@@ -380,7 +381,7 @@ class Stockout {
                    // print_r($sortedArray);
                    // echo '<br/>';
                     $output = array_merge($output, $sortedArray);
-                    $output[0]['percent'] = $sumsArray['nationalAvg'];
+                    $output[0] = $sumsArray['nationalAvg'];
                     
                    // print_r($numerators); echo '<br><br>';
                     //print_r($denominators); echo '<br><br>';
@@ -404,7 +405,7 @@ class Stockout {
                     else{
                         //get month national data and put in first array element
                         $cacheValue = json_decode($cacheValue, true);
-                        if($cacheValue) $output[0]['percent'] = $cacheValue[0]['percent'];
+                        if($cacheValue) $output[0] = $cacheValue[0];
                     }
                 }
                 

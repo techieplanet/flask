@@ -36,8 +36,9 @@ class Dashboard {
                          ->joinRight(array('cno'=>'commodity_name_option'), 'cno.id = c.name_id', 
                                                     array('commodity_name as method'))
                          ->where($where)
-                         ->group('commodity_name')
+                         ->group(array('commodity_name', 'display_order'))
                          ->order(array('display_order'));
+            
             $result = $db->fetchAll($select);
             
             //do cache insert
@@ -52,7 +53,6 @@ class Dashboard {
         else{ //data is cached. Retrieve it
             $result = json_decode($cacheValue, true);
         }
-        
         return $result;               
     }
     
@@ -63,7 +63,6 @@ class Dashboard {
        * the 3 categories of calls: 
        */
       public function fetchCoverageSummary($geoList, $tierValue){          
-          
            //$output = $this->fetchCSDetails1(null);
            //var_dump($output); 
            
@@ -147,7 +146,10 @@ class Dashboard {
                         foreach ($numerators as $i => $row){
                             $output[] = array(
                                 "month" => $numerators[$i]['month_name'],
-                                "percent" => $numerators[$i]['fid_count']/$denominators[$i]['fid_count'],
+                                'numer' => $numerators[$i]['fid_count'],
+                                'denom' => $denominators[$i]['fid_count'],
+                                "year" => $numerators[$i]['year'],
+                                "percent" => round($numerators[$i]['fid_count']/$denominators[$i]['fid_count']*100,1),
                             );
                         }
                         
@@ -341,8 +343,10 @@ class Dashboard {
 
                     foreach ($numerators as $date=>$numer){
                         $output[] = array(
+                                    'numer' => $numer,
+                                    'denom' => $denominators[$date],
                                     'month' => date('F', strtotime($date)),
-                                    $percentIndexText => $numer / $denominators[$date]
+                                    'percent' => round($numer / $denominators[$date] * 100, 1)
                         );
                     }
                     
@@ -370,7 +374,7 @@ class Dashboard {
                 }
                 
                 
-                return array_reverse($output);
+                return $output;
         }
         
         
@@ -440,6 +444,8 @@ class Dashboard {
 
                     foreach ($numerators as $date=>$numer){
                         $month = date('F', strtotime($date));
+                        //$year = date('Y', strtotime($date));
+                        //$month = $month . ", " . $year;
                         $finalNumerator[$month] = $numer;
                         $finalDenominator[$month] = $denominators[$date];
                         
@@ -448,8 +454,8 @@ class Dashboard {
                     
                     
                 
-                    //print_r($numerators); echo '<br><br>';
-                    //print_r($denominators); echo '<br><br>';
+                    //print_r($finalNumerator); echo '<br><br>';
+                    //print_r($finalDenominator); echo '<br><br>';
                     //print_r($output); echo '<br><br>';
                     //exit;
                     
@@ -588,7 +594,7 @@ class Dashboard {
                 else if($training_type == 'larc')
                     $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_HW_PROVIDING_LARC, $latestDate);
 
-
+                //$cacheValue = null;
                 //check if page is just being loaded
                 //fresh session, month data already registered
                 //just retrieve registered data
@@ -626,6 +632,8 @@ class Dashboard {
                                        $ct_where . ' AND ' . $tt_where . ' AND ' . $locationWhere . ' AND ' .
                                        $dateWhere;
                     $numerators = $coverageHelper->getCoverageCountFacWithHWProviding($longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName);
+                    
+                    $helper->jLog($numerators);
                     
                     //set output                    
                     $nationalAvg = 0; 

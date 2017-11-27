@@ -85,6 +85,7 @@ class MetricClient{
     
     
     public function handleAuthMetrics($userId, $actionType){
+        return;
         date_default_timezone_set("Africa/Lagos");
         $documentArray = array( 
               'action_type' => $actionType,

@@ -9,6 +9,7 @@
 
 require_once ('ITechTable.php');
 require_once ('Helper2.php');
+require_once ('DateFunctions.php');
 
 class Facility extends ITechTable {
 	protected $_name = 'facility';
@@ -286,7 +287,7 @@ class Facility extends ITechTable {
                              ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = facility_id', array($tierText))
                              ->where($longWhereClause)
                              ->group(array($tierFieldName, 'date'))
-                             ->order(array($tierText, 'date'));   
+                             ->order(array($tierText, 'date'));
 
                 //echo $sql = $select->__toString(); exit;
 
@@ -356,12 +357,12 @@ class Facility extends ITechTable {
                 $helper = new Helper2();
                 
                 $select = $db->select()
-                            ->from(array('flv' => 'facility_location_view'), array('COUNT(id) AS fid_count','lga', 'state',  'geo_zone'))
+                            ->from(array('flv' => 'facility_location_view'), array('COUNT(id) AS fid_count', $tierText))
                             ->where($longWhereClause)
                             ->group($tierFieldName)
                             ->order(array($tierText));
                 
-             //echo 'FCL: ' . $select->__toString() . '<br/>'; exit;
+             //echo $select->__toString() . '<br/>'; exit;
 
               $result = $db->fetchAll($select);
               
@@ -375,7 +376,7 @@ class Facility extends ITechTable {
        
        
        /**
-        * Gets count of facilities thart provided up to a number of products in a period
+        * Gets count of facilities that provided up to a number of products in a period
         * e.g. count of facilities providing at least 3 commodities in a period
         * 
         * @param type $longWhereClause
@@ -455,7 +456,6 @@ class Facility extends ITechTable {
          * Gets the facilities that have provided at least one FP commodity in the 
          * past six (6) months
          * Current month mode: facilites that are reporting in the current month and provided in last 6 months
-         * 12 months mode: facilities that provided in last 6 months and reported in any of the past months grouped by months
          * 
          * @param type $longWhereClause
          * @param type $geoList
@@ -464,31 +464,102 @@ class Facility extends ITechTable {
          * @param type $latestDate
          */
         public function getFPFacilities($longWhereClause, 
-               $geoList, $tierNameField, $tierIDField, $ct_where, $sixMonthsDateWhere){
+               $geoList, $tierNameField, $tierIDField, $ct_where, $latestDate, $groupBy=''){
                $db = Zend_Db_Table_Abstract::getDefaultAdapter();
                $helper = new Helper2();            
 
-               //$sixMonthsDateWhere = "(date BETWEEN '" . 
-                 //               date("Y-m-d", strtotime("$latestDate -5 months")) . "' AND '$latestDate')";
+                $sixMonthsDateWhere = "(date BETWEEN '" . 
+                                 date("Y-m-d", strtotime("$latestDate -5 months")) . "' AND '$latestDate')";
                
-                $select = "SELECT COUNT(DISTINCT(c.facility_id)) AS fid_count, $tierNameField, $tierIDField, "
+                $select = "SELECT COUNT(DISTINCT(c.facility_id)) AS fid_count, "
+                        . (empty($groupBy) ? "$tierNameField, $tierIDField, " : "$groupBy, ")
                         . "MONTHNAME(c.date) as month_name " 
                         . "from commodity c "
-                        . "INNER JOIN commodity_name_option cno ON cno.id = c.name_id "
+                        //. "INNER JOIN commodity_name_option cno ON cno.id = c.name_id "
                         . "INNER JOIN facility_location_view flv ON flv.id = c.facility_id "
                         . "INNER JOIN ( "
                         .       "SELECT count(consumption) as cc, facility_id FROM commodity c_sub "
                         .       "INNER JOIN commodity_name_option cno_sub ON cno_sub.id = c_sub.name_id "
-                        .       "WHERE ($sixMonthsDateWhere) AND $ct_where AND consumption > 1 "
+                        .       "WHERE ($sixMonthsDateWhere) AND $ct_where AND consumption >= 1 "
                         .       "GROUP BY facility_id "
                         .       ") AS ccount ON c.facility_id = ccount.facility_id AND ccount.cc >= 1 "
                         . "WHERE ($longWhereClause) "
-                        . "GROUP BY $tierIDField, date "
-                        . "ORDER BY geo_zone, date";
+                        . "GROUP BY " . (empty($groupBy) ? "$tierIDField, date " : "$groupBy ")
+                        . "ORDER BY " . (empty($groupBy) ? "geo_zone, date" : $groupBy);
 
-               //echo $select;exit; 
+               //echo $groupBy . ' | ' . $select;exit; 
 
                return $result = $db->fetchAll($select);
+        }
+        
+        
+        //$longWhereClause = $reportingWhere . ' AND ' . $locationWhere
+        public function getFPFacilitiesOvertime($longWhereClause, 
+                $geoList, $tierNameField, $tierIDField, $ct_where, $dateWhereArray, $groupBy='') {
+            
+                $FPFacsDenominators = [];
+                $dateFunctions = new DateFunctions();
+                
+                foreach($dateWhereArray as $pullDate){
+                    $dateWhere = "c.date = '$pullDate'";
+                    $denoms = $this->getFPFacilities(
+                            $longWhereClause . ' AND ' . $dateWhere, 
+                            $geoList, 
+                            $tierNameField, 
+                            $tierIDField, 
+                            $ct_where,
+                            $pullDate, 
+                            $groupBy
+                    );
+                    
+                    $FPFacsDenominators = array_merge($FPFacsDenominators, $denoms);
+                }
+                
+                if(!empty($groupBy)) return $FPFacsDenominators; // no sorting
+                
+                //order the result in deired format - orderby location, month
+                $FPFacsDenominatorsFinal = [];
+                foreach ($FPFacsDenominators as $key => $row) {
+                    $locations[$key]  = $row[$tierNameField];
+                }
+                $locations = array_unique($locations);
+                
+                
+                foreach($locations as $loc){
+                    $thisLocationArray = [];
+                    foreach($FPFacsDenominators as $value){
+                        if($value[$tierNameField] == $loc)
+                            $thisLocationArray[] = $value;
+                    }
+                    $locationAndMonthSorted = $dateFunctions->multiSortMonths($thisLocationArray, array_reverse($dateWhereArray));
+                    $FPFacsDenominatorsFinal = array_merge($FPFacsDenominatorsFinal, $locationAndMonthSorted);
+                } 
+                //var_dump($FPFacsDenominatorsFinal); exit;
+                return $FPFacsDenominatorsFinal;
+        }
+        
+        
+        
+        public function processFPFacilitiesOvertime($FPFacsDenominators, $dateWhereArray, $tierText){
+            $FPFacsDenominatorsFinal = [];
+            $dateFunctions = new DateFunctions();
+            
+                foreach ($FPFacsDenominators as $key => $row) {
+                    $locations[$key]  = $row[$tierText];
+                }
+                $locations = array_unique($locations);
+                
+                foreach($locations as $loc){
+                    $thisLocationArray = [];
+                    foreach($FPFacsDenominators as $value){
+                        if($value[$tierText] == $loc)
+                            $thisLocationArray[] = $value;
+                    }
+                    $locationAndMonthSorted = $dateFunctions->multiSortMonths($thisLocationArray, array_reverse($dateWhereArray));
+                    $FPFacsDenominatorsFinal = array_merge($FPFacsDenominatorsFinal, $locationAndMonthSorted);
+                } 
+                
+                return $FPFacsDenominatorsFinal;
         }
         
 }

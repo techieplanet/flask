@@ -1,0 +1,115 @@
+
+    
+.small-box{
+   background-color:#00E3E3;
+   padding:24px;  
+   padding-bottom:26px;
+  
+}
+    
+.img-box{
+
+  width:25px;
+  height:25px;
+  margin-right:5px;
+        
+}
+
+.big-box{
+    background-color:white;
+    color:black;
+    font-size:12px;
+    text-transform:uppercase;
+    height:74px;
+    padding-top:5px;
+    padding-bottom:40px;
+}
+    
+
+.font-20{
+  font-size:16px;
+}
+
+
+    
+.green{
+    
+    background-color:#06A259;
+        
+}
+
+.red{
+    
+   background-color:#DD4C39;
+        
+}
+    
+.total-participant-color{
+    background-color: #F39C11;  
+}
+    
+.line-color-pie-chart{
+     background-color:#262F31;   
+}
+    
+.hometabs.ui-widget-header {
+    background: #eeeeee !important;
+    font-size: 12px;
+    border-top: solid 2px; 
+}
+    
+.small-tab{
+    background-color:white;
+    font-size:12px;
+    padding:2px;
+}
+    
+    .title-bar{
+        width: 100%;
+        
+        margin-bottom:10px;
+    }
+    
+    .border-hr{
+        border-top: solid 2px #E36856;
+    }
+    
+    
+    
+    .title-bar-info-btn{
+        background-color:white;
+        border-left:solid 1px #FAFAFA;
+        padding-top:3px;
+        padding-bottom:13px;
+        
+    }
+    
+    .border-fa{
+        border-top: solid 2px #E36856;
+    }
+    
+    .border-st{
+        border-top: solid 2px #289D6C;
+    }
+    
+
+.box-shadow{
+        box-shadow: 5px 5px 5px #cccccc;
+}
+    
+    @media screen and (max-width: 1000px) and (min-width: 300px) {
+    .big-box{
+    background-color:white;
+    color:black;
+    font-size:10px;
+    text-transform:uppercase;
+    height:74px;
+   }
+        
+   .font-20{
+     font-size:12px;
+    }
+    
+}
+    
+    

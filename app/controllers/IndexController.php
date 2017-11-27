@@ -16,6 +16,8 @@ require_once ('ReportFilterHelpers.php');
 require_once ('models/table/Helper2.php');
 //require_once('models/table/Dashboard-CHAI.php');
 require_once('models/table/Dashboard.php');
+require_once('models/table/Training.php');
+require_once('models/table/Person.php');
 
 class IndexController extends ReportFilterHelpers  {
         private $helper; // = new Helper2();
@@ -31,42 +33,42 @@ class IndexController extends ReportFilterHelpers  {
 	            $this->baseUrl = $burl . '/';
 	    }
 	
-        public function indexoldAction(){
-            //fetch consumption by method
-            $dashboard = new Dashboard();
-            list($geoList, $tierValue) = $this->buildParameters();                
-            
-            $consumptionbyMethod = $dashboard->fetchConsumptionByMethod();
-            $coverageSummary = $dashboard->fetchCoverageSummary($geoList, $tierValue);
-            
-            $fp_facsProviding = $dashboard->fetchFacsProviding('fp');
-            $larc_facsProviding = $dashboard->fetchFacsProviding('larc');
-            
-            
-            //$facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedout($geoList, $tierValue, true);
-            $fp_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('fp', $geoList, $tierValue, true);
-            $larc_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('larc', $geoList, $tierValue, true);
-            
-            //var_dump($coverageSummary); exit;
-            
-            $this->view->assign('consumption_by_method', $consumptionbyMethod);
-            $this->view->assign('csummary', $coverageSummary);
-            $this->view->assign('fp_facs_providing', $fp_facsProviding);
-            $this->view->assign('larc_facs_providing', $larc_facsProviding);
-            //$this->view->assign('facs_providing_stockedout', $facsProvidingStockedout);
-            $this->view->assign('fp_facs_providing_stockedout', $fp_facsProvidingStockedout);
-            $this->view->assign('larc_facs_providing_stockedout', $larc_facsProvidingStockedout);
-            
-            
-            $title_date = $this->helper->fetchTitleDate();
-            $this->view->assign('title_date', $title_date['month_name'] . ' ' . $title_date['year']);
-            
-            $overTimeDates = $this->helper->getPreviousMonthDates(12);
-            $this->view->assign('end_date', date('F', strtotime($overTimeDates[0])). ' '. date('Y', strtotime($overTimeDates[0]))); 
-            $this->view->assign('start_date', date('F', strtotime($overTimeDates[11])). ' '. date('Y', strtotime($overTimeDates[11]))); 
-            
-            $this->view->assign('base_url', $this->baseUrl);
-        }
+//        public function indexoldAction(){
+//            //fetch consumption by method
+//            $dashboard = new Dashboard();
+//            list($geoList, $tierValue) = $this->buildParameters();                
+//            
+//            $consumptionbyMethod = $dashboard->fetchConsumptionByMethod();
+//            $coverageSummary = $dashboard->fetchCoverageSummary($geoList, $tierValue);
+//            
+//            $fp_facsProviding = $dashboard->fetchFacsProviding('fp');
+//            $larc_facsProviding = $dashboard->fetchFacsProviding('larc');
+//            
+//            
+//            //$facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedout($geoList, $tierValue, true);
+//            $fp_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('fp', $geoList, $tierValue, true);
+//            $larc_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('larc', $geoList, $tierValue, true);
+//            
+//            //var_dump($coverageSummary); exit;
+//            
+//            $this->view->assign('consumption_by_method', $consumptionbyMethod);
+//            $this->view->assign('csummary', $coverageSummary);
+//            $this->view->assign('fp_facs_providing', $fp_facsProviding);
+//            $this->view->assign('larc_facs_providing', $larc_facsProviding);
+//            //$this->view->assign('facs_providing_stockedout', $facsProvidingStockedout);
+//            $this->view->assign('fp_facs_providing_stockedout', $fp_facsProvidingStockedout);
+//            $this->view->assign('larc_facs_providing_stockedout', $larc_facsProvidingStockedout);
+//            
+//            
+//            $title_date = $this->helper->fetchTitleDate();
+//            $this->view->assign('title_date', $title_date['month_name'] . ' ' . $title_date['year']);
+//            
+//            $overTimeDates = $this->helper->getPreviousMonthDates(12);
+//            $this->view->assign('end_date', date('F', strtotime($overTimeDates[0])). ' '. date('Y', strtotime($overTimeDates[0]))); 
+//            $this->view->assign('start_date', date('F', strtotime($overTimeDates[11])). ' '. date('Y', strtotime($overTimeDates[11]))); 
+//            
+//            $this->view->assign('base_url', $this->baseUrl);
+//        }
         
         
         public function indexAction(){
@@ -80,41 +82,30 @@ class IndexController extends ReportFilterHelpers  {
             $fp_facsProviding = $dashboard->fetchFacsProviding('fp');
             $larc_facsProviding = $dashboard->fetchFacsProviding('larc');
             
-            list($fp_numeratorfacsprov,$fp_denominatorfacsprov) = $dashboard->fetchFacsProvidingNumeratorDenominator('fp');
-            list($larc_numeratorfacsprov,$larc_denominatorfacsprov) = $dashboard->fetchFacsProvidingNumeratorDenominator('larc');
-            
+            //list($fp_numeratorfacsprov,$fp_denominatorfacsprov) = $dashboard->fetchFacsProvidingNumeratorDenominator('fp');
+            //list($larc_numeratorfacsprov,$larc_denominatorfacsprov) = $dashboard->fetchFacsProvidingNumeratorDenominator('larc');
             
             //$facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedout($geoList, $tierValue, true);
             $fp_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('fp', $geoList, $tierValue, true);
             $larc_facsProvidingStockedout = $dashboard->fetchFacsProvidingStockedoutOvertime('larc', $geoList, $tierValue, true);
             
-            list($fp_numeratorStockedOut,$fp_denominatorStockedOut) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true);
-            list($larc_numeratorStockedOut,$larc_denominatorStockedOut) = $dashboard->fetchFacsProvidingStockedoutOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true);
+            $training = new Training();
+            $trainingsCount = count($training->getAll());
             
+            $person = new Person();
+            $uniqueTrainedPersonsCount = count($person->getUniqueTrainedPersons());
             
             //var_dump($coverageSummary); exit;
             
             $this->view->assign('consumption_by_method', $consumptionbyMethod);
             $this->view->assign('csummary', $coverageSummary);
-            $this->view->assign('fp_facs_providing', $fp_facsProviding);
-            $this->view->assign('larc_facs_providing', $larc_facsProviding);
-            //$this->view->assign('facs_providing_stockedout', $facsProvidingStockedout);
-            $this->view->assign('fp_facs_providing_stockedout', $fp_facsProvidingStockedout);
-            $this->view->assign('larc_facs_providing_stockedout', $larc_facsProvidingStockedout);
+            $this->view->assign('fp_facs_providing', json_encode($fp_facsProviding));
+            $this->view->assign('larc_facs_providing', json_encode($larc_facsProviding));
+            $this->view->assign('fp_facs_providing_stockedout', json_encode($fp_facsProvidingStockedout));
+            $this->view->assign('larc_facs_providing_stockedout', json_encode($larc_facsProvidingStockedout));
+            $this->view->assign('trainingsCount', $trainingsCount);
+            $this->view->assign('uniqueTrainedPersonsCount', $uniqueTrainedPersonsCount);
             
-            
-            
-            $this->view->assign('fp_numerator_stockout',$fp_numeratorStockedOut);
-            $this->view->assign('fp_denominator_stockout',$fp_denominatorStockedOut);
-            
-            $this->view->assign('larc_numerator_stockout',$larc_numeratorStockedOut);
-            $this->view->assign('larc_denominator_stockout',$larc_denominatorStockedOut);
-            
-            $this->view->assign('fp_numerator_facsprov',$fp_numeratorfacsprov);
-            $this->view->assign('fp_denominator_facsprov',$fp_denominatorfacsprov);
-            
-            $this->view->assign('larc_numerator_facsprov',$larc_numeratorfacsprov);
-            $this->view->assign('larc_denominator_facsprov',$larc_denominatorfacsprov);
             
             
             $title_date = $this->helper->fetchTitleDate();

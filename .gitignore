@@ -13,4 +13,8 @@ html/*.txt
 html/ws/json_frr/
 html/ws/json_comm/
 INIT
+<<<<<<< HEAD
 sites/
+=======
+sites/
+>>>>>>> 05a2d36335fd777f1b3ecc52bbd48740fd46b9d5

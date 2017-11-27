@@ -1503,6 +1503,7 @@ class AdminController extends UserController
 
 		$output = $multiAssign->init($this);
 		if(is_array($output)) { // json
+                        echo 'send data'; exit;
 			$this->sendData($output);
 		} else {
 			$this->view->assign('multiAssign', $output);

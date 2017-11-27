@@ -12,6 +12,7 @@
  */
 require_once('Facility.php');
 require_once('Helper2.php');
+require_once('ReportRate.php');
 require_once('ConsumptionHelper.php');
 require_once 'CacheManager.php';
 require_once 'IndicatorGroup.php';
@@ -67,6 +68,7 @@ class Consumption extends IndicatorGroup {
             $latestDate = $helper->getLatestPullDate();
             $methodName = '';
             
+            
             //where clauses
             if($commodity_id > 0){
                 $commodityWhere = "c.name_id = $commodity_id";
@@ -90,27 +92,69 @@ class Consumption extends IndicatorGroup {
         }
         
         
-        public function fetchConsumptionByCommodityOverTime($lastPullDatemultiple = array()){
+        /**
+         * Fetches the consumption for commodities only - single or multiple. 
+         * Considers single lastpullDate and selected/ALL commodities but NOT location
+         * 
+         * @param type $commodityIDList
+         * @param type $lastPullDate
+         * @return type
+         */
+        public function fetchConsumptionByCommodity($commodityIDList=[], $lastPullDate){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $output = array (); 
             $helper = new Helper2();
             
-           if(empty($lastPullDatemultiple)){
-                    
-             $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
-            }else{
-                   
-             $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
-             }
-            //$dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+            if(empty($lastPullDate))
+                $lastPullDate = $helper->getLatestPullDate ();
+                          
+            $dateWhere = "c.date = '$lastPullDate'";
             
-            $commodityWhere = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+            //cno.id because of right join
+            if(!empty($commodityIDList)){
+                $commodityWhere = "c.name_id IN (" . implode(',',$commodityIDList) . ')';
+            }
+            else{
+                $commodityIDList = implode(',',$helper->getCommodityNames('', true));
+                $commodityWhere = "c.name_id IN (" . $commodityIDList . ')';
+            }
             
             $longWhereClause = $dateWhere . ' AND ' . $commodityWhere;
             $commNames = explode(',',$helper->getCommodityNames('', false));
 
             $consHelper = new ConsumptionHelper();
-            $consOverTime = $consHelper->getConsumptionByCommodityOverTime($longWhereClause, $commNames);
+            $consumption = $consHelper->getConsumptionByCommodity($longWhereClause);
+            
+            return $consumption;
+        }
+        
+        
+        public function fetchConsumptionByCommodityOverTime($commodityList=[], $lastPullDatemultiple = []){
+            $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+            $output = array (); 
+            $commodity = new Commodity();
+            $reportRate = new ReportRate();
+            
+            if(empty($lastPullDatemultiple)){
+              $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+              $lastPullDatemultiple = $reportRate->getPreviousMonthDates(12);
+            }else{
+              $dateWhere = 'c.date IN ("'. implode('", "', $lastPullDatemultiple).'")';
+            }
+            
+            if(empty($commodityList)){
+                $commodityWhere = "(commodity_type = 'fp' OR commodity_type = 'larc')";
+                $commNamesArray = explode(',',$commodity->getCommodityNames('', false));
+            } else{
+                $commodityWhere = 'c.name_id IN (' . implode(',', $commodityList) . ')';
+                $commNamesArray = explode(',', $commodity->getCommodityNamesByID($commodityList, false));
+            }
+            
+            $longWhereClause = $dateWhere . ' AND ' . $commodityWhere;
+            
+
+            $consHelper = new ConsumptionHelper();
+            $consOverTime = $consHelper->getConsumptionByCommodityOverTime($longWhereClause, $commNamesArray, $lastPullDatemultiple);
             
             return $consOverTime;
         }
@@ -233,11 +277,10 @@ class Consumption extends IndicatorGroup {
             //echo 'geo: ' . $longWhereClause; exit;
             
             $consHelper = new ConsumptionHelper();
-            $consByGeo = $consHelper->getConsumptionByCommodityAndLocationOverTime($commodityIDList, $longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName);
-            
-            //var_dump($methodNames); exit;
+            $consByGeo = $consHelper->getConsumptionByCommodityAndLocationOverTime($commodityIDList, $longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName, $lastPullDatemultiple);
+
+            //var_dump($consByGeo); exit;
             return array($methodNames,$consByGeo);
-            //return array($consByGeo);
         }
         
         
@@ -296,13 +339,14 @@ class Consumption extends IndicatorGroup {
                 $output = json_decode($cacheValue, true);
             }
             else{
-            if(empty($lastPullDatemultiple)){
-                    
-             $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
-            }else{
-                   
-             $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
-             }
+                if(empty($lastPullDatemultiple)){
+
+                 $dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
+                } else if (!empty($lastPullDatemultiple) && is_array($lastPullDatemultiple)){
+
+                    $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+                }
+                
                 
                 //$dateWhere = 'c.date <= (SELECT MAX(date) FROM facility_report_rate) AND c.date >= DATE_SUB((SELECT MAX(date) FROM facility_report_rate), INTERVAL 11 MONTH)';
                 
@@ -334,11 +378,11 @@ class Consumption extends IndicatorGroup {
                          //$output[$monthName]['National'] = array('new_acceptors'=>$totalNewAcceptors, 'current_users'=>$totalCurrentUsers);
                          //$output[$monthName] = array('National' => $output[$monthName]['National']) + $output[$monthName];
                          
+                         if(!isset($output[$monthName])) continue;
+                         
                          $arr = array('new_acceptors'=>$totalNewAcceptors, 'current_users'=>$totalCurrentUsers);
                          if(is_array($output[$monthName])){
-                         $output[$monthName] = array_merge(array('National' => $arr), $output[$monthName]);
-                         }else{
-                         //$output[$monthName] = array_merge(array('National' => $arr), array());    
+                            $output[$monthName] = array_merge(array('National' => $arr), $output[$monthName]);
                          }
                     }
                     //echo var_dump($output); exit;
@@ -390,12 +434,13 @@ class Consumption extends IndicatorGroup {
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             
             $helper = new Helper2();
+            $dateFunctions = new DateFunctions();
             $latestDate = $helper->getLatestPullDate();
                     
             $cacheManager = new CacheManager();
             $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_REPORTING_RATE_OVERTIME, $latestDate);
 
-            if($cacheValue && $freshVisit){
+            if(!$cacheValue && $freshVisit){
                 $output = json_decode($cacheValue, true);
             }
             else{
@@ -409,9 +454,11 @@ class Consumption extends IndicatorGroup {
                         $dateWhere = "c.date BETWEEN '" . 
                                 date("Y-m-d", strtotime("$latestDate -11 months")) . "' AND '$latestDate'";
                         $subDateWhere = str_replace('c.', 'c_sub.', $dateWhere);
+                        $dateWhereArray = $dateFunctions->getPreviousMonthDates(12, $dateFunctions->getLatestPullDate());
                     }else{
                         $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
                         $subDateWhere = str_replace('c.', 'c_sub.', $dateWhere);
+                        $dateWhereArray = $lastPullDatemultiple;
                     }
                     
                     $sixMonthsDateWhere = "(date BETWEEN '" . 
@@ -419,18 +466,18 @@ class Consumption extends IndicatorGroup {
                     
                     $reportingWhere = 'facility_reporting_status = 1';
                     $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
-                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
-                                       $ct_where . ' AND ' . $locationWhere;
+                    $longWhereClause = $reportingWhere . ' AND ' . $locationWhere;
                     
                     $facility = new Facility();
                     
-                    $numerators = $facility->getFPFacilities(
+                    $numerators = $facility->getFPFacilitiesOvertime(
                             $longWhereClause, 
                             $geoList, 
                             $tierNameField, 
                             $tierIDField, 
                             $ct_where, 
-                            $sixMonthsDateWhere
+                            $dateWhereArray,
+                            'date'
                     );
                     
                     $locationNames = $helper->getLocationNames($geoList); 
@@ -459,23 +506,25 @@ class Consumption extends IndicatorGroup {
                             $tierNameField, 
                             $tierIDField
                     );
-                    
+                     
                     /*********************************************************************************
                      * denominator for FP facilites: consumed 1 FP commodity in last 6 months
                      ********************************************************************************/
                     $reportingWhere = 'facility_reporting_status = 1';
                     $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
-                    $longWhereClause = $dateWhere . ' AND ' . 
-                                       $ct_where . ' AND ' . $locationWhere;
+                    $longWhereClause = $reportingWhere . ' AND ' . $locationWhere;
                     
-                    $FPFacsDenominators = $facility->getFPFacilities(
+                    $FPFacsDenominators = $facility->getFPFacilitiesOvertime(
                             $longWhereClause, 
                             $geoList, 
                             $tierNameField, 
                             $tierIDField, 
                             $ct_where,
-                            $sixMonthsDateWhere
+                            $dateWhereArray,
+                            'date'
                     );
+                    //Helper2::printArray($FPFacsDenominators);
+                    
                     //var_dump($FPFacsDenominators); exit;
                     $output['allfacs'] = $this->setUpOvertimeOutput($monthNames, $locationNames, $numerators, $denominators);
                     $output['fpfacs'] = $this->setUpOvertimeOutput($monthNames, $locationNames, $numerators, $FPFacsDenominators);
@@ -491,7 +540,7 @@ class Consumption extends IndicatorGroup {
                             'value' => json_encode($output)
                             //'timestamp_created' => date('');
                         );
-                        $cacheManager->setIndicator($dataArray);
+                        //$cacheManager->setIndicator($dataArray);
                     }
                     else if($updateMode){
                         $dataArray = array('value' => json_encode($output));

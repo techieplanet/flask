@@ -19,7 +19,7 @@ class IndicatorGroup {
     //put your code here
     
     //add all missing months for each location.
-     public  function addMissingMonths($numerators, $monthNames, $locationNames, $tierText ){
+     public  function addMissingMonths($numerators, $monthNames, $locationNames, $tierText, $negatePurpose = false ){
          //$helper = new Helper2();
          $numeratorsArray = array();
 
@@ -36,7 +36,7 @@ class IndicatorGroup {
               //var_dump($locationArray); exit;
               //now we have all the rows for the current location.
               //we have to ensure it has all the month names represented
-              $monthArray = $this->filterMonths($monthNames, $locationArray, $location, $tierText,  'month_name');
+              $monthArray = $this->filterMonths($monthNames, $locationArray, $location, $tierText,  'month_name', $negatePurpose);
               $numeratorsArray = array_merge($numeratorsArray,$monthArray);
           }
           
@@ -46,11 +46,11 @@ class IndicatorGroup {
     
     
     //add all missing months for each location.
-    public function filterMonths($monthNames, $locationArray, $focusLocation, $tierText, $monthField){
-           $monthDataArray = array(); $monthValue = 0;
+    public function filterMonths($monthNames, $locationArray, $focusLocation, $tierText, $monthField, $negatePurpose = false){
+           $monthDataArray = array(); $monthValue = 0; 
            if(!empty($locationArray)){
                 foreach($monthNames as $key=>$monthName){
-                    $monthValue = '';
+                    $monthValue = 0; 
                     foreach($locationArray as $entry){
                         if($monthName == $entry[$monthField]){ 
                             $monthValue = $entry['fid_count']; 
@@ -58,9 +58,12 @@ class IndicatorGroup {
                         }
                     }
 
-                    if($monthValue == '')
-                        $monthValue = 0;
-
+                    //if($monthValue == 0) { //month not in db for this indicator
+                        //  $monthValue = 0;
+                    //}
+                    
+                    //if($negatePurpose && $monthValue) //DO NOT ADD MISSING MONTHS
+                      //  continue;
                     $monthDataArray[] = array(
                                 'month_name' => $monthName,
                                 $tierText => $focusLocation,
@@ -70,12 +73,13 @@ class IndicatorGroup {
             }
             else{
                 //echo 'empty: ' . $tierText; exit;
-                foreach($monthNames as $key=>$monthName)
+                foreach($monthNames as $key=>$monthName){
                     $monthDataArray[] = array(
                                 'month_name' => $monthName,
                                 $tierText => $focusLocation,
                                 'fid_count' => $monthValue
                         );
+                }
             }
             
             return $monthDataArray;
