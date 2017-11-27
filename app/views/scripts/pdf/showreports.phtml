@@ -587,7 +587,7 @@ view.setColumns([0,
                 reset($percentData); 
                 $color = '';
                 foreach ($percentData as $key=>$row){ 
-                    $location = $row['location']; $percent = round($row['percent']*100,1); 
+                    $location = $row['location']; $percent = round($row['percent'],1); 
                     $annotation = $percent . '%';
                     if($firstKey == $key) $color = 'black';
                     else if ($lastKey == $key) $color = 'green';
@@ -636,7 +636,7 @@ view.setColumns([0,
                 reset($percentData); 
                 $color = '';
                 foreach ($percentData as $key=>$row){ 
-                    $location = $row['location']; $percent = round($row['percent']*100,1); 
+                    $location = $row['location']; $percent = round($row['percent'],1); 
                     $annotation = $percent . '%';
                     if($firstKey == $key) $color = 'black';
                     else if ($lastKey == $key) $color = 'green';
@@ -689,7 +689,7 @@ view.setColumns([0,
                             $location = $row['location']; $percent = $row['percent']; 
                             $color = $firstKey == $key ? 'black' : '';
 
-                            $location = $row['location']; $percent = round($row['percent']*100,1); 
+                            $location = $row['location']; $percent = round($row['percent'],1); 
                             $annotation = $percent . '%';
                             if($firstKey == $key) $color = 'black';
                             else if ($lastKey == $key) $color = 'green';
@@ -743,7 +743,7 @@ view.setColumns([0,
                             //$location = $row['location']; $percent = $row['percent']; 
                             //$color = $firstKey == $key ? 'black' : '';
 
-                            $location = $row['location']; $percent = round($row['percent']*100,1); 
+                            $location = $row['location']; $percent = round($row['percent'],1); 
                             $annotation = $percent . '%';
                             if($firstKey == $key) $color = 'black';
                             else if ($lastKey == $key) $color = 'green';
@@ -792,7 +792,7 @@ view.setColumns([0,
                         reset($percentData); 
                         $color = '';
                         foreach ($percentData as $key=>$row){
-                            $location = $row['location']; $percent = round($row['percent']*100,1); 
+                            $location = $row['location']; $percent = round($row['percent'],1); 
                             $annotation = $percent . '%';
                             if($firstKey == $key) $color = 'black';
                             else if ($lastKey == $key) $color = 'green';
@@ -845,7 +845,7 @@ view.setColumns([0,
                         reset($percentData); 
                         $color = '';
                         foreach ($percentData as $key=>$row){
-                            $location = $row['location']; $percent = round($row['percent']*100,1); 
+                            $location = $row['location']; $percent = round($row['percent'],1); 
                             $annotation = $percent . '%';
                             if($firstKey == $key) $color = 'black';
                             else if ($lastKey == $key) $color = 'green';

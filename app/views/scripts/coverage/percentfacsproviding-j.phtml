@@ -1,0 +1,590 @@
+
+     <?php  
+                                        $fileInfo = pathinfo(__FILE__);
+                                        $fileID = $fileInfo['filename'];
+                                        $activationBar = 'coverage';
+                                        $variable = 'Simple';        
+                                        require_once('views/scripts/template/template.phtml');
+                                       
+                                    ?>
+                                       
+
+                  <div class="row" style="margin-bottom:20px;">
+                                         
+                                           <div class=" col-sm-5 pull-right"  >
+	
+			         	                      <?php require_once('views/scripts/dashboard/top_buttons.phtml');?>
+				
+                                           </div>
+                                    
+                                           <div  class="col-sm-7 pull-right box-shadow clearfix"  style="height:auto;"  >
+                                               
+                                                    <?php
+                                                                       $chart_title = "";
+                                                                       
+                                                                       $info_text = "The percentage of  facilities providing FP shows the proportion of facilities
+                                                                                        reporting in the most recent month that provided any FP commodities in that 
+                                                                                        month. It may be higher than the percentage of facilities with an FP trained 
+                                                                                        health worker because some health workers may have learned to provide FP in 
+                                                                                        their pre-service training, on the job, and/or were not reported as having 
+                                                                                        received in-service training for other reasons.";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
+                                               
+                                       
+                                             
+                                               <div id="chart11_div" style="width:100%; height:auto;"></div>
+                                         
+				                           </div>                           
+                                    </div>
+
+                                    
+                                    <div class="row" style="margin-top:20px;padding-bottom:0px;margin-bottom:20px;">
+                                         
+                                           <div class="col-sm-7 box-shadow" style="height:auto;"  >
+                                               
+                                                 <?php
+                                                                       $chart_title = "";
+                                                                       
+                                                                       $info_text = "The percentage of facilities providing any three modern methods shows 
+                                                                                     the proportion of facilities reporting in the most recent month that provided 
+                                                                                     at least three modern FP commodities in that month. It may be higher than the 
+                                                                                     percentage of facilities with an FP-trained health worker because some health 
+                                                                                     workers have learned to provide FP in their pre-service training, on the job, 
+                                                                                     and/or were not reported as having received in-service training for other reasons.";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
+                                               
+                                                         <div id="chart14_div" style="width:100%; height:auto;"></div>
+                                               
+                                               
+                                             
+                                               
+                                           </div>
+                                    </div>
+                                    
+                                    <div class="row" style="margin-top:20px;padding-bottom:0px;">
+                                         
+                                           <div class="col-sm-7 box-shadow" style="height:auto;"  >
+                                               
+                                                         <?php
+                                                                       $chart_title = "";
+                                                                       
+                                                                       $info_text = "The percentage of  facilities providing LARC shows the proportion of facilities 
+                                                                                        reporting in the most recent month that provided implants and/or IUDs in 
+                                                                                        that month. It may be higher than the percentage of facilities with a LARC 
+                                                                                        trained health worker because some health workers may have learned to 
+                                                                                        provide LARC in their pre-service training, on the job, and/or were not 
+                                                                                        reported as having received in-service training for other reasons.";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
+                                               
+                                                      <div id="chart12_div" style="width:100%; height:auto;"></div>
+                                           
+                                               
+                                           </div>
+                                    </div>
+                                    
+                                     <div class="row" style="margin-top:20px;padding-bottom:0px;margin-bottom:20px;">
+                                         
+                                           <div class="col-sm-7 box-shadow" style="height:auto;"  >
+                                               
+                                                       <?php
+                                                                       $chart_title = "";
+                                                                       
+                                                                       $info_text = " The percentage of  facilities providing injectables shows the proportion of 
+                                                                                         facilities reporting in the most recent month that provided injectables in 
+                                                                                         that month.";
+
+                                                                       
+                       
+                                    
+                                                                        include('views/scripts/template/chart_title.phtml');
+                                                            
+                                                           ?>
+                                               
+                                               
+                                                        <div id="chart13_div" style="width:100%; height:auto;"></div>
+                                               
+                                           </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+
+
+		<div class="clear"></div>
+                </div>
+            
+          
+            
+           
+            
+          
+           
+           </div><!-- content -->
+           <br/><br/><br/>
+ 
+
+                
+                
+                
+                
+             
+		<script type="text/javascript">
+		
+//  google.load('visualization', '1.1', {'packages':['corechart', 'table', 'gauge', 'controls']});
+//  google.load('visualization', '1.1', {'packages':['bar']});
+//  google.setOnLoadCallback(apiLoaded);
+
+  $(function() {
+	//document.getElementById("allCharts").style.marginLeft="130px";
+	drawChart11();
+	drawChart12();
+	drawChart13();
+        //drawChart14('allfacs');
+        drawChart14('fpfacs');
+		
+	var currentLevel;
+	currentLevel = <?php echo '\'' . $this->location_data[0]['name'] . '\''; ?>;
+		 
+  });
+
+  function drawChart11() {
+       var FPData = <?= $this->fp_data; ?>;
+       var locations = new Array(); var values = new Array();
+
+        for(key in FPData){
+            row = FPData[key];
+            locations.push(row['location']);
+            
+            if(key == 0)
+                values.push({y: row['percent'], color: '#000000'}); 
+            else 
+                values.push(row['percent']);
+       }
+        
+        <?php if(!$this->freshVisit) { ?>
+            var titleText = '<?php echo  "Percentage of facilities providing FP as of $this->date"; ?>';
+        <?php } else { ?>
+            var titleText = '<?php echo  "Percentage of facilities providing FP in selected geographies <br/>as of $this->date"; ?>';
+        <?php } ?>
+
+	  <?php //echo  " var title_data = 'Percent of facilities providing FP, $this->date ' " ?>;
+        $('#chart11_div').highcharts({
+                chart: {
+                    type: 'column',
+                    reflow: true,
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    events: {
+                        load:function(){
+                            $("text:contains(Highcharts.com)").css("display","none");
+                            $("#chart11_div").siblings("#infobutton").removeClass("hidden");
+                        }
+                    },
+                    //height: 350
+                },
+                title: {
+                    text: titleText,
+                    x: -40,
+                    style: {
+                        fontWeight: 'bold',
+                        fontFamily: 'Arial',
+                        fontSize: '16px'
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                     title:{
+                        text:'Geography',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    categories: locations
+                },
+                yAxis: {
+                    title: {
+                        text: '% Facilities',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    labels: {
+                        format: '{value}%'
+                    },
+                    //max:100
+                },
+                tooltip: {
+                    formatter: function () {
+                        var location = this.x;           
+                        index = -1;
+                        for(key in FPData){
+                            if(FPData[key]['location'].toUpperCase() === location.toUpperCase()){
+                                index = key; 
+                                break;
+                            }   
+                        }
+                        
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/>' + 
+                                '<b>Numerator</b>:' + thousandSeparator(FPData[index]['numer'])+'<br/>' +
+                                '<b>Denominator</b>:'+thousandSeparator(FPData[index]['denom']);                        
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true
+                    },
+                    column: {
+                        dataLabels: {
+                            enabled: true,
+                            format: '{y}%'
+                        }
+                    }
+                },
+                credits: {enabled: false},
+                series: [{
+                    data: values
+                }]
+            });
+         
+    }
+    
+  //  TA:17:18 Coverage Fac Providing at least 3 commodities in
+  /**
+  * mode is allfacs or fpfacs. 
+  * Selects the denominator we are working with
+  */
+  function drawChart14(mode) {
+  
+       var modernMethodsDataAll = <?php echo $this->modern_method_data; ?>;
+       var modernMethodsData = modernMethodsDataAll[mode]; //select the mode
+       
+       //console.log(modernMethodsData);
+   
+        var locationsArray = []; var valuesArray = [];
+        for(var location in modernMethodsData){ //var keyword important. A global with name location exists
+            locationsArray.push(location);
+            
+            if(location === "National"){
+                valuesArray.push({y:modernMethodsData[location]['percent'], color: '#000000'}); 
+            }
+            else{
+                valuesArray.push(modernMethodsData[location]['percent']);
+            }
+        }
+        
+        divId = mode == 'allfacs' ? 'chart14_div' : 'chart15_div';
+        
+        <?php if(!$this->freshVisit) { ?>
+            var titleText = '<?php echo  "Percent of FP facilities providing at least 3 modern methods <br/>as of $this->date"; ?>';
+        <?php } else { ?>
+            var titleText = '<?php echo  "Percent of FP facilities providing at least 3 modern methods <br/> in selected geographies as of $this->date"; ?>';
+        <?php } ?>
+        
+        $('#chart14_div').highcharts({
+                chart: {
+                    type: 'column',
+                    reflow: true,
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    events: {
+                        load:function(){
+                            $("text:contains(Highcharts.com)").css("display","none");
+                            $("#"+divId).siblings("#infobutton").removeClass("hidden");
+                        }
+                    },
+                    //height: 350
+                },
+                title: {
+                    text: titleText,
+                    x: -40,
+                    style: {
+                        fontWeight: 'bold',
+                        fontFamily: 'Arial',
+                        fontSize: '16px'
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                     title:{
+                        text:'Geography',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    categories: locationsArray
+                },
+                yAxis: {
+                    title: {
+                        text: '% Facilities',
+                        style: { "fontWeight": "bold" }
+                    },
+                    labels: {
+                        format: '{value}%'
+                    },
+                    //max:100
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.x + '</b>:' + 
+                                this.y + '%<br/>' +
+                                '<b>Numerator</b>:' + thousandSeparator(modernMethodsData[this.x]['numer']) +
+                                '<br/><b>Denominator</b>:'+thousandSeparator(modernMethodsData[this.x]['denom']);
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true
+                    },
+                    column: {
+                        dataLabels: {
+                            enabled: true,
+                            format: '{y}%'
+                        }
+                    }
+                },
+                credits: {enabled: false},
+                series: [{
+                    data: valuesArray
+                }]
+            });
+         
+    }
+
+//TA:17:18 Coverage Fac Providing LARC chart
+ function drawChart12() {
+ 
+       var LARCData = <?= $this->larc_data; ?>;
+       var locations = new Array(); var values = new Array();
+
+        for(key in LARCData){
+            row = LARCData[key];
+            locations.push(row['location']);
+            
+            if(key == 0)
+                values.push({y: row['percent'], color: '#000000'}); 
+            else 
+                values.push(row['percent']);
+       }
+        
+        <?php if(!$this->freshVisit) { ?>
+            var titleText = '<?php echo  "Percent of FP facilities providing LARC as of $this->date"; ?>';
+        <?php } else { ?>
+            var titleText = '<?php echo  "Percent of FP facilities providing LARC in selected geographies <br/> as of $this->date"; ?>';
+        <?php } ?>
+        
+	 $('#chart12_div').highcharts({
+                chart: {
+                    type: 'column',
+                    reflow: true,
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    events: {
+                        load:function(){
+                            $("text:contains(Highcharts.com)").css("display","none");
+                            $("#chart12_div").siblings("#infobutton").removeClass("hidden");
+                        }
+                    },
+                    //height: 350
+                },
+                title: {
+                    text: titleText,
+                    x: -40,
+                    style: {
+                        fontWeight: 'bold',
+                        fontFamily: 'Arial',
+                        fontSize: '16px'
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                     title:{
+                        text:'Geography',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    categories: locations
+                },
+                yAxis: {
+                    title: {
+                        text: '% Facilities',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    labels: {
+                        format: '{value}%'
+                    },
+                    //max:100
+                },
+                tooltip: {
+                    formatter: function () {
+                        var location = this.x;           
+                        index = -1;
+                        for(key in LARCData){
+                            if(LARCData[key]['location'].toUpperCase() === location.toUpperCase()){
+                                index = key; 
+                                break;
+                            }   
+                        }
+                        
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/>' + 
+                                '<b>Numerator</b>:' + thousandSeparator(LARCData[index]['numer'])+'<br/>' +
+                                '<b>Denominator</b>:'+thousandSeparator(LARCData[index]['denom']); 
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true
+                    },
+                    column: {
+                        dataLabels: {
+                            enabled: true,
+                            format: '{y}%'
+                        }
+                    }
+                },
+                credits: {enabled: false},
+                series: [{
+                    data: values
+                }]
+            });
+      
+ }
+
+ function drawChart13() {
+ 
+       var InjData = <?= $this->inj_data; ?>;
+       var locations = new Array(); var values = new Array();
+
+        for(key in InjData){
+            row = InjData[key];
+            locations.push(row['location']);
+            
+            if(key == 0)
+                values.push({y: row['percent'], color: '#000000'}); 
+            else 
+                values.push(row['percent']);
+       }
+	  
+        
+        <?php if(!$this->freshVisit) { ?>
+            var titleText = '<?php echo  "Percent of FP facilities providing injectables as of $this->date"; ?>';
+        <?php } else { ?>
+            var titleText = '<?php echo  "Percent of FP facilities providing injectables in selected geographies <br/> as of $this->date"; ?>';
+        <?php } ?>
+            
+          $('#chart13_div').highcharts({
+                chart: {
+                    type: 'column',
+                    reflow: true,
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    events: {
+                        load:function(){
+                            $("text:contains(Highcharts.com)").css("display","none");
+                            $("#chart13_div").siblings("#infobutton").removeClass("hidden");
+                        }
+                    },
+                    //height: 350
+                },
+                title: {
+                    text: titleText,
+                    x: -40,
+                    style: {
+                        fontWeight: 'bold',
+                        fontFamily: 'Arial',
+                        fontSize: '16px'
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                     title:{
+                        text:'Geography',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    categories: locations
+                },
+                yAxis: {
+                    title: {
+                       text: '% Facilities',
+                        style:{ "fontWeight": "bold" }
+                    },
+                    labels: {
+                        format: '{value}%'
+                    },
+                    //max:100
+                },
+                tooltip: {
+                    formatter: function () {
+                        var location = this.x;           
+                        index = -1;
+                        for(key in InjData){
+                            if(InjData[key]['location'].toUpperCase() === location.toUpperCase()){
+                                index = key; 
+                                break;
+                            }   
+                        }
+                        
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/>' + 
+                                '<b>Numerator</b>:' + thousandSeparator(InjData[index]['numer'])+'<br/>' +
+                                '<b>Denominator</b>:'+thousandSeparator(InjData[index]['denom']); 
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true
+                    },
+                    column: {
+                        dataLabels: {
+                            enabled: true,
+                            format: '{y}%'
+                        }
+                    }
+                },
+                credits: {enabled: false},
+                series: [{
+                    data: values
+                }]
+            });
+ }
+
+</script>
+
+<script src="../js/highcharts/highcharts.js"></script>
+<script src="../js/highcharts/modules/exporting.js"></script>
+    
+  <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
+
+
+</body>
+
+</html>
+
+
+
+<?php
+
+
+?>
+

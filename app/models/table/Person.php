@@ -59,6 +59,18 @@ class Person extends ITechTable
                     ->from('person_status', array('id','title'));
             return $db->fetchAll($select);
         }
+        
+        public function getStatusId($title){
+           // print_r($this->getAllPersonStatus());
+            $title = trim(strtolower($title));
+           
+            $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+            $select = $db->select()
+                    ->from('person_status', array('id','title'))
+                    ->where("LOWER(title) = '$title'");
+            
+            return $db->fetchAll($select);
+        }
 	//TA:17:16:1 where should use 'and' for all parameters:
 	//find person by first and middle and last name 
         

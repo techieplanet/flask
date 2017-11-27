@@ -875,12 +875,15 @@ protected function sendData($data) {
     if (is_array($arr)) {
       foreach ($arr as $i => $val) {
         if (strpos($val, '_') !== false){
-          $arr[$i] = array_pop(explode('_', $val));
+            $temp1 = explode('_', $val);
+          $arr[$i] = array_pop($temp1);
         }
+        
       }
       return $arr;
     } else {
-      return strpos($arr, '_') !== false ? array_pop(explode('_', $arr)) : $arr;
+        $temp = explode('_', $arr);
+      return strpos($arr, '_') !== false ? array_pop($temp) : $arr;
     }
   }
 

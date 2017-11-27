@@ -82,7 +82,7 @@ class PdfController extends ReportFilterHelpers {
                 * the getNextlocationDetailssWithTiers method has two optional argument which are
                 *  $tierValue and $location_id respectively.
                  1978-abj municipal, 1995-bwari , 2008-surulere, 2424*/
-                $reportLocation = $pdf->getNextLocationDetailsWithTiers(3,"","0");
+                $reportLocation = $pdf->getNextLocationDetailsWithTiers(3,"1978","0");
                
                 //
                 //$reportLocation['folder_name'] = $folder_mode;
@@ -113,7 +113,7 @@ class PdfController extends ReportFilterHelpers {
         $folder_name = str_replace(" ", "_", $folder_mode);
         //mkdir("pdfrepo/lga/".$folder_name."");
         $directory = "pdfrepo/lga/".$folder_name."";
-        if(!file_exists($directory)){
+        if(!is_dir($directory)){
         mkdir("pdfrepo/lga/".$folder_name."");
         }
          //TP: passing the report id and the location id of the current location into variables
@@ -164,7 +164,7 @@ class PdfController extends ReportFilterHelpers {
         $larc_trained_not_providingLGA  = $pdf->fetchfacsWithHWNotProviding("larc", "larc", $location_id, 3,false);
         
         
-        $percent_larc_trained_not_providing = round($larc_trained_not_providingLGA[0] * 100, 1);
+        $percent_larc_trained_not_providing = round($larc_trained_not_providingLGA[0], 1);
        // $percent_larc_trained_not_providing_for_this_state_value = round($larc_trained_not_providing[0] * 100,1);
       
         
@@ -188,7 +188,7 @@ class PdfController extends ReportFilterHelpers {
         //TP:Facilities Stocked Out of Fp
         $state_stocked_out_fp = $stockout->fetchPercentFacsProvidingButStockedOut("fp",$parent_id,2,false,true);
        // print_r($state_stocked_out_fp);exit;
-        $state_stock_out_fp_seven_days = round($state_stocked_out_fp[1]['percent']*100,1);
+        $state_stock_out_fp_seven_days = round($state_stocked_out_fp[1]['percent'],1);
         
        // $lga_stock_out_seven_days = $stockout->fetchPercentFacsProvidingButStockedOut("fp",$location_id,3,false,true);
         $lga_stock_out_seven_days = $stockout->fetchPercentFacsProvidingButStockedOut("fp",$location_id,3,false,true);
@@ -196,7 +196,7 @@ class PdfController extends ReportFilterHelpers {
        // $lga_stock_out_seven_days = round($lga_stock_out_seven_days[1]['percent']*100,3);
         
         
-        $lga_stocked_out_fp_seven_days = round($lga_stock_out_seven_days[1]['percent']*100,1);
+        $lga_stocked_out_fp_seven_days = round($lga_stock_out_seven_days[1]['percent'],1);
         $fp_stock_out_for_seven_days = array($state_stock_out_fp_seven_days,$lga_stocked_out_fp_seven_days);
         //print_r($fp_stock_out_for_seven_days);exit;
        
@@ -210,12 +210,12 @@ class PdfController extends ReportFilterHelpers {
         
         // $lga_stock_out_seven_days = $stockout->fetchPercentFacsProvidingButStockedOut("fp",$location_id,3,false,true);
         $lga_stock_out_seven_days = $stockout->fetchPercentFacsProvidingButStockedOut("fp",$location_id,3,false,true);
-        $percent_lga_stock_out_seven_days = round($lga_stock_out_seven_days[1]['percent']*100,1);
+        $percent_lga_stock_out_seven_days = round($lga_stock_out_seven_days[1]['percent'],1);
         //echo 'this is where we are stocked';
         
         //TP: Facilities stocked of implants
         $state_stocked_out_larc = $stockout->fetchPercentFacsProvidingButStockedOut("larc",$parent_id,2,false,true);
-        $state_stock_out_larc = round($state_stocked_out_larc[1]['percent']*100,1);
+        $state_stock_out_larc = round($state_stocked_out_larc[1]['percent'],1);
         
         $facilities_stocked_out_larc = $stockout->fetchFacilitiesProvidingButStockedOut("larc",$location_id,3,false);
         $percent_lga_stock_out_larc = ( (sizeof($facilities_stocked_out_larc)*100)/$fetchtotalFacilitiesCount);
@@ -223,7 +223,7 @@ class PdfController extends ReportFilterHelpers {
         
         
          $percent_lga_stock_out_larc = $stockout->fetchPercentFacsProvidingButStockedOut("larc",$location_id,3,false,true);
-        $percent_lga_stock_out_larc = round($percent_lga_stock_out_larc[1]['percent']*100,1);
+        $percent_lga_stock_out_larc = round($percent_lga_stock_out_larc[1]['percent'],1);
         
         //TP: fetching the percent of facility providing fp for the state (parent id)
        // print_r($state_fp_facility_prov);exit;
@@ -361,7 +361,7 @@ class PdfController extends ReportFilterHelpers {
                 * the getNextlocationDetailssWithTiers method has two optional argument which are
                 *  $tierValue and $location_id respectively.
                  970 -abj, 969-lagos  956-oyo state, 954-ondo state,963-kaduna, 958-rivers state state*/
-                $reportLocation = $pdf->getNextLocationDetailsWithTiers(2,"970","1");
+                $reportLocation = $pdf->getNextLocationDetailsWithTiers(2,"970","0");
                 //print_r($reportLocation);
                 //exit;
                                 
@@ -400,7 +400,7 @@ class PdfController extends ReportFilterHelpers {
 $folder_mode = $date." State";
 $folder_name = str_replace(" ", "_", $folder_mode);
         $directory = "pdfrepo/state/".$folder_name."";
-        if(!file_exists($directory)){
+        if(!is_dir($directory)){
         $createDirectory = mkdir("pdfrepo/state/".$folder_name."");
         }
 
@@ -727,9 +727,10 @@ $folder_name = str_replace(" ", "_", $folder_mode);
            }
         }
         else {
+                $pdf->insertLocationIds();
                //echo 'before'; exit;
                //first ensure that all the locations have been registered
-                $pdf->insertLocationIds();
+               // $pdf->insertLocationIds();
             
             //------------------------------------------------------------------Utility debugging method----------------- 
                // $pdf->insertLocationIdsTest();  // this is a utilit method
@@ -745,7 +746,7 @@ $folder_name = str_replace(" ", "_", $folder_mode);
                 * the getNextlocationDetailssWithTiers method has two optional argument which are
                 *  $tierValue and $location_id respectively.
                  */
-                $reportLocation = $pdf->getNextLocationDetailsWithTiers("","0","1");
+                $reportLocation = $pdf->getNextLocationDetailsWithTiers("","0","0");
                 
               
                 
@@ -766,16 +767,20 @@ $folder_name = str_replace(" ", "_", $folder_mode);
         $fp_target = 5500;
         $pdf = new PDF();
         $lastPullDate = $helper->getLatestPullDate();
+       // echo $lastPullDate;exit;
         //$pdf = new PDF();
         
         
        
         //$pdf->updatePdfReportsTable($lastPullDate);
         $date = substr($lastPullDate, 0,-3);
-$folder_mode = $date." National";
-$folder_name = str_replace(" ", "_", $folder_mode);
-$folderName = "national/".$folder_name."/";
-mkdir("pdfrepo/national/".$folder_name."");
+        $folder_mode = $date." National";
+        $folder_name = str_replace(" ", "_", $folder_mode);
+        $folderName = "national/".$folder_name."/";
+        if(!is_dir("pdfrepo/national/".$folder_name."")){
+        mkdir("pdfrepo/national/".$folder_name."");
+        }
+//print_r($reportLocatiion);exit;
         $reportId = $reportLocation['report_id'];
         if($reportId=="" || empty($reportId)){
             $this->view->assign('info',"The National Report for the Last Pulled Date has been Generated Earlier");
@@ -818,6 +823,7 @@ mkdir("pdfrepo/national/".$folder_name."");
         $percentData = array_merge($percentData, array_slice($fp_percent_per_state,1,5));
         $percentData = array_merge($percentData, array_slice($fp_percent_per_state,count($fp_percent_per_state)-1,1));
         $this->view->assign('fp_percent_per_state',$percentData);
+        //print_r($percentData);exit;
         
         $larc_percent_per_state = $pdf->fetchPercentFacHWTrainedPerLocationCoverage('larc');
         $percentData = array();
@@ -829,6 +835,7 @@ mkdir("pdfrepo/national/".$folder_name."");
         
         //fetchPercentFacsProvidingPerState
         $fp_providing_per_state = $coverage->fetchPercentFacsProvidingPerState('fp');
+       // print_r($fp_providing_per_state);exit;
         $percentData = array();
         $percentData[] = $fp_providing_per_state[0];
         $percentData = array_merge($percentData,array_slice($fp_providing_per_state,1,5));

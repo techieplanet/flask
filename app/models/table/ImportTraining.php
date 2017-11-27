@@ -149,6 +149,11 @@ class ImportTraining  {
 	$values_person['first_name'] = $p->clean($rows[$i][1]);
 	$values_person['last_name'] = $p->clean($rows[$i][3]);
         $values_person['birthdate'] = trim($rows[$i][4]);
+        
+        $title = $rows[$i][15];
+        $result = $p->getStatusId($title);
+        $values_person['person_status_id'] = $result[0]['id'];
+        
         list($ye,$me,$de) = $status->dateFormatter($values_person['birthdate']);
             if($ye=="")$ye="0000";
             if($me=="")$me="00";
@@ -284,6 +289,7 @@ class ImportTraining  {
         $err2 = array();
         $lnameCount = 0;
         $fnameCount = 0;
+        $statusCount = 0;
         
         $personCount = $rows[$i][0];
         
@@ -299,6 +305,12 @@ class ImportTraining  {
 		$err2['Person ' . $personCount][] = t("Last name is required.");
                 $lnameCount = $lnameCount + 1;
               }
+          if(!trim($rows[$i][15])){
+		$errs[] = t("Could not add person to training. Status is required."). " Person #" . $rows[$i][0];
+		$to_fix = "to fix data";
+		$err2['Person ' . $personCount][] = t("Status is required.");
+                $statusCount = $statusCount + 1;
+              }
 //		if(!trim($rows[$i][9])){
 //		$errs[] = t("Could not add person to training. Health Facility Name is required."). " Person #" . $rows[$i][0];
 //		$to_fix = "to fix data";
@@ -309,7 +321,7 @@ class ImportTraining  {
 //		$to_fix = "to fix data";
 //		
 //									}
-        return array($errs, $err2, $lnameCount, $fnameCount);
+        return array($errs, $err2, $lnameCount, $fnameCount,$statusCount);
     }
     
 }

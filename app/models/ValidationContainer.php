@@ -162,11 +162,19 @@ class ValidationContainer {
 		$parts = explode('-',$dateString);
 		if ( intval($parts[0]) < 1900 )
 			$rtn = false;
-
+                
+                $dateToday = time();
+               
+                
 		$rtn = $rtn and Zend_Date::isDate($dateString, 'Y-m-d');
-
-		if ( !$rtn )
-   			$this->addError($fieldname, $textName.' '.t('is not a valid date').'.');
+              //  Helper2::jLog($textName+" "+$dateString);
+		if ( !$rtn ){
+   		 $this->addError($fieldname, $textName.' '.t('is not a valid date').'.');
+                }else if(strtotime($dateString) > $dateToday){
+                    $this->addError($fieldname, $textName.' '.t('is not a valid date (date cannot be greater than today\'s date)').'.');
+                    $rtn = false;
+                    
+                }
 
 		return $rtn;
 	}

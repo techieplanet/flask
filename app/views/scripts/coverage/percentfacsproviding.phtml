@@ -312,9 +312,9 @@ print ScriptContainer::$instance->renderJSHead();
             $denominator = $this->fp_denominator[''.$location.''];
                     
             if($firstKey == $key)
-                $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
+                $valuesString .= "{y:" . round($row['percent']['percent'], 1) . ", color: '#000000'},"; 
             else
-                $valuesString .= round($row['percent']*100, 1) . ",";  
+                $valuesString .= round($row['percent'], 1) . ",";  
             
             
              ?>

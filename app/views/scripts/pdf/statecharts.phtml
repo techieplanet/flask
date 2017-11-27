@@ -228,6 +228,8 @@ print ScriptContainer::$instance->renderJSHead();
 		<div id="content">
                     <?php 
                     $data = $this->fp_percent_facprov;
+                    
+                 //   print_r($data);exit;
                     $report_rate = $this-->report_rate;
                     //echo print_r($data[])
                     $state_name = $data[1]['location'];
@@ -387,8 +389,8 @@ function drawTable() {
                if($fp_trained_lgas[$i]['percent']==0)$fp_trained_lgas[$i]['percent']=0; 
                if($larc_trained_lgas[$i]['percent']==0)$larc_trained_lgas[$i]['percent']=0; 
                
-               $percent_fp_trained = round($fp_trained_lgas[$i]['percent']*100,1);
-               $percent_larc_trained = round($larc_trained_lgas[$i]['percent']*100,1);
+               $percent_fp_trained = round($fp_trained_lgas[$i]['percent'],1);
+               $percent_larc_trained = round($larc_trained_lgas[$i]['percent'],1);
                
                $fptrained = $fp_trained_lgas[$i]['location']." (".$percent_fp_trained."%)";
                $larctrained = $larc_trained_lgas[$i]['location']." (".$percent_larc_trained."%)";
@@ -396,8 +398,8 @@ function drawTable() {
                if($fp_prov_lgas[$i]['percent']==0)$fp_prov_lgas[$i]['percent']=0;                   
                if($larc_prov_lgas[$i]['percent']==0)$larc_prov_lgas[$i]['percent']=0;  
                
-               $percent_fp_prov = round($fp_prov_lgas[$i]['percent']*100,1);
-               $percent_larc_prov = round($larc_prov_lgas[$i]['percent']*100,1);
+               $percent_fp_prov = round($fp_prov_lgas[$i]['percent'],1);
+               $percent_larc_prov = round($larc_prov_lgas[$i]['percent'],1);
                
                $fpprov = $fp_prov_lgas[$i]['location']." (".$percent_fp_prov."%)";
                $larcprov = $larc_prov_lgas[$i]['location']." (".$percent_larc_prov."%)";
@@ -437,7 +439,7 @@ function drawLarcStockOutImplants() {
                             $color = $firstKey == $key ? 'black' : '';
                             if($key==$firstKey || $key==$lastKey || $counter<=5){
                                 $counter++;
-                            $location = $row['location']; $percent = round($row['percent']*100,1); 
+                            $location = $row['location']; $percent = round($row['percent'],1); 
                             $annotation = $percent . '%';
                             if($firstKey == $key) $color = 'black';
                             else if ($lastKey == $key) $color = 'green';
@@ -496,7 +498,7 @@ function drawFpStockOut() {
                             $color = $firstKey == $key ? 'black' : '';
                             if($key==$firstKey || $key==$lastKey || $counter<=5){
                                 $counter++;
-                            $location = $row['location']; $percent = round($row['percent']*100,1); 
+                            $location = $row['location']; $percent = round($row['percent'],1); 
                             $annotation = $percent . '%';
                             if($firstKey == $key) $color = 'black';
                             else if ($lastKey == $key) $color = 'green';
@@ -553,10 +555,11 @@ function drawFpStockOut() {
         [' ',state_name , 'National'],
         //[' ', 'Total FP Trained', 'Total LARC Trained'],
         <?php
+        
         $percentageData = $this->fp_percent_facprov;
         
-        $nationalpercent = round($percentageData[0]['percent']*100,1);
-        $fp_prov_percent = round($percentageData[1]['percent']*100,1);
+        $nationalpercent = round($percentageData[0]['percent']['percent'],1);
+        $fp_prov_percent = round($percentageData[1]['percent'],1);
        
         $category = "Providing FP";
          $annotation = $nationalpercent . '%';
@@ -564,8 +567,8 @@ function drawFpStockOut() {
                         echo "['" . $category . "', " . $fp_prov_percent . ", " . $nationalpercent . " ],";
             //larc_percent_facprov            
        $percentageData_larc = $this->larc_percent_facprov;
-        $nationalpercent = round($percentageData_larc[0]['percent']*100,1);
-        $larc_prov_percent = round($percentageData_larc[1]['percent']*100,1);
+        $nationalpercent = round($percentageData_larc[0]['percent']['percent'],1);
+        $larc_prov_percent = round($percentageData_larc[1]['percent'],1);
         $state_name = "Abia";
         $category = "Providing LARC";
          $annotation = $nationalpercent . '%';
@@ -652,7 +655,7 @@ function drawFpStockOut() {
                             $color = $firstKey == $key ? 'black' : '';
                             if($key==$firstKey || $key==$lastKey || $counter<=5){
                                 $counter++;
-                            $location = $row['location']; $percent = round($row['percent']*100,2); 
+                            $location = $row['location']; $percent = round($row['percent'],2); 
                             $annotation = $percent . '%';
                             if($firstKey == $key) $color = 'black';
                             else if ($lastKey == $key) $color = 'green';
@@ -710,7 +713,7 @@ function drawFpStockOut() {
                             if($key==$firstKey || $key==$lastKey || $counter<=5){
                              
                                 $counter++;
-                            $location = $row['location']; $percent = round($row['percent']*100,1); 
+                            $location = $row['location']; $percent = round($row['percent'],1); 
                             $annotation = $percent . '%';
                             if($firstKey == $key) $color = 'black';
                             else if ($lastKey == $key) $color = 'green';
@@ -765,8 +768,8 @@ function drawFpStockOut() {
         <?php
         $percentageData = $this->fp_trained_in;
         $maxHundred = false;
-        $nationalpercent = round($percentageData[0]['percent']*100,1);
-        $fp_hw_percent_data = round($percentageData[1]['percent']*100,1);
+        $nationalpercent = round($percentageData[0]['percent']['percent'],1);
+        $fp_hw_percent_data = round($percentageData[1]['percent'],1);
        
         $category = "FP trained HW";
          $annotation = $nationalpercent . '%';
@@ -776,8 +779,8 @@ function drawFpStockOut() {
                        $maxHundred = true;
                    }
        $percentageData_larc = $this->larc_trained_in;
-        $nationalpercent = round($percentageData_larc[0]['percent']*100,1);
-        $larc_hw_percent_data = round($percentageData_larc[1]['percent']*100,1);
+        $nationalpercent = round($percentageData_larc[0]['percent']['percent'],1);
+        $larc_hw_percent_data = round($percentageData_larc[1]['percent'],1);
         //$state_name = "Abia";
         $category = "LARC trained HW";
          $annotation = $nationalpercent . '%';

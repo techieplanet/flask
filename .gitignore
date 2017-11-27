@@ -13,3 +13,4 @@ html/*.txt
 html/ws/json_frr/
 html/ws/json_comm/
 INIT
+sites/
