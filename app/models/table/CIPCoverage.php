@@ -14,6 +14,7 @@
 
 require_once('Facility.php');
 require_once('Helper2.php');
+require_once('DateFunctions.php');
 require_once('IndicatorGroup.php');
 
 class CIPCoverage extends IndicatorGroup {    
@@ -110,8 +111,8 @@ class CIPCoverage extends IndicatorGroup {
                     $dateWhere = "c.date = '$latestDate'";
                     $reportingWhere = 'facility_reporting_status = 1';
                     $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
-                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
-                                       $ct_where . ' AND ' . $locationWhere;
+                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere .
+                                       ' AND ' . $locationWhere;
                     
                     $FPFacsDenominatorsResult = $facility->getFPFacilities(
                             $longWhereClause, 
@@ -206,7 +207,8 @@ class CIPCoverage extends IndicatorGroup {
     public function fetchFacsProvidingNumberOfMethodsOvertime($commodity_type, $numberOfMethods, 
             $geoList, $tierValue, $freshVisit, $updateMode = false,$lastPullDatemultiple=[]){
             $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
-
+            $dateFunctions = new DateFunctions();
+            
             //$output = array(array('location'=>'National', 'percent'=>0)); 
             //$output['allfacs'][$monthName]['National']['percent'] = 0;
             //$output['allfacs'][$monthName]['National']['numer'] = 0;
@@ -224,6 +226,8 @@ class CIPCoverage extends IndicatorGroup {
             $cacheManager = new CacheManager();
             $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_PROVIDING_3_METHODS_OVERTIME, $latestDate);
 
+            //$cacheValue = null;
+            
             if($cacheValue && $freshVisit){
                 $output = json_decode($cacheValue, true);
             }
@@ -237,9 +241,11 @@ class CIPCoverage extends IndicatorGroup {
                     if(empty($lastPullDatemultiple)){  
                         $dateWhere = "c.date BETWEEN '" . 
                                 date("Y-m-d", strtotime("$latestDate -11 months")) . "' AND '$latestDate'";
+                        $dateWhereArray = $dateFunctions->getPreviousMonthDates(12, $helper->getLatestPullDate());
                         $subDateWhere = str_replace('c.', 'c_sub.', $dateWhere);
                     }else{
                         $dateWhere = 'c.date IN ("'.implode('", "', $lastPullDatemultiple).'")';
+                        $dateWhereArray = $lastPullDatemultiple;
                         $subDateWhere = str_replace('c.', 'c_sub.', $dateWhere);
                     }
                     
@@ -270,8 +276,9 @@ class CIPCoverage extends IndicatorGroup {
                     $numerators = $this->addMissingMonths($numeratorsResult, $monthNames, $locationNames, $tierNameField); 
                                      
                     /*********************************************************************************
-                     * denominator for ALL Reporting facilites
+                     * denominator for ALL Reporting facilites - DISABLED
                      ********************************************************************************/
+                    /*
                     if(empty($lastPullDatemultiple)){  
                         $FRRDateWhere = "frr.date BETWEEN '" . 
                                 date("Y-m-d", strtotime("$latestDate -11 months")) . "' AND '$latestDate'";
@@ -288,29 +295,33 @@ class CIPCoverage extends IndicatorGroup {
                             $tierNameField, 
                             $tierIDField
                     );
+                     */
                     
                     /*********************************************************************************
                      * denominator for FP facilites: consumed 1 FP commodity in last 6 months
                      ********************************************************************************/
-                    $sixMonthsDateWhere = "(date BETWEEN '" . 
-                                date("Y-m-d", strtotime("$latestDate -5 months")) . "' AND '$latestDate')";
-                    //$dateWhere = "c.date BETWEEN '" . 
-                      //          date("Y-m-d", strtotime("$latestDate -11 months")) . "' AND '$latestDate'";
-                    $reportingWhere = 'facility_reporting_status = 1';
-                    $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
-                    $longWhereClause = $reportingWhere . ' AND ' . $dateWhere . ' AND ' . 
-                                       $ct_where . ' AND ' . $locationWhere;
+                    $mysession = new Zend_Session_Namespace('fpfacs');
+                    if(isset($mysession->fpFacsDenoms)){
+                        $FPFacsDenominators = $mysession->fpFacsDenoms;
+                        //echo 'sessioning CIP'; Helper2::printArray($mysession->fpFacsDenoms);
+                    } else {
+                        $reportingWhere = 'facility_reporting_status = 1';
+                        $locationWhere = $tierIDField . ' IN (' . $geoList . ')';
+                        $longWhereClause = $reportingWhere . ' AND ' . $locationWhere;
+                        $FPFacsDenominators = $facility->getFPFacilitiesOvertime(
+                                                        $longWhereClause, 
+                                                        $geoList, 
+                                                        $tierNameField, 
+                                                        $tierIDField, 
+                                                        $ct_where, 
+                                                        $dateWhereArray
+                                                );
+                    }
                     
-                    $FPFacsDenominators = $facility->getFPFacilities(
-                            $longWhereClause, 
-                            $geoList, 
-                            $tierNameField, 
-                            $tierIDField, 
-                            $ct_where,
-                            $sixMonthsDateWhere
-                    );
-                    //var_dump($FPFacsDenominators); exit;
-                    $output['allfacs'] = $this->setUpOvertimeOutput($monthNames, $locationNames, $numerators, $denominators);
+                    //Helper2::printArray($FPFacsDenominators);
+                    //$FPFacsDenominators = $facility->processFPFacilitiesOvertime($FPFacsDenominators, $dateWhereArray, $tierNameField);
+                    
+                    //$output['allfacs'] = $this->setUpOvertimeOutput($monthNames, $locationNames, $numerators, $denominators);
                     $output['fpfacs'] = $this->setUpOvertimeOutput($monthNames, $locationNames, $numerators, $FPFacsDenominators);
                     
                     //check if to save month national data
@@ -348,7 +359,7 @@ class CIPCoverage extends IndicatorGroup {
                         $cacheValue = json_decode($cacheValue, true);
                         for($i=0; $i<count($monthNames); $i++){
                             $monthName = $monthNames[$i];
-                            $output['allfacs'][$monthName]['National']['percent'] = $cacheValue['allfacs'][$monthName]['National']['percent'];
+                            //$output['allfacs'][$monthName]['National']['percent'] = $cacheValue['allfacs'][$monthName]['National']['percent'];
                             $output['fpfacs'][$monthName]['National']['percent'] = $cacheValue['fpfacs'][$monthName]['National']['percent'];
                         }
                     }

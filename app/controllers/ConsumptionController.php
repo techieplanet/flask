@@ -62,13 +62,14 @@ class ConsumptionController extends ReportFilterHelpers {
         $cons = new Consumption();
         $commodity = new Commodity();
         $methodNames = array();
+        $freshVisit = false;
         
         //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
         list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
         
             $this->view->assign('monthDate',$monthDate);
             $this->view->assign('monthName',$monthName);
-        $lastPullDate = "";
+            $lastPullDate = "";
             if(isset($_POST['lastPullDate'])){
                 $lastPullDate = $_POST['lastPullDate'];
             }
@@ -101,44 +102,40 @@ class ConsumptionController extends ReportFilterHelpers {
               $consOverTime = $cons->fetchConsumptionByCommodityOverTime($commodityIDList, $lastPullDatemultiple);
                             
               $methodNames = $commodity->getCommodityMap($commodityIDList);
-              $this->view->assign('consumption_by_method', $consByCommodity);
-              $this->view->assign('consumption_overtime',$consOverTime);
+              $this->view->assign('consumption_by_method', json_encode($consByCommodity));
+              $this->view->assign('consumption_overtime', json_encode($consOverTime));
               
-//              if(strtolower($methodName)!="iucds"){
-//                    $methodName = strtolower($methodName);
-//                }
-//                $this->view->assign('method', $methodName);
-//                $this->view->assign('consumption_bsm', $consBySingleCommodity);
-//
-//                end($consBySingleCommodity);
-//                $endKey = key($consBySingleCommodity);
-//                $this->view->assign('consumption_bsm_first_element', array('method'=>$methodName, 
-//                    'consumption'=>$consBySingleCommodity[$endKey]));
+              
             } else { // geo selected
                 if(empty($lastPullDatemultiple)){
                     list($methodNames, $consByMultipleCommodityAndLocation) = $cons->fetchConsumptionByCommodityAndLocationOverTime($commodityIDList, $geoList, $tierValue);
+                    $consByMultipleCommodityAndLocationFirst = $consByMultipleCommodityAndLocation;
                     
-                    //$this->view->assign('method', $methodName);
-                    $this->view->assign('consumption_bmmandlocation', $consByMultipleCommodityAndLocation);
+                    $this->view->assign('consumption_bmmandlocation', json_encode($consByMultipleCommodityAndLocation));
                 }else{
+                   list($methodNames, $consByMultipleCommodityAndLocationFirst) = $cons->fetchConsumptionByCommodityAndLocationOverTime($commodityIDList, $geoList, $tierValue); 
                    list($methodNames, $consByMultipleCommodityAndLocation) = $cons->fetchConsumptionByCommodityAndLocationOverTime($commodityIDList, $geoList, $tierValue,$lastPullDatemultiple);  
                    //$this->view->assign('method', $methodName);
-                   $this->view->assign('consumption_bmmandlocation', $consByMultipleCommodityAndLocation);
+                   $this->view->assign('consumption_bmmandlocation', json_encode($consByMultipleCommodityAndLocation));
                 }
+
                 
                 //get current month consumption 
                 if(!empty($lastPullDate)){
                     $searchString = date('F',strtotime($lastPullDate));
-                    end($consByMultipleCommodityAndLocation);
-                    $endKey = key($consByMultipleCommodityAndLocation);
+                    //end($consByMultipleCommodityAndLocation);
+                    //$endKey = key($consByMultipleCommodityAndLocation);
                
-                    $this->view->assign('consumption_bmmandlocation_first', array(
+                    $this->view->assign('consumption_bmmandlocation_first', json_encode(array(
                                         'methods'=>$methodNames, 
-                                        'consumption'=>json_encode($consByMultipleCommodityAndLocation[$searchString])));
+                                        'consumption'=>($consByMultipleCommodityAndLocationFirst[$searchString]))));
                 } else {
-                  $this->view->assign('consumption_bmmandlocation_first', array('methods'=>$methodNames, 
-                    'consumption'=>json_encode($consByMultipleCommodityAndLocation[$endKey]))); 
+                   //DOESNT SEEM LIKE THIS WILL BE NEEDED
+                  //$this->view->assign('consumption_bmmandlocation_first', json_encode(array('methods'=>$methodNames, 
+                    //'consumption'=>json_encode($consByMultipleCommodityAndLocation[$endKey])))); 
                 }
+                
+                //var_dump($consByMultipleCommodityAndLocationFirst[$searchString]); exit;
             }    
             
                 $updatedMonth = array_reverse($monthDate);
@@ -151,12 +148,7 @@ class ConsumptionController extends ReportFilterHelpers {
                 else if(count($commodityIDList)>=1 && count($geoListArray)==1){
                     $this->view->assign('commlinechart', TRUE);
                 }
-                    
-                //var_dump($consByMultipleCommodityAndLocation); exit;
                 
-                //echo json_encode($consByMultipleCommodityAndLocation[$endKey]); exit;
-                
-            //}
         }
         else{ //ALL: when ALL commodity and/or no geo option selected
             //echo 'no comm sel'; exit;
@@ -167,8 +159,10 @@ class ConsumptionController extends ReportFilterHelpers {
                 
                 //var_dump($consOverTime); exit;
                 
-                $this->view->assign('consumption_by_method',$consByCommodity);
-                $this->view->assign('consumption_overtime',$consOverTime);
+                $this->view->assign('consumption_by_method', json_encode($consByCommodity));
+                $this->view->assign('consumption_overtime', json_encode($consOverTime));
+                $freshVisit = true;
+                //var_dump($consOverTime); exit;
           }
           else{ //geo selected
               $consByCommodity = $cons->fetchConsumptiomPerCommodity(0, $geoList, $tierValue,$lastPullDate);
@@ -176,8 +170,8 @@ class ConsumptionController extends ReportFilterHelpers {
               list($location,$consAllBySingleLocOverTime) = $cons->fetchAllConsumptionBySingleLocationOverTime($geoList, $tierValue,$lastPullDatemultiple);
               
               $this->view->assign('single_location', $location);
-              $this->view->assign('consumption_by_method',$consByCommodity);
-              $this->view->assign('cons_all_BSL_overtime',$consAllBySingleLocOverTime);
+              $this->view->assign('consumption_by_method',json_encode($consByCommodity));
+              $this->view->assign('cons_all_BSL_overtime',json_encode($consAllBySingleLocOverTime));
           }   
         }
 
@@ -195,6 +189,7 @@ class ConsumptionController extends ReportFilterHelpers {
         
         //this will provide the commodities list for the drop down
         $this->view->assign('comms', $helper->getCommodities());
+        $this->view->assign('freshVisit', $freshVisit);
         
         $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
         $this->viewAssignEscaped ('locations', Location::getAll(1) );
@@ -205,116 +200,6 @@ class ConsumptionController extends ReportFilterHelpers {
     
     
     
-    public function consumptiondemoAction(){
-        $helper = new Helper2();
-        $cons = new Consumption();
-        $methodNames = array();
-        
-        //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
-
-        if( !isset($_POST["comm_id"]) || $_POST["comm_id"] == 0)
-            $commodityIDList = array();
-        else
-            $commodityIDList = $_POST['comm_id'];
-        
-        //get the parameters
-        list($geoList, $tierValue) = $this->buildParameters();
-
-        $all = false;        
- 
-        if(!empty($commodityIDList)){  //commodity selected
-//            if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
-//                list($methodName,$consBySingleCommodity) = $cons->fetchConsumptionBySingleCommodityOverTime($commodityID, $geoList, $tierValue);
-//                //var_dump($consBySingleCommodity); exit;
-//              if(strtolower($methodName)!="iucds"){
-//                    $methodName = strtolower($methodName);
-//                }
-//                $this->view->assign('method', $methodName);
-//                $this->view->assign('consumption_bsm', $consBySingleCommodity);
-//
-//                end($consBySingleCommodity);
-//                $endKey = key($consBySingleCommodity);
-//                $this->view->assign('consumption_bsm_first_element', array('method'=>$methodName, 
-//                    'consumption'=>$consBySingleCommodity[$endKey]));
-//            }
-//            else{ // geo selected
-                //list($methodName,$consBySingleCommodityAndLocation) = $cons->fetchConsumptionByCommodityAndLocationOverTime($commodityIDList, $geoList, $tierValue);
-                list($methodNames, $consByMultipleCommodityAndLocation) = $cons->fetchConsumptionByCommodityAndLocationOverTime($commodityIDList, $geoList, $tierValue);
-                
-                $methodName = '';
-                $this->view->assign('method', $methodName);
-                $this->view->assign('consumption_bmmandlocation', $consByMultipleCommodityAndLocation);
-                
-                //get current month consumption 
-                end($consByMultipleCommodityAndLocation);
-                $endKey = key($consByMultipleCommodityAndLocation);
-                $this->view->assign('consumption_bmmandlocation_first', array('methods'=>$methodNames, 
-                    'consumption'=>json_encode($consByMultipleCommodityAndLocation[$endKey])));
-                
-                $geoListArray = explode(',', $geoList);
-                if(count($commodityIDList)>1 && count($geoListArray)>1)
-                    $this->view->assign('showlinechart', FALSE);
-                else if(count($commodityIDList)==1 && count($geoListArray)>=1)
-                    $this->view->assign('showlinechart', TRUE);
-                else if(count($commodityIDList)>=1 && count($geoListArray)==1){
-                    $this->view->assign('commlinechart', TRUE);
-                }
-                    
-                //var_dump($consByMultipleCommodityAndLocation); exit;
-                
-                //echo json_encode($consByMultipleCommodityAndLocation[$endKey]); exit;
-                
-            //}
-        }
-        else{ //ALL: when ALL commodity and/or no geo option selected
-            //echo 'no comm sel'; exit;
-            $consByCommodity = $consOverTime = array();
-          if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
-                $consByCommodity = $cons->fetchConsumptiomPerCommodity(0, $geoList, $tierValue);
-                $consOverTime = $cons->fetchConsumptionByCommodityOverTime();
-                
-                //var_dump($consOverTime); exit;
-                
-                $this->view->assign('consumption_by_method',$consByCommodity);
-                $this->view->assign('consumption_overtime',$consOverTime);
-          }
-          else{ //geo selected
-              $consByCommodity = $cons->fetchConsumptiomPerCommodity(0, $geoList, $tierValue);
-              //var_dump($consByCommodity); exit;
-              //$helper->plog(print_r($consByCommodity));
-              //var_dump($consByCommodity); echo '<br><br>';
-              //$consOverTime = $cons->fetchConsumptionByCommodityOverTime($geoList, $tierValue);
-              list($location,$consAllBySingleLocOverTime) = $cons->fetchAllConsumptionBySingleLocationOverTime($geoList, $tierValue);
-              //var_dump($location); echo '<br><br>'; 
-              //var_dump($consAllBySingleLocOverTime); echo '<br><br>'; exit;
-              
-              $this->view->assign('single_location', $location);
-              $this->view->assign('consumption_by_method',$consByCommodity);
-              $this->view->assign('cons_all_BSL_overtime',$consAllBySingleLocOverTime);
-          }   
-        }
-
-        //send the array of selected commodities
-        $this->view->assign('methods',$methodNames);
-        
-        //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
-        //GNR:use max commodity date
-        $sDate = $helper->fetchTitleDate();
-        $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
-        
-        $overTimeDates = $helper->getPreviousMonthDates(12);
-        $this->view->assign('start_date', date('F', strtotime($overTimeDates[11])). ' '. date('Y', strtotime($overTimeDates[11]))); 
-        $this->view->assign('end_date', date('F', strtotime($overTimeDates[0])). ' '. date('Y', strtotime($overTimeDates[0]))); 
-        
-        //this will provide the commodities list for the drop down
-        $this->view->assign('comms', $helper->getCommodities());
-        
-        $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
-        $this->viewAssignEscaped ('locations', Location::getAll(1) );
-        
-        $this->view->assign('base_url', $this->baseUrl);
-
-    }
     
     
     public function consbygeographyAction() {
@@ -431,17 +316,32 @@ class ConsumptionController extends ReportFilterHelpers {
         //$all = false;
         if(empty($selectedMethods)){  //commodity NOT selected
             
-            $consumptionArrays = $consumption->fetchNewAcceptorsAndCurrentUsers($selectedMethods,$geoList, $tierValue, $freshVisit);
+            //$consumptionArrays = $consumption->fetchNewAcceptorsAndCurrentUsers($selectedMethods,$geoList, $tierValue, $freshVisit);
             
             if(!empty($lastPullDatemultiple)){
              $consumptionArray = $consumption->fetchNewAcceptorsAndCurrentUsers($selectedMethods,$geoList, $tierValue, $freshVisit,$lastPullDatemultiple); 
-            }else{
+            }
+            else {
              $consumptionArray = $consumption->fetchNewAcceptorsAndCurrentUsers($selectedMethods,$geoList, $tierValue, $freshVisit); 
             }
             $this->view->assign('default_option', true);
-            $this->view->assign('consumptionArray', $consumptionArray);
-            $this->view->assign('consumptionArrays', $consumptionArrays);
-            //var_dump($consumptionArray); exit;
+            $this->view->assign('consumptionArray', json_encode($consumptionArray));
+            //$this->view->assign('consumptionArrays', json_encode($consumptionArrays));
+            //var_dump('$consumptionArray', $consumptionArray); exit;
+            
+            //handle the array for the current month
+            if(!empty($lastPullDate)){
+                $pullMonthName = date('F', strtotime($lastPullDate));
+                $currentMonthConsumptionArray = array_key_exists($pullMonthName, $consumptionArray) ?
+                                                    $consumptionArray[$pullMonthName] :
+                                                    end($consumptionArray);
+            }
+            else {
+                $currentMonthConsumptionArray = end($consumptionArray);
+            }
+            $this->view->assign('currentMonthConsumptionArray', json_encode($currentMonthConsumptionArray));
+            
+                        
             $geoListSelectionMade =  !$freshVisit;
             if($geoListSelectionMade){
                 $geoLocations = $helper->getLocationNames($geoList);
@@ -450,28 +350,39 @@ class ConsumptionController extends ReportFilterHelpers {
             }                
         } else { //commodity selected 
             //echo 'here 2'; exit;
-            $consumptionArrays = $consumption->fetchNewAcceptorsAndCurrentUsers($selectedMethods,$geoList, $tierValue, $freshVisit);
-              if(!empty($lastPullDatemultiple)){
+            $currentMonthConsumptionArray = $consumption->fetchNewAcceptorsAndCurrentUsers($selectedMethods,$geoList, $tierValue, $freshVisit);
+            if(!empty($lastPullDatemultiple)){
              $consumptionArray = $consumption->fetchNewAcceptorsAndCurrentUsers($selectedMethods,$geoList, $tierValue, $freshVisit,$lastPullDatemultiple); 
             }else{
              $consumptionArray = $consumption->fetchNewAcceptorsAndCurrentUsers($selectedMethods,$geoList, $tierValue, $freshVisit); 
             }
+            
             if( $freshVisit ) {
                 if(count($commodityObjectsArray) > 1) 
                 //with this option, we have to revert to default visualizatoion bcos the presentation will need a grouped bar chart and two national lines on the line chart. 
                     $this->view->assign('default_option', true);
                 else
                     $this->view->assign('commodityOnly', true);
-                
             }
             else{ //geo selection made
                 $geoLocations = $helper->getLocationNames($geoList);
                 $this->view->assign('commodityAndLocation', true);
                 $this->view->assign('geoLocations', $geoLocations);
             }
-            //var_dump($consumptionArray); exit;
-            $this->view->assign('consumptionArray', $consumptionArray);
-            $this->view->assign('consumptionArrays', $consumptionArrays);
+                        
+            //handle the array for the current month
+            if(!empty($lastPullDate)){
+                $pullMonthName = date('F', strtotime($lastPullDate));
+                $currentMonthConsumptionArray = array_key_exists($pullMonthName, $currentMonthConsumptionArray) ?
+                                                    $currentMonthConsumptionArray[$pullMonthName] :
+                                                    end($currentMonthConsumptionArray);
+            }
+            else {
+                $currentMonthConsumptionArray = end($consumptionArray);
+            }
+            
+            $this->view->assign('consumptionArray', json_encode($consumptionArray));
+            $this->view->assign('currentMonthConsumptionArray', json_encode($currentMonthConsumptionArray));
         }
 
         
@@ -497,7 +408,7 @@ class ConsumptionController extends ReportFilterHelpers {
           //var_dump($comm); exit;
           
           $this->view->assign('comms', $comm);
-           //var_dump($comm); exit;
+          $this->view->assign('freshVisit', $freshVisit);
         
           $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
           $this->viewAssignEscaped('locations', Location::getAll(1));

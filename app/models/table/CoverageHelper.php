@@ -232,7 +232,7 @@ class CoverageHelper {
                             ->group($tierFieldName)
                             ->order(array($tierText));   
 
-              //echo 'Providing: ' . $select->__toString() . '<br/>'; exit;
+              //echo $select->__toString() . '<br/>'; exit;
 
                $result = $db->fetchAll($select);
 //               if($tierText=="lga"){
@@ -501,7 +501,7 @@ class CoverageHelper {
                             ->group(array($tierFieldName, 'date'))
                             ->order(array($tierText, 'date'));   
                 
-             // echo 'Providing: ' . $select->__toString() . '<br/>'; 
+             //echo 'Providing: ' . $select->__toString() . '<br/>'; 
                 
               $result = $db->fetchAll($select);
               

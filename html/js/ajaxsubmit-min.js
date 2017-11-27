@@ -86,9 +86,6 @@ function addAjaxSubmit(buttonId,formId,postUrl) {
 
 	  _button.on('click', function(ev) {
               
-              
-              
-              
               var docontinue = isHWRetired();
               var formEnabled = isFormDisabled();
               

@@ -147,13 +147,13 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                     This chart shows stock out rates over time at facilities that have provided 
                                                                                     any FP services or implants specifically in the past. <br/><br/>
                                                                                     
-                                                                                    For FP, this is the percentage of facilities reporting in the given month that 
+                                                                                    For FP, this is the percentage of facilities reporting in the given month or selected date(s) that 
                                                                                     have provided any FP commodities any time in the last six months that were 
-                                                                                    stocked out of any FP commodity for at least seven days in the given month. <br/><br/>
+                                                                                    stocked out of any FP commodity for at least seven days in the given month or selected date(s). <br/><br/>
                                                                                     
-                                                                                    For implants, this is the percentage of facilities reporting in the given month that 
+                                                                                    For implants, this is the percentage of facilities reporting in the given month or selected date(s) that 
                                                                                     have consumed implants any time in the last six months that are stocked out of 
-                                                                                    implants in the given month.
+                                                                                    implants in the given month or selected date(s).
                                                                                 </div>
                                                                             </div>
 									<div id="chart11_div" style="width: 600px; height: 440px;"></div>
@@ -220,77 +220,53 @@ print ScriptContainer::$instance->renderJSHead();
 	var currentLevel;
 	currentLevel = <?php echo '\'' . $this->location_data[0]['name'] . '\''; ?>;
 	
-<?php  //file_put_contents('c:\wamp\logs\php_debug.log', 'dash3 193 >'.PHP_EOL, FILE_APPEND | LOCK_EX);	ob_start();
-	   //var_dump("location_data=", $this->location_data[0],"END");
-	   //var_dump("facility_data=",$this->facility_data[0],"END");
-	   //$result = ob_get_clean(); file_put_contents('c:\wamp\logs\php_debug.log', $result .PHP_EOL, FILE_APPEND | LOCK_EX); 
+<?php  
+       //file_put_contents('c:\wamp\logs\php_debug.log', 'dash3 193 >'.PHP_EOL, FILE_APPEND | LOCK_EX);	ob_start();
+       //var_dump("location_data=", $this->location_data[0],"END");
+       //var_dump("facility_data=",$this->facility_data[0],"END");
+       //$result = ob_get_clean(); file_put_contents('c:\wamp\logs\php_debug.log', $result .PHP_EOL, FILE_APPEND | LOCK_EX); 
 ?>
 		 
   });
 
-  <!-------   /////////////////////////// script 1,1 ////////////////////// -->
 
     function drawChart11() {
-         var jNumData = new Array();
-         var jDenomData = new Array();
-         
-         jNumData['% FP facilities stocked out of any FP commodity for 7 days'] = [];
-         jDenomData['% FP facilities stocked out of any FP commodity for 7 days'] = [];
-         
-         jNumData['% implant facilities stocked out of implants'] = [];
-         jDenomData['% implant facilities stocked out of implants'] = [];
-         
-         
-       
+            var FPSO = <?= $this->fp_facs_providing_stockedout; ?>;
+            var LARCSO = <?= $this->larc_facs_providing_stockedout; ?>;
+            var selectedDatemultiple = <?php echo json_encode($this->selectedDatemultiple); ?>;
+            var startDate = '<?= $this->end_date; ?>';
+            
             var sevenObject = {name: '% FP facilities stocked out of any FP commodity for 7 days', data: []};
             var implantsObject = {name: '% implant facilities stocked out of implants', data: []};
+            
+            monthNames = new Array();
+            for(key in FPSO){
+                var monthName = FPSO[key]['month'];
+                monthNames.push(monthName);
+                sevenObject.data.push(FPSO[key]['percent']);
+                implantsObject.data.push(LARCSO[key]['percent']);
+            }
 
+            monthNamesWithYears = processMonthNamesWithYears(selectedDatemultiple, startDate);
+            
             <?php 
-                $month = "";
-                if(!empty($this->fp_facs_providing_stockedout)){
-                    foreach ($this->fp_facs_providing_stockedout as $key=>$monthProviders){ 
-                        $month .= "'" . $monthProviders['month'] . "',";
-                        $monthName = $monthProviders['month'];
-                        $numeratorFP = $this->fp_numerator[$monthName];
-                        $denominatorFP = $this->fp_denominator[$monthName];
-                        
-                        $numeratorLARC = $this->larc_numerator[$monthName];
-                        $denominatorLARC = $this->larc_denominator[$monthName];
-                        
-                        
-                        $seven_days_percent = round($monthProviders['seven_days_percent'] * 100,1);
-                        $implant_percent = round($this->larc_facs_providing_stockedout[$key]['implant_percent'] * 100,1);
-            ?>
-                    jNumData['% FP facilities stocked out of any FP commodity for 7 days']['<?php echo $monthName; ?>'] = <?php echo $numeratorFP ?>;
-                    
-                    jDenomData['% FP facilities stocked out of any FP commodity for 7 days']['<?php echo $monthName; ?>'] = <?php echo $denominatorFP ?>;
-                    
-                    jNumData['% implant facilities stocked out of implants']['<?php echo $monthName; ?>'] = <?php echo $numeratorLARC ?>;
-                    
-                    jDenomData['% implant facilities stocked out of implants']['<?php echo $monthName; ?>'] = <?php echo $denominatorLARC ?>;
-                    
-                        //set PHP values into JS objects
-                        sevenObject.data.push(<?php echo $seven_days_percent; ?>);
-                        implantsObject.data.push(<?php echo $implant_percent; ?>);
-            <?php
-                    }//end foreach
-                } //end if
-
-                //strip trailing comma
-                $month = substr($month, 0, -1);
-            ?>
-                    
-                <?php 
                 if(!empty($this->selectedDatemultiple)){
-                    if(sizeof($this->selectedDatemultiple) > 1){
-                  $title = ($this->freshvisit) ? "Stock outs at facilities providing FP, across selected dates" : "Stock outs in selected geographies across, selected dates";
-                  $subtitle = "(across selected dates)";   
-                    }else{
-                       $title = ($this->freshvisit) ? "Stock outs at facilities providing FP, across selected date" : "Stock outs in selected geographies across, selected date";
-                  $subtitle = "(across selected date(s))";  
+                    if(sizeof($this->selectedDatemultiple) > 1)
+                        {
+                            $title = ($this->freshvisit) ? 
+                                    "Stock outs at facilities providing FP, across selected date(s)" : 
+                                    "Stock outs in selected geographies, across selected dates";
+                            $subtitle = "(across selected dates)";   
+                    } else {
+                       $title = ($this->freshvisit) ? 
+                                "Stock outs at facilities providing FP, across selected date(s)" : 
+                                "Stock outs in selected geographies, across selected date(s)";
+                        $subtitle = "(across selected date(s))";  
                     }
                 }else{
-                     $title = ($this->freshvisit) ? "Stocks out at facilities providing FP, $this->start_date to $this->end_date" : "Stock outs in selected geographies, $this->start_date to $this->end_date";
+                     $title = ($this->freshvisit) ? 
+                             "Stock outs at facilities providing FP, $this->start_date to $this->end_date" : 
+                             "Stock outs in selected geographies, $this->start_date to $this->end_date";
                     $subtitle = "($this->start_date to $this->end_date)"; 
                 }
               ?>;
@@ -322,11 +298,11 @@ print ScriptContainer::$instance->renderJSHead();
                      text:'Month',
                      style:{ "fontWeight": "bold" }
                    },
-                        categories: [<?php echo $month; ?>]
+                        categories: monthNamesWithYears
                     },
                     yAxis: {
                        title: {
-                        text: '%Facilities',
+                        text: '%  Facilities',
                         style:{ "fontWeight": "bold" }
                     },
                         labels: {
@@ -340,9 +316,29 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     tooltip: {
                         formatter: function () {
+                            var monthArray = (this.x).split(",");
+                            var month = monthArray[0];
+                            
+                            dataObj = new Array(); percentText = '';
+                            if((this.series.name).includes('FP')){
+                                dataObj = FPSO;
+                            }
+                            else if((this.series.name).includes('implant')){
+                                dataObj = LARCSO;
+                            }
+                            
+                            index = -1; 
+                            for(key in dataObj){
+                                if ((dataObj[key]['month']).toUpperCase() === month.toUpperCase()){
+                                    index = key;
+                                    break;
+                                }
+                            }
+                        
                             return '<b>' + this.x + '</b><br/>' +
                                 '<b>' + this.series.name + '</b>: ' + this.y + '%<br/>' +
-                                //'<b>Numerator</b>:'+thousandSeparator(jNumData[this.series.name][this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.series.name][this.x]);
+                                '<b>Numerator</b>:'+thousandSeparator(dataObj[index]['numer'])+'<br/>' + 
+                                '<b>Denominator</b>:'+thousandSeparator(dataObj[index]['denom']);
                         }
                     },
                     legend: {
@@ -351,15 +347,10 @@ print ScriptContainer::$instance->renderJSHead();
                     },
                     series: [sevenObject, implantsObject]
                 });
+            
     }
   
 
-</script>
-
-
-<script>
-  devsite.github.Link.convertAnchors();
-  window.prettyPrint();
 </script>	
 
       <script src="../js/highcharts/highcharts.js"></script>
@@ -368,6 +359,7 @@ print ScriptContainer::$instance->renderJSHead();
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
                 </div>
     <script src="../js/tp/functions.js"></script>
+    <script src="../js/tp/overtime-ops.js"></script>
 </body>
 
 </html>

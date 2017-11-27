@@ -267,5 +267,21 @@ if($newLocation!=""){
             
         }
        
+        
+        
+    public function getUniqueTrainedPersons(){
+        $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
+          $select = $db->select()
+                    ->from(array('p'=>'person'), 'DISTINCT(p.id) as pid')
+                    ->joinInner(array('ptt'=>'person_to_training'),"p.id=ptt.person_id", [])
+                    ->joinInner(array('t'=>'training'),"t.id=ptt.training_id", [])
+                    ->joinInner(array('tto'=>'training_title_option'), 'tto.id = t.training_title_option_id', [])
+                    ->where("t.is_deleted = 0 and p.is_deleted=0");
+          
+          //echo $select->__toString(); exit;
+          
+                 $result = $db->fetchAll($select);
+                 return $result;
+      }
 }
 

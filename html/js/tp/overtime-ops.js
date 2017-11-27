@@ -17,10 +17,10 @@ function getLastTwelveMonthsWithYears(latestDate){
     lastYearEndIndex = currentYearStartIndex - 1;
     
     for(i=0; i<=lastYearEndIndex; i++)
-        monthNames[i] += ", " + (currentYear - 1);
+        monthNames[i] += " " + (currentYear - 1);
     
     for(i=currentYearStartIndex; i<12; i++)
-        monthNames[i] += ", " + currentYear;
+        monthNames[i] += " " + currentYear;
     
     return monthNames;
 }
@@ -73,6 +73,11 @@ function monthNumberToName(monthNumber){
     }
 }
 
+/**
+ * 
+ * @param {type} overtimeData - Fomat: overtimeData[month][location]['percent']
+ * @returns {Array|processOvertimeData.dataArray}
+ */
 function processOvertimeData(overtimeData){
     //declare the array in which to store data
     var dataArray = new Array();
@@ -110,6 +115,125 @@ function processOvertimeData(overtimeData){
     return dataArray;
 }
 
+/**
+ * Consumption Chart
+ * @param {type} overtimeData - Format: overtimeData[month][method]
+ * @returns {Array|processConsumptionOvertimeData.dataArray}
+ */
+function processConsumptionOvertimeData(overtimeData){
+    //declare the array in which to store data
+    var dataArray = new Array();
+
+    //get month names for x axis: keys of the  array
+    var monthNames = Object.keys(overtimeData);
+
+      //get the method names: keys for method. Methods for each month are same
+      var firstMonth = overtimeData[monthNames[0]];
+      var methodNames = [];
+      methodNames = Object.keys(firstMonth);
+      
+      methodNames.sort();
+      for(method in methodNames){
+          loopMethod = methodNames[method];
+          obj = {
+              name: loopMethod === "Male Condoms" ? loopMethod + "(unit x10)" : loopMethod, 
+              data: []
+          };
+
+          for(month in monthNames){
+              loopMonth = monthNames[month];
+              obj.data.push(
+                      loopMethod === "Male Condoms" ? 
+                      Math.round(overtimeData[loopMonth][loopMethod] / 10) :
+                      parseInt(overtimeData[loopMonth][loopMethod]));
+          }
+
+          dataArray.push(obj);
+      }
+
+    return dataArray;
+}
+
+
+/**
+ * Consumption Chart - Multiple methods, Single location
+ * @param {type} overtimeData - Formt: overtimeData[month][location][method]
+ * @returns {Array|processConsumptionAndLocationOvertimeData.dataArray}
+ */
+function processConsumptionAndLocationOvertimeData(overtimeData){
+    //declare the array in which to store data
+    var dataArray = new Array();
+
+    //get month names for x axis: keys of the  array
+    var monthNames = Object.keys(overtimeData);
+    var firstMonthData = overtimeData[monthNames[0]];
+    var locationNames = Object.keys(firstMonthData);
+    var methodNames = Object.keys(firstMonthData[locationNames[0]]);
+            
+      methodNames.sort();
+      for(method in methodNames){
+          loopMethod = methodNames[method];
+          obj = {
+              name: loopMethod === "Male Condoms" ? loopMethod + "(unit x10)" : loopMethod, 
+              data: []
+          };
+          
+            for(loc in locationNames){
+                loopLocation = locationNames[loc];
+                
+                for(month in monthNames){
+                    loopMonth = monthNames[month];
+                    obj.data.push(
+                            loopMethod === "Male Condoms" ? 
+                            Math.round(overtimeData[loopMonth][loopLocation][loopMethod] / 10) :
+                            parseInt(overtimeData[loopMonth][loopLocation][loopMethod]));
+                }
+            }
+
+          dataArray.push(obj);
+      }
+
+    return dataArray;
+}
+
+
+/**
+ * Consumption Chart - Single method, Multiple locations
+ * @param {type} overtimeData - Format: overtimeData[month][location][commodity]
+ * @returns {Array|processMethodConsumptionOvertimeData.dataArray}
+ */
+function processMethodConsumptionOvertimeData(overtimeData, commodity){
+    //declare the array in which to store data
+    var dataArray = new Array();
+
+    //get month names for x axis: keys of the moded array
+    var monthNames = [];
+    for(month in overtimeData)
+        monthNames.push(month);
+
+      //get the location names: keys for month. Locations for each month are same
+      var firstMonth = overtimeData[monthNames[0]];
+      var locationNames = [];
+      for(loc in firstMonth)
+          locationNames.push(loc);
+
+      locationNames.sort();
+      for(loc in locationNames){
+          loopLocation = locationNames[loc];
+          obj = {name: loopLocation, data: []};
+
+          for(month in monthNames){
+              loopMonth = monthNames[month];
+              obj.data.push(parseInt(overtimeData[loopMonth][loopLocation][commodity]));
+          }
+
+          dataArray.push(obj);
+      }
+
+    return dataArray;
+}
+
+
 
 function processMonthNamesWithYears(selectedDatemultiple, startDate){
     var monthNamesWithYears = new Array();
@@ -121,7 +245,7 @@ function processMonthNamesWithYears(selectedDatemultiple, startDate){
                 monthArray = selectedDatemultiple[key].split("-");
                 monthNumber = parseInt(monthArray[1]);
                 console.log('monthNumber: ' + monthNumber);
-                monthAndYear = monthNumberToName(monthNumber) + ", " + parseInt(monthArray[0]);
+                monthAndYear = monthNumberToName(monthNumber) + " " + parseInt(monthArray[0]);
                 monthNamesWithYears.push(monthAndYear);
             }
         }

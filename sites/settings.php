@@ -29,7 +29,7 @@ class Settings {
     public static $DB_DATABASE = 'fpdb';
     public static $DB_USERNAME = 'root';
 
-    public static $DB_PWD = '';
+    public static $DB_PWD = 'password';
 
     public static $DB_SERVER = 'localhost';
 

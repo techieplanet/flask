@@ -1,0 +1,18 @@
+       
+  <?php  
+     if(isset($this->monthDatemultiple)){
+    ?>
+    <select name="lastPullDatemultiple[]"  id="lastPullDatemultiple" multiple="true" szize="5" style="margin-bottom:5px !important">
+        <?php 
+        for($i=0;$i<sizeof($this->monthDatemultiple); $i++){
+            $selected = (in_array($this->monthDatemultiple[$i],$this->selectedDatemultiple))?"selected":"";
+            echo "<option value='".$this->monthDatemultiple[$i]."' $selected>".$this->monthNamemultiple[$i]."</option>";
+        }
+        ?>
+    </select>
+   
+<?php 
+    }
+    
+    ?>
+   

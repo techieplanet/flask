@@ -1,146 +1,31 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<style>
-#homecontent {
-	background: url("images/content-bg.png") repeat-x scroll 0 0 #FAFAFA;
-	position: relative;
-}
-
-#homecontent-mid {
-	background: url("images/bg-stage.png") repeat-y scroll right top #FFFFFF;
-	min-height: 100%;
-	outline: medium none;
-	top: -40px;
-}
-
-#homebanner {
-	background: url("images/bg-stage-shade.png") repeat-x scroll 0 0
-		transparent;
-	padding-right: 20px;
-	position: relative;
-}
-
-.rounded {
-	border-radius: 10px 10px 10px 10px;
-}
-
-.sliderdiv {
-	background: none repeat scroll 0 0 FFFFFF;
-	float: left;
-}
-
-.main-search {
-	background: none repeat scroll 0 0 #FFFFFF;
-	float: left;
-	overflow: hidden;
-}
-
-.nav-buttons {
-	background: none repeat scroll 0 0 #FFFFFF;
-	float: left;
-	overflow: hidden;
-}
-
-</style>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
-
-<!--<link href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">-->
-
-<?php
-require_once('views/helpers/ScriptContainer.php');
-print ScriptContainer::$instance->renderCSSHead();
-print ScriptContainer::$instance->renderJSHead();
-?>
-
-
-      <!--<link rel="stylesheet" type="text/css" href="https://google-developers.appspot.---com/_static/f7a896e076/css/screen-docs.css" />-->
-    <!--<link rel="stylesheet" href="//www.google.com/cse/style/look/default.css" type="text/css" />-->
-    <!--<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400" type="text/css">-->
-
-<style>
-    
-    .infobutton {
-        padding-right: 13px;
-    }
-
-</style>    
-
-<!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/prettify-bundle.js"></script>-->
-
-<script src="../js/1.6.1.jquery.min.js"></script>
-<script id="jqueryui" src="../js/1.9.2.jquery-ui.min.js" defer async></script>
-
-<!--<script src="//www.google.com/jsapi?key=AIzaSyCZfHRnq7tigC-COeQRmoa9Cxr0vbrK6xw"></script>-->
-<!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-<!--<script src="https://google-developers.appspot.com/_static/f7a896e076/js/framebox.js"></script>-->
-
-<script>
-  $(function() {
-    $( "#accordion" ).accordion({header: "h3", collapsible: true,active: 2});
-    
-    //set high charts global color scheme for all high charts instances on this page
-    Highcharts.setOptions({
-            colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#AAAA11', '#B77322']
-        });
-  });
-  </script>
-
-</head>
-<body class="yui-skin-sam">
-
-	<div id="pageHolder">
-
-		<div id="header"><?php require_once('views/scripts/header.phtml');?></div>
-		<div id="content">
-
-			<!-------   /////////////////////////// get data ////////////////////// -->
-
-			<div>
-
-				<?php  //require_once('views/scripts/dashboard/load_data.phtml');?>
-
-
-
-			<!-------   /////////////////////////// make top buttons ////////////////////// -->
-
-			<div class="rightdiv" style="float: right;">
-				<?php  require_once('views/scripts/dashboard/top_buttons.phtml');?>
-					
-			</div>
-
-
-
-			<!-------   /////////////////////////// make left buttons ////////////////////// -->
-
-			<div class="nav-buttons">
-				<?php  
-                                    $fileInfo = pathinfo(__FILE__);
-                                    $fileID = $fileInfo['filename'];
-                                    require_once('views/scripts/dashboard/left_buttons.phtml');
-                                ?>
+   <?php  
+                                        $fileInfo = pathinfo(__FILE__);
+                                        $fileID = $fileInfo['filename'];
+                                        $activationBar = 'stockout';
+                                       // $variable = 'Simple';        
+                                        require_once('views/scripts/template/template.phtml');
+                                       
+                                    ?>
+                                    
+                                    
+                                    
+                                     <div class="row">
+                                         
+                                           <div class=" col-sm-5 pull-right"  >
+	
+			         	                       <?php require_once('views/scripts/dashboard/top_buttons.phtml');?>
 				
-			</div>
-			
-			<!-------   /////////////////////////// load scripts ////////////////////// -->
-            <div class="nav-buttons">
-				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');?>
-			</div>
-
-			<!-------   /////////////////////////// charts ////////////////////// -->
-
-
-			<body class="docs slim framebox_body">
-
-				<div id="allCharts" class="container">
-				<div id="toprow" class="container">
-						<div id="homecontent" class="container">
-							<div id="homecontent-mid" class="row rounded">
-								<div id="homebanner" class="rounded">
-								<div class="sliderdiv" style="margin-left: 20px;" >
-                                                                        <div id="infobutton" class="infobutton hidden">
+				
+                                           </div>
+                                    
+                                           <div  class="col-sm-7 pull-right box-shadow clearfix"  style="height:auto;"  >
+                                               
+                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
+                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
+                                                                            </div>
+                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
+                                                                              
+                                                                              <div id="infobutton" class="infobutton hidden">
                                                                             <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                             <div id="" class="infodiv" >
                                                                                 This chart shows the percentage of reporting facilities providing any FP 
@@ -150,11 +35,22 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                 historical consumption, that are stocked out of FP commodities.
                                                                             </div>
                                                                         </div>
-									<div id="chart11_div" style="width: 600px; height: 350px;"></div>
-									</div>
-                                                                    
-									<div class="main-search" style="margin-left: 20px; margin-top: 30px;">
-                                                                                <div id="infobutton" class="infobutton hidden">
+                                                                          </div>  
+				                           </div>
+                                               <div id="chart11_div" style="width:100%; height:auto;"></div>
+                                    </div>
+                                         
+                                    </div>
+                                    
+                                    <div  class="row" style="margin-top:50px;">
+                                         
+                                           <div class="col-sm-7 box-shadow" style="height:auto;"  >
+                                               
+                                               <div class="title-bar border-hr col-xs-12 " style="padding:0px;" >
+                                                                            <div class="col-xs-11 text-left small-tab title-bar-font" >
+                                                                            </div>
+                                                                            <div  class="col-xs-1 title-bar-info-btn " style="min-height:20px;" >
+                                                                              <div id="infobutton" class="infobutton hidden">
                                                                                     <span class="infowrap"><i class="fa fa-info-circle"></i></span>
                                                                                     <div id="" class="infodiv" >
                                                                                         This chart shows the percentage of reporting facilities providing at least 
@@ -164,52 +60,35 @@ print ScriptContainer::$instance->renderJSHead();
                                                                                         out of implants.
                                                                                     </div>
                                                                                 </div>
-										<div id="chart12_div" style="width: 600px; height: 350px;"></div>
-									</div>
-								</div>
-							</div>
-						</div>			
-					</div>
-
-				<div class="clear"></div>
-				<div class="hrGrey"></div>
-				<div class="clear"></div>
-
+                                                                          </div>
 				
+                                           </div>
+                                               
+                                               
+                                               <div id="chart12_div" style="width:100%; height:auto;"></div>
+                                               
+                                           
+                                               
+                                           </div>
+                                    </div>
+                                    
+                                
+                                   
+                                
 
-								<!-------   /////////////////////////// chart 2,1 ////////////////////// -->
-								
-<!--					<div id="bottomrow" class="container">
-						<div id="homecontent" class="container">
-							<div id="homecontent-mid" class="row rounded">
-								<div id="homebanner" class="rounded">
-								<div class="sliderdiv">
-									<div id="chart13_div" style="width: 800px; height: 300px;"></div>
-									</div>
-									<div class="main-search">
-										<div id="chart14_div" style="width: 500px; height: 300px;"></div>
-									</div>
-								</div>
-							</div>
-						</div>
-								
-								-----   /////////////////////////// chart 2,2 ////////////////////// 
-								
-								
-								<div class="main-search"></div>
-
-					</div>-->
-				</div>
 		
-	</div>
-
 		<div class="clear"></div>
-		<div class="hrGrey"></div>
-		<div class="clear"></div>
-		
-		<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
-
-		<!-------   /////////////////////////// main gnr ////////////////////// -->
+                </div>
+            
+          
+            
+           
+            
+          
+           
+           </div><!-- content -->
+           <br/><br/><br/>
+        
 
 		<script type="text/javascript">
 		
@@ -217,7 +96,7 @@ print ScriptContainer::$instance->renderJSHead();
 //  google.load('visualization', '1.1', {'packages':['bar']});
 //  google.setOnLoadCallback(apiLoaded);
   $(function() {
-	  document.getElementById("allCharts").style.marginLeft="130px";
+	 // document.getElementById("allCharts").style.marginLeft="130px";
 
 	drawChart11();
 	drawChart12();
@@ -233,38 +112,25 @@ print ScriptContainer::$instance->renderJSHead();
 		 
   });
 
-  <!-------   /////////////////////////// script 1,1 ////////////////////// -->
-
-  //TA:17:18 Stock outs charts
   function drawChart11() {
-      var jNumData = new Array();
-      var jDenomData = new Array();
-
-    <?php
-        reset($this->fp_data); 
-        $firstKey = key($this->fp_data); 
-        $locationsString = ""; $valuesString = "";
-	foreach ($this->fp_data as $key=>$row){
-            $locationsString .= "'" . $row['location'] . "',";
-            $location = $row['location'];
-            $numerator = $this->fp_numerator[''.$location.''];
-            $denominator = $this->fp_denominator[''.$location.''];
-           
-            if($firstKey == $key)
-                $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
-            else
-                $valuesString .= round($row['percent']*100, 1) . ",";
+      var FPData = <?= $this->fp_data; ?>;
+       var locations = new Array(); var values = new Array();
+       
+       for(key in FPData){
+            row = FPData[key];
+            locations.push(row['location']);
             
-                    ?>
-                   jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
-                   jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
-                    <?php
-	}
-        $locationsString = substr($locationsString, 0 , -1);
-        $valuesString = substr($valuesString, 0 , -1);
-    ?>
-            var titleText = '<?php echo  "Percent of facilities providing FP stocked out of any FP for 7 days, $this->date"; ?>';
-            var subtitleText = '(<?php echo  $this->date; ?>)';
+            if(key == 0)
+                values.push({y: row['percent'], color: '#000000'}); 
+            else 
+                values.push(row['percent']);
+       }
+       
+            <?php if($this->freshVisit) { ?>
+                var titleText = '<?php echo  "Percent of facilities providing FP stocked out of any FP for 7 days,<br/> $this->date"; ?>';
+            <?php } else { ?>
+                var titleText = '<?php echo  "Percent of facilities providing FP stocked out of any FP for 7 days <br/>in selected geographies as of $this->date"; ?>';
+            <?php } ?>
           
           $('#chart11_div').highcharts({
                 chart: {
@@ -279,7 +145,6 @@ print ScriptContainer::$instance->renderJSHead();
                             $("#chart11_div").siblings("#infobutton").removeClass("hidden");
                         }
                     },
-                    height: 350
                 },
                 title: {
                     text: titleText,
@@ -298,7 +163,7 @@ print ScriptContainer::$instance->renderJSHead();
                      text:'Geography',
                      style:{ "fontWeight": "bold" }
                    },
-                    categories: [<?php echo $locationsString; ?>]
+                    categories: locations
                 },
                 yAxis: {
                    title: {
@@ -311,7 +176,18 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 tooltip: {
                     formatter: function () {
-                        return '<b>' + this.x + '</b>:' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x]);
+                        var location = this.x;
+                        index = -1;
+                        for(key in FPData){
+                            if(FPData[key]['location'].toUpperCase() === location.toUpperCase()){
+                                index = key;
+                                break;
+                            }   
+                        }
+                        
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/>' + 
+                                '<b>Numerator</b>:' + thousandSeparator(FPData[index]['numer'])+'<br/>' +
+                                '<b>Denominator</b>:'+thousandSeparator(FPData[index]['denom']);
                     }
                 },
                 plotOptions: {
@@ -327,45 +203,32 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 credits: {enabled: false},
                 series: [{
-                    data: [<?php echo $valuesString; ?>]
+                    data: values
                 }]
             });
 	  
   }
 
- <!-------   /////////////////////////// script 1,2 ////////////////////// -->
 
- //TA:17:18 Stock outs charts
  function drawChart12() {
- var jNumData = new Array();
- var jDenomData = new Array();
-	                                                           
-        <?php
-             reset($this->fp_data); 
-             $firstKey = key($this->fp_data); 
-             $locationsString = ""; $valuesString = "";
-             foreach ($this->larc_data as $key=>$row){
-                $locationsString .= "'" . $row['location'] . "',";
-                $numerator = $this->larc_numerator[''.$location.''];
-                $denominator = $this->larc_denominator[''.$location.''];
-                    
-                if($firstKey == $key)
-                    $valuesString .= "{y:" . round($row['percent']*100, 1) . ", color: '#000000'},"; 
-                else
-                    $valuesString .= round($row['percent']*100, 1) . ",";
-                
-                
-                     ?>
-                   jNumData['<?php echo $row['location']; ?>']  = <?php echo $numerator; ?> ; 
-                   jDenomData['<?php echo $row['location']; ?>']  = <?php echo $denominator; ?> ; 
-                            <?php
-		}
-                
-                
-	?>
-
-            var titleText = '<?php echo  "Percent of facilities providing implants stocked out of implants, $this->date"; ?>';
-            var subtitleText = '(<?php echo  $this->date; ?>)';
+       var LARCData = <?= $this->larc_data; ?>;
+       var locations = new Array(); var values = new Array();
+       
+       for(key in LARCData){
+            row = LARCData[key];
+            locations.push(row['location']);
+            
+            if(key == 0)
+                values.push({y: row['percent'], color: '#000000'}); 
+            else 
+                values.push(row['percent']);
+       }
+            
+            <?php if($this->freshVisit) { ?>
+                var titleText = '<?php echo  "Percent of facilities providing implants stocked out of implants,<br/> $this->date"; ?>';
+            <?php } else { ?>
+                var titleText = '<?php echo  "Percent of facilities providing implants stocked out of implants <br/>in selected geographies as of $this->date"; ?>';
+            <?php } ?>
             
             $('#chart12_div').highcharts({
                 chart: {
@@ -380,7 +243,6 @@ print ScriptContainer::$instance->renderJSHead();
                             $("#chart12_div").siblings("#infobutton").removeClass("hidden");
                         }
                     },
-                    height: 350
                 },
                 title: {
                     text: titleText,
@@ -399,7 +261,7 @@ print ScriptContainer::$instance->renderJSHead();
                      text:'Geography',
                      style:{ "fontWeight": "bold" }
                    },
-                    categories: [<?php echo $locationsString; ?>]
+                    categories: locations
                 },
                 yAxis: {
                     title: {
@@ -412,7 +274,18 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 tooltip: {
                     formatter: function () {
-                        return '<b>' + this.x + '</b>:' + this.y + '%<br/><b>Numerator</b>:'+thousandSeparator(jNumData[this.x])+'<br/><b>Denominator</b>:'+thousandSeparator(jDenomData[this.x]);
+                        var location = this.x;
+                        index = -1;
+                        for(key in LARCData){
+                            if(LARCData[key]['location'].toUpperCase() === location.toUpperCase()){
+                                index = key;
+                                break;
+                            }   
+                        }
+                        
+                        return '<b>' + this.x + '</b>:' + this.y + '%<br/>' + 
+                                '<b>Numerator</b>:' + thousandSeparator(LARCData[index]['numer'])+'<br/>' +
+                                '<b>Denominator</b>:'+thousandSeparator(LARCData[index]['denom']);
                     }
                 },
                 plotOptions: {
@@ -428,26 +301,20 @@ print ScriptContainer::$instance->renderJSHead();
                 },
                 credits: {enabled: false},
                 series: [{
-                    data: [<?php echo $valuesString; ?>]
+                    data: values
                 }]
             });
-  }  
+  }
 
   
 
 </script>
 
-
-<script>
-  devsite.github.Link.convertAnchors();
-  window.prettyPrint();
-</script>	
                 </div>
   <script src="../js/highcharts/highcharts.js"></script>
 <script src="../js/highcharts/modules/exporting.js"></script>
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
                 </div>
-<script src="../js/tp/functions.js"></script>
 
 </body>
 

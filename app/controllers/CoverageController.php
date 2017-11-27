@@ -172,6 +172,7 @@ class CoverageController extends ReportFilterHelpers {
     public function facswithhwprovidingAction() {
 	    $coverage = new Coverage();
 	    $helper = new Helper2();
+            $freshVisit = false;
             
             //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
 	     list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
@@ -186,55 +187,19 @@ class CoverageController extends ReportFilterHelpers {
             //get the parameters
             list($geoList, $tierValue) = $this->buildParameters();
             
-            //set date limit
-            //$dateWhere = 'c.date = \'' . $helper->getLatestPullDate() . '\'';
-            //$dateWhere = $helper->getLatestPullDate();
-            
-            //get the location names
-            //$locationNames = $helper->getLocationNames($geoList);
-            
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
                 $fp_coverage = $coverage->fetchFacsWithHWProviding('fp', 'fp', $geoList, $tierValue, true,false,$lastPullDate);
                 $larc_coverage = $coverage->fetchFacsWithHWProviding('larc', 'larc', $geoList, $tierValue, true,false,$lastPullDate);
-                
-                list($fp_numerator,$fp_denominator) = $coverage->fetchFacsWithHWProvidingNumeratorDenominator('fp', 'fp', $geoList, $tierValue, false,false,$lastPullDate);
-                list($larc_numerator,$larc_denominator) = $coverage->fetchFacsWithHWProvidingNumeratorDenominator('larc', 'larc', $geoList, $tierValue, false,false,$lastPullDate);
-                
-                
+                $freshVisit = true;
             }
             else{
                 $fp_coverage = $coverage->fetchFacsWithHWProviding('fp', 'fp', $geoList, $tierValue, false,false,$lastPullDate);
-                $larc_coverage = $coverage->fetchFacsWithHWProviding('larc', 'larc', $geoList, $tierValue, false,false,$lastPullDate);
-                
-                $tempGeoList = implode(",",$helper->getLocationTierIDs(1));
-               
-               list($generalNumFP,$generalDenomFP) =  $coverage->fetchFacsWithHWProvidingNumeratorDenominator('fp', 'fp', $tempGeoList, 1, false,false,$lastPullDate);
-               list($generalNumLARC,$generalDenomLARC) = $coverage->fetchFacsWithHWProvidingNumeratorDenominator('larc', 'larc', $tempGeoList, 1, false,false,$lastPullDate);
-              
-               
-                
-                list($fp_numerator,$fp_denominator) = $coverage->fetchFacsWithHWProvidingNumeratorDenominator('fp', 'fp', $geoList, $tierValue, false,false,$lastPullDate);
-                list($larc_numerator,$larc_denominator) = $coverage->fetchFacsWithHWProvidingNumeratorDenominator('larc', 'larc', $geoList, $tierValue, false,false,$lastPullDate);
-                
-                
-               $fp_numerator['National'] = $generalNumFP['National'];
-               $fp_denominator['National'] = $generalDenomFP['National'];
-               
-               $larc_numerator['National'] = $generalNumLARC['National'];
-               $larc_denominator['National'] = $generalDenomLARC['National'];
+                $larc_coverage = $coverage->fetchFacsWithHWProviding('larc', 'larc', $geoList, $tierValue, false,false,$lastPullDate); 
             }
             
-            $this->view->assign('fp_numerator',$fp_numerator);
-            $this->view->assign('fp_denominator',$fp_denominator);
-            
-            
-            $this->view->assign('larc_numerator',$larc_numerator);
-            $this->view->assign('larc_denominator',$larc_denominator);
-            
-            $this->view->assign('fp_data',$fp_coverage);
-            $this->view->assign('larc_data',$larc_coverage);
+            $this->view->assign('fp_data', json_encode($fp_coverage));
+            $this->view->assign('larc_data', json_encode($larc_coverage));
             	
-	    //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
 	    //GNR:use max commodity date
 	    $sDate = $helper->fetchTitleDate($lastPullDate);
 	    $this->view->assign('date', $sDate['month_name'] . ' ' .$sDate['year']); 
@@ -246,91 +211,13 @@ class CoverageController extends ReportFilterHelpers {
             
 	} //dashAction13
         
-//        public function percentfacsprovidingallmethodsAction(){
-//            $coverage =  new Coverage();
-//            $helper = new Helper2();
-//            
-//            list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
-//            $this->view->assign('monthDate',$monthDate);
-//            $this->view->assign('monthName',$monthName);
-//            
-//            $lastPullDate = "";
-//            if(isset($_POST['lastPullDate'])){
-//                $lastPullDate = $_POST['lastPullDate'];
-//            }
-//            $this->view->assign('selectedDate',$lastPullDate);
-//            
-//            
-//              list($geoList, $tierValue) = $this->buildParameters();
-//
-//            if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
-//                
-//                $fp_coverage = $coverage->fetchPercentFacsProvidingAllMethods('fp', $geoList, $tierValue, true,false,$lastPullDate);
-//                $larc_coverage = $coverage->fetchPercentFacsProvidingAllMethods('larc', $geoList, $tierValue, true,false,$lastPullDate);
-//                $inj_coverage = $coverage->fetchPercentFacsProvidingAllMethods('injectables', $geoList, $tierValue, true,false,$lastPullDate);
-//                
-//                list($fp_numerator,$fp_denominator) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('fp', $geoList, $tierValue, true,false,$lastPullDate);
-//                list($larc_numerator,$larc_denominator) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('larc', $geoList, $tierValue, true,false,$lastPullDate);
-//                list($inj_numerator,$inj_denominator) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('injectables', $geoList, $tierValue, true,false,$lastPullDate);
-//             }
-//            else{
-//                $fp_coverage = $coverage->fetchPercentFacsProvidingAllMethods('fp', $geoList, $tierValue, false,false,$lastPullDate);
-//                $larc_coverage = $coverage->fetchPercentFacsProvidingAllMethods('larc', $geoList, $tierValue, false,false,$lastPullDate);
-//                $inj_coverage = $coverage->fetchPercentFacsProvidingAllMethods('injectables', $geoList, $tierValue, false,false,$lastPullDate);
-//                
-//                
-//                $tempGeoList = implode(",",$helper->getLocationTierIDs(1));
-//               
-//               list($generalNumFP,$generalDenomFP) =  $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('fp', $tempGeoList, 1, false,false,$lastPullDate);
-//               list($generalNumLARC,$generalDenomLARC) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('larc', $tempGeoList, 1, false,false,$lastPullDate);
-//               list($generalNumINJ,$generalDenomINJ) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('injectables', $tempGeoList, 1, false,false,$lastPullDate);
-//               
-//                
-//                list($fp_numerator,$fp_denominator) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('fp', $geoList, $tierValue, false,false,$lastPullDate);
-//                list($larc_numerator,$larc_denominator) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('larc', $geoList, $tierValue, false,false,$lastPullDate);
-//                list($inj_numerator,$inj_denominator) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('injectables', $geoList, $tierValue, false,false,$lastPullDate);
-//
-//                
-//               $fp_numerator['National'] = $generalNumFP['National'];
-//               $fp_denominator['National'] = $generalDenomFP['National'];
-//               
-//               $larc_numerator['National'] = $generalNumLARC['National'];
-//               $larc_denominator['National'] = $generalDenomLARC['National'];
-//               
-//               $inj_numerator['National'] = $generalNumINJ['National'];
-//               $inj_denominator['National'] = $generalDenomINJ['National'];
-//            }
-//
-//            
-//            $this->view->assign('fp_numerator',$fp_numerator);
-//            $this->view->assign('fp_denominator',$fp_denominator);
-//            
-//            
-//            $this->view->assign('larc_numerator',$larc_numerator);
-//            $this->view->assign('larc_denominator',$larc_denominator);
-//            
-//            $this->view->assign('inj_numerator',$inj_numerator);
-//            $this->view->assign('inj_denominator',$inj_denominator);
-//
-//            $this->view->assign('fp_data',$fp_coverage);
-//            $this->view->assign('larc_data',$larc_coverage);
-//            $this->view->assign('inj_data',$inj_coverage);
-//
-//            //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
-//            //GNR:use max commodity date
-//            $sDate = $helper->fetchTitleDate($lastPullDate);
-//            $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
-//
-//            $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
-//	    $this->viewAssignEscaped('locations', Location::getAll(1));
-//
-//            $this->view->assign('base_url', $this->baseUrl);
-//            
-//        }
+
         
         public function percentfacsprovidingAction() {
             $coverage = new Coverage(); $cipCoverage = new CIPCoverage();
             $helper = new Helper2();
+            $freshVisit = false;
+            
 	    list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
             $this->view->assign('monthDate',$monthDate);
             $this->view->assign('monthName',$monthName);
@@ -351,73 +238,22 @@ class CoverageController extends ReportFilterHelpers {
                 $fp_coverage = $coverage->fetchPercentFacsProviding('fp', $geoList, $tierValue, true,false,$lastPullDate);
                 $larc_coverage = $coverage->fetchPercentFacsProviding('larc', $geoList, $tierValue, true,false,$lastPullDate);
                 $inj_coverage = $coverage->fetchPercentFacsProviding('injectables', $geoList, $tierValue, true,false,$lastPullDate);
-                //$modern_method_coverage = $coverage->fetchPercentFacsProvidingAllMethods('fp', $geoList, $tierValue, true,false,$lastPullDate);
-                $modern_method_coverage = $cipCoverage->fetchFacsProvidingNumberOfMethods('', 3, $geoList, $tierValue, true, false, $lastPullDate);
-                
-                list($fp_numerator,$fp_denominator) = $coverage->fetchPercentFacsProvidingNumeratorDenominator('fp', $geoList, $tierValue, true,false,$lastPullDate);
-                list($larc_numerator,$larc_denominator) = $coverage->fetchPercentFacsProvidingNumeratorDenominator('larc', $geoList, $tierValue, true,false,$lastPullDate);
-                list($inj_numerator,$inj_denominator) = $coverage->fetchPercentFacsProvidingNumeratorDenominator('injectables', $geoList, $tierValue, true,false,$lastPullDate);
-                //list($modern_method_numerator,$modern_method_denominator) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('fp', $geoList, $tierValue, true,false,$lastPullDate);
-               
-                
+                $modern_method_coverage = $cipCoverage->fetchFacsProvidingNumberOfMethods('', 3, $geoList, $tierValue, true, false, $lastPullDate); 
              }
             else{
                 $fp_coverage = $coverage->fetchPercentFacsProviding('fp', $geoList, $tierValue, false,false,$lastPullDate);
                 $larc_coverage = $coverage->fetchPercentFacsProviding('larc', $geoList, $tierValue, false,false,$lastPullDate);
                 $inj_coverage = $coverage->fetchPercentFacsProviding('injectables', $geoList, $tierValue, false,false,$lastPullDate);
-                //$modern_method_coverage = $coverage->fetchPercentFacsProvidingAllMethods('fp', $geoList, $tierValue, false,false,$lastPullDate);
                 $modern_method_coverage = $cipCoverage->fetchFacsProvidingNumberOfMethods('', 3, $geoList, $tierValue, false, false, $lastPullDate);
-                
-                
-                $tempGeoList = implode(",",$helper->getLocationTierIDs(1));
-               
-               list($generalNumFP,$generalDenomFP) =  $coverage->fetchPercentFacsProvidingNumeratorDenominator('fp', $tempGeoList, 1, false,false,$lastPullDate);
-               list($generalNumLARC,$generalDenomLARC) = $coverage->fetchPercentFacsProvidingNumeratorDenominator('larc', $tempGeoList, 1, false,false,$lastPullDate);
-               list($generalNumINJ,$generalDenomINJ) = $coverage->fetchPercentFacsProvidingNumeratorDenominator('injectables', $tempGeoList, 1, false,false,$lastPullDate);
-               //list($generalModern_method_numerator,$generalModern_method_denominator) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('fp', $tempGeoList, 1, false,false,$lastPullDate);
-               
-                
-                list($fp_numerator,$fp_denominator) = $coverage->fetchPercentFacsProvidingNumeratorDenominator('fp', $geoList, $tierValue, false,false,$lastPullDate);
-                list($larc_numerator,$larc_denominator) = $coverage->fetchPercentFacsProvidingNumeratorDenominator('larc', $geoList, $tierValue, false,false,$lastPullDate);
-                list($inj_numerator,$inj_denominator) = $coverage->fetchPercentFacsProvidingNumeratorDenominator('injectables', $geoList, $tierValue, false,false,$lastPullDate);
-                //list($modern_method_numerator,$modern_method_denominator) = $coverage->fetchPercentFacsProvidingAllMethodsNumeratorDenominator('fp', $geoList, $tierValue, false,false,$lastPullDate);
-               
-                
-               $fp_numerator['National'] = $generalNumFP['National'];
-               $fp_denominator['National'] = $generalDenomFP['National'];
-               
-               $larc_numerator['National'] = $generalNumLARC['National'];
-               $larc_denominator['National'] = $generalDenomLARC['National'];
-               
-               $inj_numerator['National'] = $generalNumINJ['National'];
-               $inj_denominator['National'] = $generalDenomINJ['National'];
-               
-               //$modern_method_numerator['National'] = $generalModern_method_numerator['National'];
-               //$modern_method_denominator['National'] = $generalModern_method_denominator['National'];
+                $freshVisit = true;
             }
-
             
-            $this->view->assign('fp_numerator',$fp_numerator);
-            $this->view->assign('fp_denominator',$fp_denominator);
+            $this->view->assign('fp_data', json_encode($fp_coverage));
+            $this->view->assign('larc_data', json_encode($larc_coverage));
+            $this->view->assign('inj_data', json_encode($inj_coverage));
+            $this->view->assign('modern_method_data', json_encode($modern_method_coverage));
+            $this->viewAssignEscaped('freshVisit', $freshVisit);
             
-            
-            $this->view->assign('larc_numerator',$larc_numerator);
-            $this->view->assign('larc_denominator',$larc_denominator);
-            
-            $this->view->assign('inj_numerator',$inj_numerator);
-            $this->view->assign('inj_denominator',$inj_denominator);
-            
-            //$this->view->assign('modern_method_numerator',$modern_method_numerator);
-            //$this->view->assign('modern_method_denominator',$modern_method_denominator);
-            
-            
-
-            $this->view->assign('fp_data',$fp_coverage);
-            $this->view->assign('larc_data',$larc_coverage);
-            $this->view->assign('inj_data',$inj_coverage);
-            $this->view->assign('modern_method_data',$modern_method_coverage);
-            
-            //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
             //GNR:use max commodity date
             $sDate = $helper->fetchTitleDate($lastPullDate);
             $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
@@ -434,8 +270,7 @@ class CoverageController extends ReportFilterHelpers {
         public function percentfacswithtrainedhwAction() {
             $coverage = new Coverage();
             $helper = new Helper2();
-	    
-            //$ids = $helper->getTierLocationsIds(1); var_dump($ids); exit;
+	    $freshVisit = false;
             
 	    //$this->view->assign('title', $this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
             list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
@@ -455,67 +290,19 @@ class CoverageController extends ReportFilterHelpers {
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) ) { 
                 $fp_coverage = $coverage->fetchPercentFacHWTrained('fp', $geoList, $tierValue, true,false,$lastPullDate);
                 $larc_coverage = $coverage->fetchPercentFacHWTrained('larc', $geoList, $tierValue, true,false,$lastPullDate);
-                
-                list($fp_numerator,$fp_denominator) = $coverage->fetchPercentFacHWTrainedNumeratorDenominator('fp', $geoList, $tierValue, true,false,$lastPullDate);
-                list($larc_numerator,$larc_denominator) = $coverage->fetchPercentFacHWTrainedNumeratorDenominator('larc', $geoList, $tierValue, true,false,$lastPullDate);
             }
-            
             else{
-             
                 $fp_coverage = $coverage->fetchPercentFacHWTrained('fp', $geoList, $tierValue, false,false,$lastPullDate);
                 $larc_coverage = $coverage->fetchPercentFacHWTrained('larc', $geoList, $tierValue, false,false,$lastPullDate);
-                
-                $tempGeoList = implode(",",$helper->getLocationTierIDs(1));
-               
-               list($generalNumFP,$generalDenomFP) =  $coverage->fetchPercentFacHWTrainedNumeratorDenominator('fp', $tempGeoList, 1, false,false,$lastPullDate);
-               list($fp_numerator,$fp_denominator) = $coverage->fetchPercentFacHWTrainedNumeratorDenominator('fp', $geoList, $tierValue, false,false,$lastPullDate);
-               
-               
-               list($generalNumLARC,$generalDenomLARC) =  $coverage->fetchPercentFacHWTrainedNumeratorDenominator('larc', $tempGeoList, 1, false,false,$lastPullDate);
-               list($larc_numerator,$larc_denominator) = $coverage->fetchPercentFacHWTrainedNumeratorDenominator('larc', $geoList, $tierValue, false,false,$lastPullDate);
-               
-               
-               $fp_numerator['National'] = $generalNumFP['National'];
-               $fp_denominator['National'] = $generalDenomFP['National'];
-               
-               $larc_numerator['National'] = $generalNumLARC['National'];
-               $larc_denominator['National'] = $generalDenomLARC['National'];
+                $freshVisit = true;
             }
             
-//            var_dump($fp_coverage);
-//            echo '<br/><br/>';
-//            var_dump($larc_coverage); exit;
+            $this->view->assign('fp_data', json_encode($fp_coverage));
+            $this->view->assign('larc_data', json_encode($larc_coverage));
+            $this->viewAssignEscaped('freshVisit', $freshVisit);
             
-            $this->view->assign('larc_numerator',$larc_numerator);
-            $this->view->assign('larc_denominator',$larc_denominator);
-            
-            $this->view->assign('fp_numerator',$fp_numerator);
-            $this->view->assign('fp_denominator',$fp_denominator);
-            
-//            Helper2::jLog("-------------------- Numerator TEST --------------");
-//            Helper2::jLog(print_r($larc_numerator,true));
-//            Helper2::jLog("-------------------Denominator Test---------------");
-//            Helper2::jLog(print_r($larc_denominator,true));
-            $this->view->assign('fp_data',$fp_coverage);
-            $this->view->assign('larc_data',$larc_coverage);
-            
-            //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
-	    //GNR:use max commodity date
-	    //$tDate = new DashboardCHAI();
 	    $sDate = $helper->fetchTitleDate($lastPullDate);
-	    $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']);
-	   
-//            $zone = $this->getSanParam('province_id');
-//            $state  = $this->getSanParam('district_id');
-//            $localgovernment  = $this->getSanParam('region_c_id');
-            
-//            $criteria = array();
-//            $criteria['province_id'] = $zone;
-//            $criteria['district_id'] = $state;
-//            $criteria['region_c_id'] = $localgovernment;
-//            $criteria['error'] = $error;
-//            
-//            $this->viewAssignEscaped('criteria',$criteria);            
+	    $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']);         
             
             $this->viewAssignEscaped('criteria', $this->getLocationCriteria());
 	    $this->viewAssignEscaped('locations', Location::getAll(1));
@@ -527,7 +314,8 @@ class CoverageController extends ReportFilterHelpers {
         function coverageovertimeAction(){
             $helper = new Helper2();
             $coverage = new Coverage();
-            $freshVisit = true;
+            $freshVisit = false;
+            
             //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
               list($monthDate,$monthName) = $helper->getLast12MonthsDate();  
             $this->view->assign('monthDatemultiple',$monthDate);
@@ -544,35 +332,30 @@ class CoverageController extends ReportFilterHelpers {
             
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
                 $fp_overtime = $coverage->fetchHWCoverageOvertime('fp', $geoList, $tierValue, true,false,$lastPullDatemultiple);
-                //$numeratorDenominatorsFP = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,false,$lastPullDatemultiple);
-                
                 $larc_overtime = $coverage->fetchHWCoverageOvertime('larc', $geoList, $tierValue, true,false,$lastPullDatemultiple);
-                //$numeratorDenominatorsLARC = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,false,$lastPullDatemultiple);
+                $freshVisit = true;
             }
             else { 
                 $fp_overtime = $coverage->fetchHWCoverageOvertime('fp', $geoList, $tierValue, false,false,$lastPullDatemultiple);
-                //$numeratorDenominatorsFP = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('fp', $geoList, $tierValue, false,false,$lastPullDatemultiple);
-                
                 $larc_overtime = $coverage->fetchHWCoverageOvertime('larc', $geoList, $tierValue, false,false,$lastPullDatemultiple);
-                //$numeratorDenominatorsLARC = $coverage->fetchHWCoverageOvertimeNumeratorDenominator('larc', $geoList, $tierValue, false,false,$lastPullDatemultiple);
-                $freshVisit = false;
             }
             
             $locationName = $helper->getLocationNames($geoList);
             
             $this->view->assign('fp_overtime', json_encode($fp_overtime)); 
             $this->view->assign('larc_overtime', json_encode($larc_overtime)); 
-
-           
-            //$this->view->assign('date', date('F Y', strtotime("-1 months"))); //TA:17:18: take last month
-            //GNR:use max commodity date
+            
+            $monthNameDisplay = $helper->formatMonthName($lastPullDatemultiple);
+            $this->view->assign('latestPullDatemultipleMonthName',$monthNameDisplay);
+            
             $sDate = $helper->fetchTitleDate();
             $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
 
             $overTimeDates = $helper->getPreviousMonthDates(12);
-            $this->view->assign('start_date', date('F', strtotime($overTimeDates[11])). ' '. date('Y', strtotime($overTimeDates[11]))); 
+            $overtimeLength = count($overTimeDates) - 1;
+            $this->view->assign('start_date', date('F', strtotime($overTimeDates[$overtimeLength])). ' '. date('Y', strtotime($overTimeDates[$overtimeLength]))); 
             $this->view->assign('end_date', date('F', strtotime($overTimeDates[0])). ' '. date('Y', strtotime($overTimeDates[0]))); 
-            $this->view->assign('freshvisit', $freshVisit); 
+            $this->view->assign('freshVisit', $freshVisit); 
             
             reset($locationName); $key = key($locationName);  $location_name = $locationName[$key];
             $this->view->assign('location_name', $location_name);
@@ -587,6 +370,7 @@ class CoverageController extends ReportFilterHelpers {
             $helper = new Helper2();
             $coverage = new Coverage();
             $cipCoverage = new CIPCoverage();
+            $freshVisit = false; 
             
             //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
             //$this->view->assign('title',$this->t['Application Name'].space.t('CHAI').space.t('Dashboard'));
@@ -599,41 +383,36 @@ class CoverageController extends ReportFilterHelpers {
                 $lastPullDatemultiple = $_POST['lastPullDatemultiple'];
             }
             $this->view->assign('selectedDatemultiple',$lastPullDatemultiple);
-            //get the parameters
-            //echo var_dump($lastPullDatemultiple); exit;
             
+            //get the parameters            
             list($geoList, $tierValue) = $this->buildParameters();
             
+            //if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
             if( !isset($_POST["region_c_id"]) && !isset($_POST["district_id"]) && !isset($_POST["province_id"]) && !isset($_POST['lastPullDatemultiple']) ) { 
                 $fp_overtime = $coverage->fetchProvidingOvertime('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
                 $larc_overtime = $coverage->fetchProvidingOvertime('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
-                //list($fp_numerator,$fp_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
-                //list($larc_numerator,$larc_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
                 $modern_method_coverage = $cipCoverage->fetchFacsProvidingNumberOfMethodsOvertime('', 3, $geoList, $tierValue, true, false, $lastPullDatemultiple);
-                
+                $freshVisit = true;
             }
             else {
                 $fp_overtime = $coverage->fetchProvidingOvertime('fp', $geoList, $tierValue, false,$lastPullDatemultiple);
                 $larc_overtime = $coverage->fetchProvidingOvertime('larc', $geoList, $tierValue, false,$lastPullDatemultiple);
-                //list($fp_numerator,$fp_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('fp', $geoList, $tierValue, true,$lastPullDatemultiple);
-                //list($larc_numerator,$larc_denominator) = $coverage->fetchProvidingOvertimeNumeratorDenominator('larc', $geoList, $tierValue, true,$lastPullDatemultiple);
                 $modern_method_coverage = $cipCoverage->fetchFacsProvidingNumberOfMethodsOvertime('', 3, $geoList, $tierValue, false, false, $lastPullDatemultiple); 
             }
             
-            $monthNameDisplay = $helper->formatMonthName($lastPullDatemultiple);
-            //$this->view->assign('fp_numerator',$fp_numerator);
-            //$this->view->assign('fp_denominator',$fp_denominator);
-            $this->view->assign('modern_method_data', json_encode($modern_method_coverage));
-            
-            //$this->view->assign('larc_numerator',$larc_numerator);
-            //$this->view->assign('larc_denominator',$larc_denominator);
-            
             $this->view->assign('fp_overtime', json_encode($fp_overtime)); 
             $this->view->assign('larc_overtime', json_encode($larc_overtime)); 
-                        
-            $this->view->assign('latestPullDatemultipleMonthName',$monthNameDisplay);
+            $this->view->assign('modern_method_data', json_encode($modern_method_coverage));
+            $this->view->assign('freshVisit', $freshVisit); 
+            
+            $mysession = new Zend_Session_Namespace('fpfacs');
+            unset($mysession->fpFacsDenoms);
+            
+            //echo isset($mysession->fpFacsDenoms) ? 'true' : 'false'; exit;
+            //$monthNameDisplay = $helper->formatMonthName($lastPullDatemultiple);
+            //$this->view->assign('latestPullDatemultipleMonthName', json_encode($monthNameDisplay));
             $sDate = $helper->fetchTitleDate();
-           
+            
             $this->view->assign('date', $sDate['month_name'].' '.$sDate['year']); 
 
             $overTimeDates = $helper->getPreviousMonthDates(12);

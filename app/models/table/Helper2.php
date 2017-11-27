@@ -9,6 +9,17 @@
  */
 
 /**
+ * STOP PUTTING DATE AND TIME RELATED FUNCTIONS IN THIS CLASS.
+ * THE DATEFUNCTIONS CLASS IS TO BE USED INSTEAD.
+ * ALL DATE AND TIME FUNCTIONS IN THIS CLASS WILL BE MOVED THERE ULTIMATELY
+ * 
+ * STOP PUTTING COMMODITY RELATED FUNCTIONS IN THIS CLASS
+ * THE COMMODITY CLASS IS TO BE USED INSTEAD.
+ * ALL COMMODITY FUNCTIONS IN THIS CLASS WILL BE MOVED THERE ULTIMATELY
+ * 
+ */
+
+/**
  * Description of Helper2
  *
  * @author Swedge
@@ -203,7 +214,7 @@ class Helper2 {
                         ->from(array('fwtc' => 'facility_worker_training_counts_view'),
                             array('COUNT(DISTINCT(facid)) AS fid_count'))
                         ->joinInner(array('frr'=>'facility_report_rate'), 'facid = frr.facility_id', array('MONTHNAME(date) as month_name', 'YEAR(date) as year'))
-                        ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = facility_id', array('lga', 'state', 'geo_zone'))
+                        ->joinInner(array('flv' => 'facility_location_view'), 'flv.id = facility_id', array($tierText))
                         ->where($longWhereClause)
                         ->group(array($tierFieldName, 'date'))
                         ->order(array($tierText,'date'));
@@ -637,11 +648,48 @@ class Helper2 {
         }
         
         //divide national avg by length of national zones
-        $nationalAvg = (($numerSum>0 && $denomSum>0)?($numerSum / $denomSum):0);
+        $nationalAvgPercent = $numerSum>0 && $denomSum>0?
+                       round($numerSum / $denomSum * 100, 1):
+                       0;
         
-        return array('output'=>$output, 'nationalAvg' => $nationalAvg);
+        return array('output'=>$output, 
+                     'nationalAvg' => [
+                        'numer' => $numerSum,
+                        'denom' => $denomSum,
+                        'location' => 'National',
+                        'percent' => $nationalAvgPercent
+                     ]);
     }
     
+    
+    public function sumNumersAndDenomsOvertime($numerators, $denominators, $monthNames, $locationNames){
+        $output = []; $nationalOutput = [];
+        for($i=0; $i<count($monthNames); $i++){                
+            $monthName = $monthNames[$i];
+            $output[$monthName] = array();
+            $j = $i;
+
+            $numerSum = $denomSum = 0;
+            $output[$monthName]['National'] = [];
+            foreach($locationNames as $location){   
+                $output[$monthName][$location]['percent'] = round($numerators[$j]['fid_count'] / $denominators[$j]['fid_count'] * 100, 1);
+                $output[$monthName][$location]['numer'] = $numerators[$j]['fid_count'];
+                $output[$monthName][$location]['denom'] = $denominators[$j]['fid_count'];
+
+                $numerSum += $numerators[$j]['fid_count'];
+                $denomSum += $denominators[$j]['fid_count'];
+                
+                $j += sizeof($monthNames);
+            }
+            
+            //national values 
+            $output[$monthName]['National']['percent'] = round($numerSum / $denomSum * 100, 1);
+            $output[$monthName]['National']['numer'] = $numerSum;
+            $output[$monthName]['National']['denom'] = $denomSum;
+        }
+        
+        return $output;
+    }
     
     /**
      * Calculates the percentages for each location found in numerator
@@ -657,7 +705,7 @@ class Helper2 {
         foreach ($numerators as $location=>$numer){
             $output[$location] = array(
                 'location' => $location,
-                'num' => $numer,
+                'numer' => $numer,
                 'denom' => $denominators[$location],
                 'percent' => round((($numer>0 && $denominators[$location])?($numer / $denominators[$location]):0) * 100, 1)
             );
@@ -675,7 +723,7 @@ class Helper2 {
             'output'=>$output,
             'national' => array(       
                 'location' => 'National',
-                'num' => $numerSum,
+                'numer' => $numerSum,
                 'denom' => $denomSum,
                 'percent' => $nationalAvg
             )
@@ -1046,6 +1094,11 @@ class Helper2 {
         static function jLog($logMessage){
             $logMessage = date('Y-m-d H:i:s') . ' ' . $logMessage . "\n";
             //file_put_contents("jlogs.txt", $logMessage, FILE_APPEND);
+        }
+        
+        public static function printArray($arr, $exit=true){
+            print("<pre>".print_r($arr,true)."</pre>"); 
+            if($exit) exit;
         }
 }
 

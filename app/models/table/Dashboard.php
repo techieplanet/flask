@@ -594,7 +594,7 @@ class Dashboard {
                 else if($training_type == 'larc')
                     $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_HW_PROVIDING_LARC, $latestDate);
 
-
+                //$cacheValue = null;
                 //check if page is just being loaded
                 //fresh session, month data already registered
                 //just retrieve registered data
@@ -632,6 +632,8 @@ class Dashboard {
                                        $ct_where . ' AND ' . $tt_where . ' AND ' . $locationWhere . ' AND ' .
                                        $dateWhere;
                     $numerators = $coverageHelper->getCoverageCountFacWithHWProviding($longWhereClause, $locationNames, $geoList, $tierText, $tierFieldName);
+                    
+                    $helper->jLog($numerators);
                     
                     //set output                    
                     $nationalAvg = 0; 

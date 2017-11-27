@@ -6,7 +6,7 @@
 
 
    $('.infowrap').click(function(){
-       console.log("inside click");
+       //console.log("inside click");
 //       $(this).siblings(".infodiv").slideToggle( "slow", function() {
 //            // Animation complete.
 //       });

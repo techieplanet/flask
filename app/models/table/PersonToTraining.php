@@ -15,7 +15,7 @@ class PersonToTraining extends ITechTable
 {
 	protected $_primary = 'id';
   protected $_name = 'person_to_training';
-
+  
   /**
    * Returns trainers in training session
    */
