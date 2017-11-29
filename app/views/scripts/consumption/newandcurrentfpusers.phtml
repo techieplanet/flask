@@ -99,6 +99,121 @@
                                    
                                 </div>
 
+<<<<<<< HEAD
+<script>
+  $(function() {
+    $( "#accordion" ).accordion({active: 1});
+    //set high charts global color scheme for all high charts instances on this page
+    Highcharts.setOptions({
+            colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#AAAA11', '#B77322']
+        });
+  });
+  </script>
+</head>
+<body class="yui-skin-sam">
+    
+    <?php   
+            //echo 'high<br/><br/>' ;
+            //var_dump($this->consumption_by_method); 
+            //var_dump($this->consumption_bsmandlocation_first); 
+    ?>
+    
+	<div id="pageHolder">
+
+		<div id="header"><?php require_once('views/scripts/header.phtml');?></div>
+		<div id="content">
+
+			<!-------   /////////////////////////// get data ////////////////////// -->
+
+			<div>
+				<?php  //require_once('views/scripts/dashboard/load_data.phtml');?>
+			</div>
+
+			<!-------   /////////////////////////// make top buttons ////////////////////// -->
+
+			<div class="rightdiv" style="float: right;">
+                                <?php require_once('views/scripts/consumption/top_buttons2.phtml');?>
+			</div>
+			<div class="hrNav"></div>
+
+			<!-------   /////////////////////////// make left buttons ////////////////////// -->
+			<div class="nav-buttons">
+				<?php  
+                                    $fileInfo = pathinfo(__FILE__);
+                                    $fileID = $fileInfo['filename'];
+                                    require_once('views/scripts/dashboard/left_buttons.phtml');
+                                ?>
+			</div>
+			<!-------   /////////////////////////// load scripts ////////////////////// -->
+            <div class="nav-buttons">
+				<?php //require_once('views/scripts/dashboard/displayScripts.phtml');
+                             // print_r($this->consumptionArray);
+                                ?>
+			</div>
+			
+			<!-------   /////////////////////////// charts ////////////////////// -->
+
+			<body class="docs slim framebox_body">
+
+				<div id="allCharts" class="container">
+				
+				<div class="hrNav" id="hrr"></div>
+				<div class="hrNav"></div>
+				
+				
+				    <div id="toprow" class="container">
+						<div id="homecontent" class="container">
+							<div id="homecontent-mid" class="row rounded">
+								<div id="homebanner" class="rounded">
+								<div class="sliderdiv">
+                                                                    <div id="infobutton" class="infobutton hidden"">
+                                                                        <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                        <div id="" class="infodiv" >
+                                                                            ...
+                                                                        </div>
+                                                                    </div>
+								    <div class="hrNav"></div>
+									<div id="chart11_div" style="width: 630px; height: 460px;"></div>
+									</div>
+									
+								</div>
+							</div>
+						</div>			
+					</div>
+					
+					<!-------   /////////////////////////// chart 2,1 ////////////////////// -->
+					
+					<div id="bottomrow" class="container">
+						<div id="homecontent" class="container">
+							<div id="homecontent-mid" class="row rounded">
+								<div id="homebanner" class="rounded">
+								<div class="sliderdiv">
+                                                                            <div id="infobutton" class="infobutton hidden">
+                                                                                <span class="infowrap"><i class="fa fa-info-circle"></i></span>
+                                                                                <div id="" class="infodiv" >
+                                                                                    ...
+                                                                                </div>
+                                                                            </div>
+                                                                        <div class="hrNav"></div>
+    									<div id="chart13_div" style="width: 630px; height: 470px;"></div>
+									</div>
+									
+								</div>
+							</div>
+						</div>
+								<!-------   /////////////////////////// chart 2,2 ////////////////////// -->
+                                                <div class="main-search"></div>
+					</div>
+					
+				</div>
+				
+				
+	</div>
+
+		<div class="hrNav"></div>
+		<div class="clear"></div>
+=======
+>>>>>>> 05a2d36335fd777f1b3ecc52bbd48740fd46b9d5
 		
 		<div class="clear"></div>
                 </div>

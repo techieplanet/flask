@@ -487,6 +487,7 @@ class Coverage extends IndicatorGroup {
                     //check if to save month national data
                     if(!$cacheValue && $freshVisit){ //fresh in month
                         //do cache insert
+                       // echo "This is afresh visit";exit;
                         if($commodity_type == 'fp')
                             $alias = CacheManager::PERCENT_FACS_PROVIDING_FP;
                         else if($commodity_type == 'larc')
@@ -501,7 +502,10 @@ class Coverage extends IndicatorGroup {
                             'value' => json_encode($output)
                             //'timestamp_created' => date('');
                         );
-                        //$cacheManager->setIndicator($dataArray);
+
+                        $cacheManager->setIndicator($dataArray);
+                        //print_r($dataArray);exit;
+
                     }
                     else if($updateMode){
                         $dataArray = array('value' => json_encode($output));
@@ -550,6 +554,7 @@ class Coverage extends IndicatorGroup {
             else if($commodity_type == 'larc')
                 $cacheValue = $cacheManager->getIndicator(CacheManager::PERCENT_FACS_PROVIDING_LARC, $latestDate);            
             
+           // print_r($cacheValue);exit;
             $tierText = $helper->getLocationTierText($tierValue);
             $tierFieldName = $helper->getTierFieldName($tierText);
 
@@ -583,8 +588,9 @@ class Coverage extends IndicatorGroup {
 
             //get month national data and put in first array element
             $cacheValue = json_decode($cacheValue, true);
+           // print_r($cacheValue);exit;
             if($cacheValue)
-                $output[0]['percent'] = $cacheValue[0]['percent'];
+                $output[0]['percent'] = $cacheValue[0]['percent']['percent'];
             
             $output = array_merge($output, $sortedArray);
 

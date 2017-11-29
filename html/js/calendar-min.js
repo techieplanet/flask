@@ -37,7 +37,19 @@
             var dSelected = YAHOO.util.Dom.get(monthId).value + '/' + YAHOO.util.Dom.get(dayId).value + '/' + YAHOO.util.Dom.get(yearId).value;
             var dPage = YAHOO.util.Dom.get(monthId).value + '/' + YAHOO.util.Dom.get(yearId).value;
 
+            var todayD = new Date();
+            var dd = todayD.getDate();
+            var mm = todayD.getMonth()+1; //January is 0!
 
+            var yyyy = todayD.getFullYear();
+            if(dd<10){
+                dd='0'+dd;
+            } 
+            if(mm<10){
+                mm='0'+mm;
+            } 
+            var todaysDate = mm+'/'+dd+'/'+yyyy;
+            
             if ( dPage == '/' ) {
             	dPage = '01/1980';
             } else if( dPage.substring(0,1) == '/' ) { // year entered, but no month
@@ -45,7 +57,7 @@
               dPage = (today.getMonth() + 1) + dPage;
             }
 
-            var oCalendar = new YAHOO.widget.Calendar(buttonCalendarId, oCalendarMenu.body.id, { pagedate:dPage, selected:dSelected, navigator:true });
+            var oCalendar = new YAHOO.widget.Calendar(buttonCalendarId, oCalendarMenu.body.id, { pagedate:dPage, selected:dSelected, navigator:true,maxdate:todaysDate });
 
             oCalendar.render();
 

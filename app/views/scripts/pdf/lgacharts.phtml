@@ -787,8 +787,8 @@ print ScriptContainer::$instance->renderJSHead();
         $stateData = (isset($percentageData[0]['percent'])?$percentageData[0]['percent']:0);
         $lgaData = (isset($percentageData[1]['percent'])?$percentageData[1]['percent']:0);
         
-        $statepercent = round($stateData*100,1);
-        $fp_prov_lga = round($lgaData*100,1);
+        $statepercent = round($stateData,1);
+        $fp_prov_lga = round($lgaData,1);
 
        
 
@@ -828,9 +828,9 @@ print ScriptContainer::$instance->renderJSHead();
         $stateData = (isset($percentageData_trained_hw[0]['percent'])?$percentageData_trained_hw[0]['percent']:0);
         $lgaData = (isset($percentageData_trained_hw[1]['percent'])?$percentageData_trained_hw[1]['percent']:0);
         
-        $statepercent = round($stateData*100,1);
+        $statepercent = round($stateData,1);
 
-        $fp_trained_hw = round($lgaData*100,1);
+        $fp_trained_hw = round($lgaData,1);
 
         //$state_name = "Abia";
 

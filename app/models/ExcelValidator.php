@@ -32,11 +32,13 @@ class ExcelValidator {
         $this->values['training_organizer_phrase'] = $rows[9][2];
         $this->values['training_organizer_option_id'] = 0;
         
+        //$nameOfDonor = $rows[10][2]; //this will be implemented when we know where the name of donor should go
+        
         //Validate Training End Date
-        if(!trim($rows[11][3])){
+        if(!trim($rows[12][3])){
                 $this->status->addError( 'end-day', 'Your changes has not been saved: End date is required.' );
         }else{
-           list($ye,$me,$de) = $this->status->dateFormatter($rows[11][3]);
+           list($ye,$me,$de) = $this->status->dateFormatter($rows[12][3]);
            if($ye=="")
                $ye="0000";
 
@@ -52,9 +54,9 @@ class ExcelValidator {
         }
         
         //Validate Start Date
-        if(trim($rows[10][3]) !== ''){ 
+        if(trim($rows[11][3]) !== ''){ 
             
-            list($ys,$ms,$ds) = $this->status->dateFormatter($rows[10][3]);
+            list($ys,$ms,$ds) = $this->status->dateFormatter($rows[11][3]);
 
             $this->values['training_start_date'] =  $ys . '-' . $ms . '-' . $ds;
             $this->status->isValidDate ( $this, 'start-day','Your changes have been not saved: Training start date', $this->values['training_start_date'] );
@@ -72,7 +74,7 @@ class ExcelValidator {
         //Validate Training type
         $this->values['training_title_option_id'] = 0;
 
-        for($i=14; $i<31; $i++){
+        for($i=15; $i<31; $i++){
                 if(! empty($rows[$i][3])){
                         $this->values['training_title_option_id'] = $rows[$i][2];
                         break;
@@ -119,8 +121,8 @@ class ExcelValidator {
                 $this->status->addError ( 'training_level_option_id', 'Your changes have not been saved: Level of training is required. '.$rows[34][2]  );
         }
 
-        if(empty($rows[12][2])){
-            $this->status->addError ( 'training_location_id', 'Your changes have not been saved: Training Location is Required. '.$rows[12][2]  );
+        if(empty($rows[13][2])){
+            $this->status->addError ( 'training_location_id', 'Your changes have not been saved: Training Location is Required. '.$rows[13][2]  );
         }
         
         

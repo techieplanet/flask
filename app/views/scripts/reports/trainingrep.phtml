@@ -523,10 +523,11 @@ $('#submitTrainingData').click(function() {
                     }else{
                         dataMessage = "<h3 align='left'><b><i>Total Participants :  "+locationTotal+"</i></b></h3><h4 align='left'><i>"+alertMessage+"</i></h4>";
                     }
+                     checkActiveStatus = true;
                 }else{
                     dataMessage = "<h3 align='left'><b><i>Total Participants :  "+totalParticipants+"</i></b></h3>";
                 }
-                checkActiveStatus = true;
+               
              }
              
 else{
@@ -998,7 +999,7 @@ $url = $_SERVER['REQUEST_URI'] . "&csv=1";
 			</div>
 		
 	</body>
-  <script src="../js/tp/functions.js"></script>
+ 
     <script type="text/javascript">
    function replaceGeoGraphy(aggregateValue){
       

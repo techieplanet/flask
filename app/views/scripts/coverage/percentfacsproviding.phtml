@@ -166,12 +166,14 @@
   });
 
   function drawChart11() {
+
        var FPData = <?= $this->fp_data; ?>;
        var locations = new Array(); var values = new Array();
 
         for(key in FPData){
             row = FPData[key];
             locations.push(row['location']);
+
             
             if(key == 0)
                 values.push({y: row['percent'], color: '#000000'}); 

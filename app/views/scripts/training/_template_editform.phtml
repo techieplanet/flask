@@ -689,7 +689,7 @@ $(function() {
               */
             },
             success: function(data) {
-               // alert(data);
+                alert(data);
                 var els = YAHOO.util.Dom.getElementsByClassName('errorText');
         if ( els.length )
           YAHOO.util.Dom.setStyle(els, 'display', 'none');
@@ -2536,7 +2536,7 @@ function submitForm() {
 </script>
   <div class="clear"></div>
   <div id="footer"><?php require_once('views/scripts/footer.phtml');?></div>
-   <script type="text/javascript" src="<?php echo $this->base_url; ?>/js/tp/functions.js"></script>
+<!--   <script type="text/javascript" src="<?php //echo $this->base_url; ?>/js/tp/functions.js"></script>-->
 </div>
 
 

@@ -3863,7 +3863,7 @@ $countParticipant = 0;
         
 ini_set("max_execution_time",0);
 $errs = array();
-                global $errs,$mess_person,$mess_facility,$rows,$values,$values_person,$status,$err2,$filename2,$cadreErrCount,$lnameErrCount,$fnameErrCount, $lgaErrCount;
+                global $errs,$mess_person,$mess_facility,$rows,$values,$values_person,$status,$err2,$filename2,$cadreErrCount,$lnameErrCount,$fnameErrCount, $lgaErrCount,$statusErrCount;
                      
 		$status = ValidationContainer::instance();
 		$errs = array();
@@ -3877,6 +3877,7 @@ $errs = array();
                 $lgaErrCount = 0;
                 $lnameErrCount = 0;
                 $fnameErrCount = 0;
+                $statusErrCount = 0;
 		
 		// Excel File Download template redirect
 		if ( $this->getSanParam('download') )
@@ -3955,7 +3956,7 @@ $errs = array();
                         //Validate Training data here
                         $excelValidator = new ExcelValidator($rows, $status, $values, $values_person);
                         list($status,$values,$values_person) = $excelValidator->validateTrainingDetails();
-                        
+                       // print_r($rows);exit;
 //                        Helper2::jLog(print_r($values_person,true));
 //                        Helper2::jLog(print_r($status,true));
                         
@@ -3999,7 +4000,7 @@ $errs = array();
 				$values['is_refresher'] = '1';
 				$values['training_location_id'] =0; // trim($rows[12][2]); // by default 'unknown'
                                 
-                                $trainingLocationStateName = (trim($rows[12][2]));
+                                $trainingLocationStateName = (trim($rows[13][2]));
                                 $trainingLocationStateName = str_replace("_"," ",$trainingLocationStateName);
 //                                $trainingLocArr = explode(' ',$trainingLocationStateName);
 //                                $trainingLocationStateName = $trainingLocArr[0];
@@ -4022,7 +4023,7 @@ $errs = array();
                                  
                                  
                                 if(empty($stateLocationid)){
-                                    $status->addError ( 'training_location_id', t ( 'Your changes have not been saved: Training Location is not valid. '.$rows[12][2] ) );
+                                    $status->addError ( 'training_location_id', t ( 'Your changes have not been saved: Training Location is not valid. '.$rows[13][2] ) );
                                 }
                               
                                 $trainingLocationId = $db->fetchOne("SELECT id FROM training_location WHERE location_id= '".$stateLocationid."' AND is_deleted='0' LIMIT 1");
@@ -4088,20 +4089,21 @@ $errs = array();
                                                         
                                                         if(!empty($rows[$i][1]) || !empty($rows[$i][2])  || !empty($rows[$i][3])  || 
 									!empty($rows[$i][4]) || !empty($rows[$i][5]) || !empty($rows[$i][6]) || !empty($rows[$i][8]) || !empty($rows[$i][9]) ||
-							!empty($rows[$i][10]) || !empty($rows[$i][12])){
+							!empty($rows[$i][10]) || !empty($rows[$i][12] || !empty($rows[$i][15]))){
 
-								list($pErrs,$err2copy,$errLnameCount, $errFnameCount) = $importTrainingHelper->checkExcelRequiredFieldsPerson($rows,$errs,$i);
-                                                               // print_r($pErrs);
+								list($pErrs,$err2copy,$errLnameCount, $errFnameCount,$errStatusCount) = $importTrainingHelper->checkExcelRequiredFieldsPerson($rows,$errs,$i);
+                                                              //  print_r($pErrs);exit;
                                                                 $errs = array_merge($errs, $pErrs);
                                                                 $err2 = array_merge($err2,$err2copy);
                                                                 
                                                                 $lnameErrCount = $lnameErrCount +  $errLnameCount;
                                                                 $fnameErrCount = $fnameErrCount +  $errFnameCount;
+                                                                $statusErrCount = $statusErrCount + $errStatusCount;
                                                                 //print_r($errs);
                                                                 if(!empty($pErrs)){
                                                                     continue;
                                                                 }
-                                                                
+                                                               
                                                                 //TP:check if persons already exists, by passing first_name,middle_name,surname to Person Model tryFind() method
 								//first, middle, last
                                                                 $facilityID = $importTrainingHelper->getFacilityID($rows,$i);
@@ -4115,14 +4117,14 @@ $errs = array();
                                                                      
                                                                 $facility_name = strtolower(trim($rows[$i][9]));                                                               
                                                                 $values_person['birthdate'] = trim($rows[$i][4]);
-                                                                
+                                                                 
                                                                 list($ye,$me,$de) = $status->dateFormatter($values_person['birthdate']);
                                                                 if($ye=="")$ye="0000";
                                                                 if($me=="")$me="00";
                                                                 if($de=="")$de ="00";
                                                                 
                                                                 $birthDate = $ye.'-'.$me.'-'.$de;
-                                                                
+                                                               
                                                                 
                                                                 if(!($status->validateDate($birthDate))){
                                                                            $birthDate = "0000-00-00";
@@ -4131,6 +4133,13 @@ $errs = array();
                                                                     
                                                                     $qualification = '0';
                                                                     $facilityID = $values_person['facility_id'];
+                                                                    
+                                                                        $title = $rows[$i][15];
+                                                                        
+                                                                        $result = $p->getStatusId($title);
+                                                                         
+                                                                        $values_person['person_status_id'] = $result[0]['id'];
+                                                                        $person_status_id = $values_person['person_status_id'];
                                                                         
                                                                  //var_dump($birthDate); exit;
                                                                         
@@ -4208,6 +4217,11 @@ $errs = array();
                                                                 if($facilityID!="" && $facilityID!=null && $facilityID!=0 && $facilityID!="0"){
                                                                 $p->updateUserRecord("facility_id", $facilityID, $trainer_id);
                                                                 }
+                                                                
+                                                                if($person_status_id!="" && $person_status_id!=null && $person_status_id!=0 && $person_status_id!="0"){
+                                                                $p->updateUserRecord("person_status_id", $person_status_id, $trainer_id);
+                                                                }
+                                                                
                                                                 $certification = substr($certification, 0, 1);
 								//	this not working 
 								//TrainingToTrainer::addTrainerToTraining($trainer_id, $training_id, 0); 

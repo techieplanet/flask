@@ -327,7 +327,7 @@ class Report {
              return $result[0]['counter'];
        }
        
-       public function getTrainingIDFacilityID($facility_id,$tempStartDate,$tempEndDate){
+       public function getTrainingIDFacilityID($facility_id,$tempStartDate,$tempEndDate,$trainingID=""){
         $db = Zend_Db_Table_Abstract::getDefaultAdapter ();
             $where = array();
             $where[] = "(training_end_date>='$tempStartDate' AND training_end_date<='$tempEndDate')";
@@ -335,6 +335,9 @@ class Report {
              if(!empty($facility_id)){
                 $where[]  = "(flv.id IN ($facility_id) )";
             
+            }
+            if(!empty($trainingID)){
+                $where[] = "(t.id IN ($trainingID))";
             }
             
             
@@ -383,7 +386,7 @@ class Report {
                     LEFT JOIN training_organizer_option as torg  on torg.id=t.training_organizer_option_id $sqlImplode GROUP BY flv.id,t.id ORDER BY state ASC";
            
             $result = $db->fetchAll($sql);
-//            Helper2::jLog(print_r($result,true));
+       // Helper2::jLog("This is the sql implode where \n".$sqlImplode);
 //            Helper2::jLog($sql);
             return $result;
           

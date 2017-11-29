@@ -3627,8 +3627,9 @@ echo $sql . "<br>";
           
             $sql = "SELECT facility_name, location_id from facility where id=" .$facility_id; 
             $facility_name = $db->fetchAll ( $sql );
-
-			$updatedRegions = Location::getCityandParentNames($facility_name[0]['location_id'], Location::getAll("2"), $this->setting('num_location_tiers'));
+            $facilityLocation = $facility_name[0]['location_id'];
+            $allLocations = Location::getAll("2");
+            $updatedRegions = Location::getCityandParentNames($facilityLocation,$allLocations , $this->setting('num_location_tiers'));
 
             
 			for($i=0; $i<count($rowArray); $i++){
@@ -11015,11 +11016,11 @@ public function allqueriesresultAction(){
             $consumption = $client;
         }
        
-        //$consumption = $reports->formatSelection($consumption);
-        Helper2::jLog("This is the consumptin value");
-        Helper2::jLog(print_r($consumption,true));
-        Helper2::jLog("This is the client");
-        Helper2::jLog(print_r($client,true));
+//        //$consumption = $reports->formatSelection($consumption);
+//        Helper2::jLog("This is the consumptin value");
+//        Helper2::jLog(print_r($consumption,true));
+//        Helper2::jLog("This is the client");
+//        Helper2::jLog(print_r($client,true));
         
         
         if(!empty($startMonth)){
@@ -11311,6 +11312,8 @@ public function allqueriesresultAction(){
         }
         else if($aggregateMethod=="facility_training"){
             //$criteria['error'][] = "Selection module still undergoing development";
+          //   list($startYears,$endYears,$startmonth,$startyear,$endmonth,$endyear) = $reports->getStartDateEndDateWithPeriod($period,$startMonth,$startYear,$endMonth,$endYear,$duration);
+        //$sizeof = sizeof($startYears);
             for($i=0;$i<$sizeof;$i++){
             ini_set('max_execution_time', 0); 
             
@@ -11322,22 +11325,29 @@ public function allqueriesresultAction(){
            
            $locations = array_unique($locations);
            $implodeLocations = implode(",",$locations);
-           
+           //Helper2::jLog(print_r($trainingIDArray,true));
+          // Helper2::jLog("This is the size of thge training id array ".$trainingIDArray);
            foreach($trainingIDArray as $tId){
                $facility = $reports->selectAggregateFacDataWithTrainingID($tId,$tempStartDate,$tempEndDate,$implodeLocations);
-           helper2::jLog(print_r($facility,true));
+          // helper2::jLog(print_r($facility,true));
           
-            for($i=0;$i<$sizeof;$i++){
+          //  for($i=0;$i<$sizeof;$i++){
             ini_set('max_execution_time', 0); 
           //internal initialization
           
           $headers = $reports->createFacWithTrainingHeaders($providing,$consumption,$stockOut,$period);
+          Helper2::jLog(print_r($startYears,true));
+          Helper2::jLog(print_r($endYears,true));
           $tempStartDate = $startYears[$i];
           $tempEndDate = $endYears[$i];
                  foreach($facility as $facs){
                $facility_id = $facs['facility_id'];
-               $fac =  $reports->getTrainingIDFacilityID($facility_id,$tempStartDate,$tempEndDate);
-              
+               if(empty($facility_id)){
+                   continue;
+               }
+               $fac =  $reports->getTrainingIDFacilityID($facility_id,$tempStartDate,$tempEndDate,$tId);
+             //  Helper2::jLog("This is the requirement we got".$facility_id.$tempStartDate.$tempEndDate);
+             // Helper2::jLog(print_r($facs,true));
                $provDataRaw = array();
                $resultArray = array();
                $consumptionData = array();
@@ -11392,7 +11402,7 @@ public function allqueriesresultAction(){
             $outputData[] = $resultArray;    
            //print_r($resultArray); exit;
            }
-            }
+         //   }
             }
            
            
@@ -11953,8 +11963,10 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
             }
             
         }
-        else if($aggregateMethod=="facility_training"){
+         else if($aggregateMethod=="facility_training"){
             //$criteria['error'][] = "Selection module still undergoing development";
+          //   list($startYears,$endYears,$startmonth,$startyear,$endmonth,$endyear) = $reports->getStartDateEndDateWithPeriod($period,$startMonth,$startYear,$endMonth,$endYear,$duration);
+        //$sizeof = sizeof($startYears);
             for($i=0;$i<$sizeof;$i++){
             ini_set('max_execution_time', 0); 
             
@@ -11966,11 +11978,29 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
            
            $locations = array_unique($locations);
            $implodeLocations = implode(",",$locations);
-           
-           $facility = $reports->selectAggregateFacDataWithTrainingID($trainingIDs,$tempStartDate,$tempEndDate,$implodeLocations);
-           
-           $headers = $reports->createFacWithTrainingHeaders($providing,$consumption,$stockOut,$period);
-           foreach($facility as $fac){
+           //Helper2::jLog(print_r($trainingIDArray,true));
+          // Helper2::jLog("This is the size of thge training id array ".$trainingIDArray);
+           foreach($trainingIDArray as $tId){
+               $facility = $reports->selectAggregateFacDataWithTrainingID($tId,$tempStartDate,$tempEndDate,$implodeLocations);
+          // helper2::jLog(print_r($facility,true));
+          
+          //  for($i=0;$i<$sizeof;$i++){
+            ini_set('max_execution_time', 0); 
+          //internal initialization
+          
+          $headers = $reports->createFacWithTrainingHeaders($providing,$consumption,$stockOut,$period);
+          Helper2::jLog(print_r($startYears,true));
+          Helper2::jLog(print_r($endYears,true));
+          $tempStartDate = $startYears[$i];
+          $tempEndDate = $endYears[$i];
+                 foreach($facility as $facs){
+               $facility_id = $facs['facility_id'];
+               if(empty($facility_id)){
+                   continue;
+               }
+               $fac =  $reports->getTrainingIDFacilityID($facility_id,$tempStartDate,$tempEndDate,$tId);
+             //  Helper2::jLog("This is the requirement we got".$facility_id.$tempStartDate.$tempEndDate);
+             // Helper2::jLog(print_r($facs,true));
                $provDataRaw = array();
                $resultArray = array();
                $consumptionData = array();
@@ -11980,22 +12010,23 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                $whereStatementTraining = "";
                $whereStatementConsumption = "";
                
-               $facility_id = $fac['facility_id'];
                
-               $stateName = $fac['state'];
+               
+               $stateName = $facs['state'];
                $stateName = str_replace(",", "@", $stateName);
-               $lgaName = $fac['lga'];
+               $lgaName = $facs['lga'];
                $lgaName = str_replace(",", "@", $lgaName);
-               $facilityName = $fac['facility_name'];
+               $facilityName = $facs['facility_name'];
                $facilityName = str_replace(",", "@", $facilityName);
-               $hwcount = $fac['hwcount'];
-               $trainingOrganizerPhrase = $fac['training_organizer_phrase'];
+               $hwcount = $fac[0]['hwcount'];
+               $trainingOrganizerPhrase = $fac[0]['training_organizer_phrase'];
                $trainingOrganizerPhrase = str_replace(",", "@", $trainingOrganizerPhrase);
                
-               $trainingTitlePhrase = $fac['training_title_phrase'];
+               $trainingTitlePhrase = $fac[0]['training_title_phrase'];
                $trainingTitlePhrase = str_replace(",", "@", $trainingTitlePhrase);
                
-               $training_id = $fac['training_id'];
+               $training_id = $fac[0]['training_id'];
+               $training_id = str_replace(",", "@", $training_id);
                $whereClause = $reports->createWhereClauseArrayFromParameters($tempStartDate,$tempEndDate,$implodeConsumption,$implodeStockOut,$facility_id);
               
                $whereStatementConsumption = implode(" AND ",$whereClause);
@@ -12024,6 +12055,10 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
             $outputData[] = $resultArray;    
            //print_r($resultArray); exit;
            }
+         //   }
+            }
+           
+           
            //echo sizeof($locations);exit;
            //--------------------loop through each location to get the result for the current period-------------------------------------------------
             
@@ -12174,11 +12209,13 @@ public function trainingresultAction(){
                 $state  = $this->getSanParam('aggreg_district_id');
                 $localgovernment  = $this->getSanParam('aggreg_region_c_id'); 
                 }
-                //Helper2::jLog(print_r($zone,true));
+             
                 
                 $zone = $reports->formatSelection($zone);
                 $state = $reports->formatSelection($state);
                 $localgovernment = $reports->formatSelection($localgovernment);
+                
+               
                 //$LGA = $localgovernment;
                // print_r($localgovernment);
                
@@ -12221,15 +12258,19 @@ public function trainingresultAction(){
                //Helper2::jLog(print_r($state,true));
                // echo sizeof($state);
              // print_r($state);
-                if($agrregate_method!="view_aggregate_part" && $agrregate_method!="view_part_names"){
+                 
+             //     Helper2::jLog("This is inside the aggregate method ".$agrregate_method);
+                if($agrregate_method=="view_aggregate_part" || $agrregate_method=="view_part_names"){
                     $locations = array();
+                 
+                    //Helper2::jLog(print_r($localgovernment,true));
                      if(!empty($localgovernment)){
                     
-                foreach($localgovernment as $state){
-                  $state_gen =   explode("_",$state);
-                  $parent_id = $state_gen[0];
-                $district = $state_gen[1];
-                $location_id = $state_gen[2];
+                foreach($localgovernment as $lga){
+                  $lga_gen =   explode("_",$lga);
+                  $parent_id = $lga_gen[0];
+                $district = $lga_gen[1];
+                $location_id = $lga_gen[2];
                 if($location_id!=""){
                 array_push($locations,$location_id);
                 }
@@ -12325,7 +12366,7 @@ if(!empty($locations)){
          $location[] = 0;
          $filter = "geo_zone";
      }
-     
+        Helper2::jLog(print_r($locations,true));
      //print_r($locations);exit;
                 $messageAlert = "";
                 $perLocation = "";
@@ -13383,7 +13424,7 @@ if($this->getSanParam('go') || $this->getSanParam('download') ){
                
                // echo sizeof($state);
              // print_r($state);
-                if($agrregate_method!="view_aggregate_part" && $agrregate_method!="view_part_names"){
+                if($agrregate_method=="view_aggregate_part" || $agrregate_method=="view_part_names"){
                      if(!empty($localgovernment)){
                     
                 foreach($localgovernment as $state){
